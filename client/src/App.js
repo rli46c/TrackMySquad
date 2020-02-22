@@ -6,7 +6,7 @@ import store from './store';
 
 import setAuthToken from './utils/setAuthToken';
 import Routes from './components/routing/Routes';
-import Home from './components/Home';
+import HomePage from './components//pages/HomePage';
 import { loadUser } from './actions/authAction';
 
 if (localStorage.token) {
@@ -24,7 +24,7 @@ const App = () => {
       <Router>
         <CssBaseline />
         <Switch>
-          <Route exact path='/' component={Home} />
+          <Route exact path='/' component={HomePage} />
           <Route component={Routes} />
         </Switch>
       </Router>

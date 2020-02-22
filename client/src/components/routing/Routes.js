@@ -3,8 +3,9 @@ import { Switch, Route } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
 
 import PrivateRoute from './PrivateRoutes';
-import Home from '../Home';
-import Register from '../Register';
+import Login from '../pages/Login';
+import HomePage from '../pages/HomePage';
+import Register from '../pages/Register';
 import Dash from '../dash/Dash';
 import Company from '../dash/Company';
 import Team from '../dash/Team';
@@ -23,7 +24,8 @@ const Routes = () => {
         <section className={ classes.container }>
             {/* <Alert /> */}
             <Switch>
-                <Route exact path='/' component={Home} />
+                <Route exact path='/' component={HomePage} />
+                <Route exact path='/login' component={Login} />
                 <Route exact path='/register' component={Register} />
                 <PrivateRoute exact path='/dash' component={Dash} />
                 <PrivateRoute exact path='/companies' component={Company} />

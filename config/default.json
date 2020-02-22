@@ -1,5 +1,5 @@
 {
-    "mongoURI": "mongodb+srv://tms-admin:8WwbnIxgGvez1JZ2@trackmysquad-ygecj.mongodb.net/TrackMySquad_db?retryWrites=true&w=majority",
+    "mongoURI": "mongodb+srv://tms-admin:8WwbnIxgGvez1JZ2@tms-cluster-ygecj.mongodb.net/TrackMySquad_db?retryWrites=true&w=majority",
     "mongoLocalURI": "mongodb://tms-admin:RLI46CtmsDBpass@127.0.0.1:27017/TrackMySquad_db",
     "jwtSecret": "RLI46C-jSoNsEcReT"
-  }
+}

@@ -6,8 +6,8 @@ import { makeStyles, Avatar, Button, CssBaseline, TextField, FormControlLabel, C
 import { LockOutlined } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 
-import Appbar from './layout/Appbar';
-import { loginUser } from '../actions/authAction';
+import Appbar from '../layout/Appbar';
+import { loginUser } from '../../actions/authAction';
 
 function Copyright() {
     return (
@@ -53,7 +53,7 @@ function Copyright() {
     },
   }));
 
-export const Home = ({ loginUser, isAuthenticated }) => {
+export const Login = ({ loginUser, isAuthenticated }) => {
 
     const [un, setUn] = useState('');
     const [up, setUp] = useState('');
@@ -119,7 +119,7 @@ export const Home = ({ loginUser, isAuthenticated }) => {
   );
 };
 
-Home.propTypes = {
+Login.propTypes = {
     loginUser: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
 };
@@ -132,4 +132,4 @@ const mapDispatchToProps = {
     loginUser
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
