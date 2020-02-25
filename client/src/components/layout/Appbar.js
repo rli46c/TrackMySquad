@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { fade, makeStyles,AppBar, Toolbar, IconButton, Typography, 
-  InputBase, Badge, MenuItem, Menu, Link } from '@material-ui/core';
+  InputBase, Badge, MenuItem, Menu } from '@material-ui/core';
 import { AirlineSeatReclineExtra, LiveHelp, LocalAtm, GetApp, 
   Menu as MenuIcon, Search, AccountCircle, Mail, Notifications, More } from '@material-ui/icons';
 
@@ -17,7 +18,11 @@ const useStyles = makeStyles(theme => ({
     },
     navSpan: {
       fontSize: '0.7em',
-      paddingLeft: '2px'
+      paddingLeft: '2px',
+    },
+    navLink: {
+      textDecoration: 'none',
+      color: '#fff'
     },
     title: {
       display: 'none',
@@ -170,7 +175,7 @@ export const Appbar = ({ createBareBoneStructure }) => {
               <MenuIcon />
             </IconButton>
             <Typography className={classes.title} variant="h6" noWrap>
-              <Link href="/" style={{ color: 'white' }} onClick={(e)=>e.preventDefault()}>TrackMySquad</Link>
+              <Link to="/" style={{ color: 'white' }} onClick={(e)=>e.preventDefault()}>TrackMySquad</Link>
             </Typography>
             <div className={classes.search} style={{ display: 'none' }}>
               <div className={classes.searchIcon}>
@@ -188,14 +193,14 @@ export const Appbar = ({ createBareBoneStructure }) => {
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
 
-              <Link to="/register">
-                <IconButton aria-label="show 4 new mails" color="inherit">
-                  <Badge badgeContent={ null } color="secondary">
+              <IconButton aria-label="show 4 new mails" color="inherit">
+                <Badge badgeContent={ null } color="secondary">
+                  <Link to="/" className={classes.navLink}>
                     <AirlineSeatReclineExtra fontSize="small" />
                     <span className={ classes.navSpan } >Demo</span>
-                  </Badge>
-                </IconButton>
-              </Link>
+                  </Link>
+                </Badge>
+              </IconButton>
 
               <IconButton aria-label="show 4 new mails" color="inherit">
                 <Badge badgeContent={ null } color="secondary">
@@ -217,7 +222,9 @@ export const Appbar = ({ createBareBoneStructure }) => {
               </IconButton>
               <IconButton aria-label="show 4 new mails" color="inherit">
                 <Badge badgeContent={ null } color="secondary">
-                  <span className={ classes.navSpan } >Sign up!</span>
+                  <Link to="/register" className={classes.navLink}>
+                    <span className={ classes.navSpan } >Sign up!</span>
+                  </Link>
                 </Badge>
               </IconButton>
               <IconButton aria-label="show 4 new mails" color="inherit">

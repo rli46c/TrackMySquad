@@ -5,6 +5,8 @@ import {
     USER_LOADED,
     LOGOUT,
     AUTH_ERRORS,
+    REG_SUCCESS,
+    DE_REGISTER
 } from './types';
 
 
@@ -38,6 +40,26 @@ export const loadUser = () => async (dispatch) => {
     }
 };
 
+export const registerUser = (userData) => async (dispatch) => {
+   
+    const config = { headers: { 'Content-Type': 'application/json' } };
+
+    try {
+        const res = await axios.post('/api/auth/register', userData, config);
+        dispatch({
+            type: REG_SUCCESS,
+            payload: res.data
+        });
+    } catch (err) {
+        console.log(err.response.data.errors);
+        
+        dispatch({
+            type: AUTH_ERRORS,
+            payload: err.response
+        });
+    }
+};
+
 export const loginUser = (userdata) => async (dispatch) => {
     const config = { headers: { 'Content-Type': 'application/json' }};
     const body = JSON.stringify(userdata);
@@ -63,6 +85,11 @@ export const loginUser = (userdata) => async (dispatch) => {
 
 
 // Logout / Clear Profile
-export const logout = () => dispatch => {
+export const logout = () => (dispatch) => {
     dispatch({ type: LOGOUT });
+};
+
+// Set registration status to false
+export const deRegister = () => (dispatch) => {
+    dispatch({ type: DE_REGISTER });
 };

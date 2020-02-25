@@ -13,6 +13,7 @@ const usersSchema = mongoose.Schema({
         ref: 'zzz_company_types'
     },
     userEmail: String,
+    userCompany: String
 });
 
 module.exports = Users = mongoose.model('tms_users', usersSchema);

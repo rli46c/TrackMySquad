@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles, Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Grid, Box, Typography, Container, } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons';
-import { Link } from 'react-router-dom';
+import { Link, Redirect, useParams, useLocation } from 'react-router-dom';
+
+import { registerUser } from '../../actions/authAction';
+
+function GetKey() {
+  let { key } = useParams(useLocation);
+  // return key;
+}
 
 function Copyright() {
   return (
@@ -39,8 +46,37 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export const Register = ({}) => {
+export const Register = ({ isRegistered, registerUser }) => {
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [userCompany, setUserCompany] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [userPass, setUserPass] = useState('');
+  const [confPass, setConfPass] = useState('');
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    
+    if ( userPass === confPass) {
+      const userData = { firstName, lastName, userCompany, userEmail, userPass };      
+
+      registerUser(userData);
+
+      setFirstName('');
+      setLastName('');
+      setUserCompany('');
+      setUserEmail('');
+      setUserPass('');
+      setConfPass('');
+    }
+  };
+
   const classes = useStyles();
+
+  if (isRegistered) {
+    return <Redirect to="/confirmEmail" />;
+  }  
 
     return (
       // <div style={{ border: '2px solid red' }}>
@@ -57,30 +93,31 @@ export const Register = ({}) => {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={onSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <TextField autoComplete="fname" name="firstName"  variant="outlined" 
-                required fullWidth id="firstName" label="First Name" autoFocus />
+              <TextField value={firstName} onChange={ (e)=>setFirstName(e.target.value) } 
+                variant="outlined" required fullWidth label="First Name" autoFocus autoComplete="fname" />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField variant="outlined" required fullWidth id="lastName" 
-                label="Last Name" name="lastName" autoComplete="lname" />
+              <TextField value={lastName} onChange={ (e)=>setLastName(e.target.value) } 
+                variant="outlined" required fullWidth label="Last Name" autoComplete="lname" />
             </Grid>
             <Grid item xs={12}>
-              <TextField variant="outlined" required fullWidth id="email" label="Email Address" name="email" autoComplete="email" />
+              <TextField value={userCompany} onChange={ (e)=>setUserCompany(e.target.value) } 
+                variant="outlined" required fullWidth label="Company Name" autoComplete="company" />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
+              <TextField value={userEmail} onChange={ (e)=>setUserEmail(e.target.value) } 
+                variant="outlined" required fullWidth label="Email Address" autoComplete="email" />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField value={userPass} onChange={ (e)=>setUserPass(e.target.value) } 
+                variant="outlined" required fullWidth label="Password" type="password" autoComplete="current-password" />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField value={confPass} onChange={ (e)=>setConfPass(e.target.value) } 
+                variant="outlined" required fullWidth label="Confirm Password" type="password" autoComplete="current-password" />
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
@@ -89,18 +126,12 @@ export const Register = ({}) => {
               />
             </Grid>
           </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
+          <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit} >
             Sign Up
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link to="/" variant="body2">
+              <Link to="/login" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>
@@ -111,6 +142,7 @@ export const Register = ({}) => {
         <Copyright />
       </Box>
 
+    <textarea cols="30" rows="10">{GetKey()}</textarea>
 
     </Container>
 
@@ -120,15 +152,16 @@ export const Register = ({}) => {
 };
 
 Register.propTypes = {
-    // prop: PropTypes
+  registerUser: PropTypes.func.isRequired,
+  isRegistered: PropTypes.bool.isRequired,
 }
 
 const mapStateToProps = (state) => ({
-    
+  isRegistered: state.auth.isRegistered
 });
 
 const mapDispatchToProps = {
-    
+  registerUser
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Register);
