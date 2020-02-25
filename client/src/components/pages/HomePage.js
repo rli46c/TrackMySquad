@@ -11,13 +11,22 @@ import {
 import { ArchiveRounded } from '@material-ui/icons';
 
 import Appbar from '../layout/Appbar';
-import image from '../../stock/img/abc.jpg';
+import bgImage from '../../stock/img/site_bg.png';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    paddingTop: theme.spacing(12),
-    paddingBottom: theme.spacing(4)
-  }
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(3),
+  },
+  bgbanner:{
+    backgroundImage: `url(${bgImage})`,
+    position: 'relative',
+    top: '0px'
+  },
+  paper: {
+    height: 140,
+    width: 100,
+  },
 }));
 
 const HomePage = ({}) => {
@@ -26,13 +35,25 @@ const HomePage = ({}) => {
     <Fragment>
       <CssBaseline />
       <Appbar />
-      <Container component='main' maxWidth='md' className={classes.root}>
+      <div className={classes.bgbanner}>
+      <Container component='main' className={classes.root}>
         <Grid container spacing={5} alignItems='flex-end'>
-          <Grid item xs={12} md={10}>
-            <h1>This is Home page</h1>
+          <Grid item xs={12} md={12}>
+          <Grid container justify="center" spacing={2}>
+            <Grid  item md={3}>
+              <Paper className={classes.paper} />
+            </Grid>
+            <Grid  item md={3}>
+              <Paper className={classes.paper} />
+            </Grid>
+            <Grid  item md={3}>
+              <Paper className={classes.paper} />
+            </Grid>
+        </Grid>
           </Grid>
         </Grid>
       </Container>
+      </div>
     </Fragment>
   );
 };

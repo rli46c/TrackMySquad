@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { fade, makeStyles,AppBar, Toolbar, IconButton, Typography, 
-  InputBase, Badge, MenuItem, Menu } from '@material-ui/core';
+  InputBase, Badge, MenuItem, Menu,Container } from '@material-ui/core';
 import { AirlineSeatReclineExtra, LiveHelp, LocalAtm, GetApp, 
   Menu as MenuIcon, Search, AccountCircle, Mail, Notifications, More } from '@material-ui/icons';
 
@@ -22,7 +22,8 @@ const useStyles = makeStyles(theme => ({
     },
     navLink: {
       textDecoration: 'none',
-      color: '#fff'
+      color: '#fff',
+      display:'flex'
     },
     title: {
       display: 'none',
@@ -76,6 +77,12 @@ const useStyles = makeStyles(theme => ({
       [theme.breakpoints.up('md')]: {
         display: 'none',
       },
+      menuitem:{
+        padding:'8px',
+      }
+    },
+    headertop:{
+      background:'#151515',
     },
   }));
 
@@ -164,7 +171,8 @@ export const Appbar = ({ createBareBoneStructure }) => {
   
     return (
       <div className={classes.grow}>
-        <AppBar position="fixed">
+        <AppBar position="relative" className={classes.headertop}>
+          <Container >
           <Toolbar>
             <IconButton
               edge="start"
@@ -193,7 +201,7 @@ export const Appbar = ({ createBareBoneStructure }) => {
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
 
-              <IconButton aria-label="show 4 new mails" color="inherit">
+              <IconButton aria-label="show 4 new mails" color="inherit" className={classes.menuitem}>
                 <Badge badgeContent={ null } color="secondary">
                   <Link to="/" className={classes.navLink}>
                     <AirlineSeatReclineExtra fontSize="small" />
@@ -202,47 +210,47 @@ export const Appbar = ({ createBareBoneStructure }) => {
                 </Badge>
               </IconButton>
 
-              <IconButton aria-label="show 4 new mails" color="inherit">
+              <IconButton aria-label="show 4 new mails" color="inherit" className={classes.menuitem}>
                 <Badge badgeContent={ null } color="secondary">
                   <LiveHelp fontSize="small" />
                   <span className={ classes.navSpan } >How it works</span>
                 </Badge>
               </IconButton>
-              <IconButton aria-label="show 4 new mails" color="inherit">
+              <IconButton aria-label="show 4 new mails" color="inherit" className={classes.menuitem}>
                 <Badge badgeContent={ null } color="secondary">
                   <LocalAtm fontSize="small" />
                   <span className={ classes.navSpan } >Pricing</span>
                 </Badge>
               </IconButton>
-              <IconButton aria-label="show 4 new mails" color="inherit">
+              <IconButton aria-label="show 4 new mails" color="inherit" className={classes.menuitem}>
                 <Badge badgeContent={ null } color="secondary">
                   <GetApp fontSize="small" />
                   <span className={ classes.navSpan } >Download</span>
                 </Badge>
               </IconButton>
-              <IconButton aria-label="show 4 new mails" color="inherit">
+              <IconButton aria-label="show 4 new mails" color="inherit" className={classes.menuitem}>
                 <Badge badgeContent={ null } color="secondary">
                   <Link to="/register" className={classes.navLink}>
                     <span className={ classes.navSpan } >Sign up!</span>
                   </Link>
                 </Badge>
               </IconButton>
-              <IconButton aria-label="show 4 new mails" color="inherit">
+              <IconButton aria-label="show 4 new mails" color="inherit" className={classes.menuitem}>
                 <Badge badgeContent={ null } color="secondary">
                   <span className={ classes.navSpan } >Support</span>
                 </Badge>
               </IconButton>
-              <IconButton aria-label="show 4 new mails" color="inherit">
+              <IconButton aria-label="show 4 new mails" color="inherit" className={classes.menuitem}>
                 <Badge badgeContent={ null } color="secondary">
                   <span className={ classes.navSpan } >Blog</span>
                 </Badge>
               </IconButton>
-              <IconButton aria-label="show 4 new mails" color="inherit">
+              <IconButton aria-label="show 4 new mails" color="inherit" className={classes.menuitem}>
                 <Badge badgeContent={4} color="secondary">
                   <Mail />
                 </Badge>
               </IconButton>
-              <IconButton aria-label="show 17 new notifications" color="inherit">
+              <IconButton aria-label="show 17 new notifications" color="inherit" className={classes.menuitem}>
                 <Badge badgeContent={17} color="secondary">
                   <Notifications />
                 </Badge>
@@ -264,6 +272,7 @@ export const Appbar = ({ createBareBoneStructure }) => {
               </IconButton>
             </div>
           </Toolbar>
+          </Container>
         </AppBar>
         {renderMobileMenu}
         {renderMenu}
