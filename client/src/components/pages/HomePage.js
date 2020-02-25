@@ -11,6 +11,7 @@ import {
 import { ArchiveRounded } from '@material-ui/icons';
 
 import Appbar from '../layout/Appbar';
+import image from '../../stock/img/abc.jpg';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,6 +29,7 @@ const HomePage = ({}) => {
         <Grid container spacing={5} alignItems='flex-end'>
           <Grid xs={12} md={10}>
             This is Home page
+            <img src={image} alt='hghjg' />
           </Grid>
         </Grid>
       </Container>
