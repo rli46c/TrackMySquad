@@ -3,14 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles, Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Grid, Box, Typography, Container, } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons';
-import { Link, Redirect, useParams, useLocation } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 import { registerUser } from '../../actions/authAction';
 
-function GetKey() {
-  let { key } = useParams(useLocation);
-  // return key;
-}
 
 function Copyright() {
   return (
@@ -141,9 +137,6 @@ export const Register = ({ isRegistered, registerUser }) => {
       <Box mt={5}>
         <Copyright />
       </Box>
-
-    <textarea cols="30" rows="10">{GetKey()}</textarea>
-
     </Container>
 
         

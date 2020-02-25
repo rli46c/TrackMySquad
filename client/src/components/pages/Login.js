@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
-import { makeStyles, Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Paper, Box, Grid, Typography, AppBar } from '@material-ui/core';
-import { LockOutlined } from '@material-ui/icons';
-import { Link } from 'react-router-dom';
+import { Redirect, Link, useParams } from 'react-router-dom';
+import { makeStyles, Avatar, Button, CssBaseline, TextField, 
+          FormControlLabel, Checkbox, Paper, Box, Grid, Typography, 
+          IconButton, Snackbar, AppBar } from '@material-ui/core';
+import { LockOutlined, Close } from '@material-ui/icons';
 
 import Appbar from '../layout/Appbar';
 import { loginUser } from '../../actions/authAction';
+
+
+function GetKey() {
+  let { key } = useParams();
+  return key;
+}
 
 function Copyright() {
     return (
@@ -27,7 +34,7 @@ function Copyright() {
       height: '100vh',
     },
     image: {
-      backgroundImage: 'url(https://source.unsplash.com/random)',
+      backgroundImage: 'url(https://source.unsplash.com/random/?time,clock,watch,tracker)',
       backgroundRepeat: 'no-repeat',
       backgroundColor:
         theme.palette.type === 'dark' ? theme.palette.grey[900] : theme.palette.grey[50],
@@ -51,20 +58,67 @@ function Copyright() {
     submit: {
       margin: theme.spacing(3, 0, 2),
     },
+    close: {
+      padding: theme.spacing(0.5),
+    },
   }));
 
 export const Login = ({ loginUser, isAuthenticated }) => {
 
     const [un, setUn] = useState('');
     const [up, setUp] = useState('');
+    const [keyVal, setKeyVal] = useState(GetKey());
+
+    const queueRef = React.useRef([]);
+    const [open, setOpen] = useState(false);
+    const [messageInfo, setMessageInfo] = React.useState(undefined);
     
     const onSubmit = (e) => {
       e.preventDefault();
 
-      const userdata = { un, up };      
+      const userdata = { un, up };
+
+      if (keyVal || typeof keyVal !== 'undefined') {
+        userdata.keyVal = keyVal
+      }
       
       loginUser(userdata);
     };
+
+    // Snackbar (Toast) message Functions STARTS HERE >>>>
+    const processQueue = () => {
+      if (queueRef.current.length > 0) {
+        setMessageInfo(queueRef.current.shift());
+        setOpen(true);
+      }
+    };
+  
+    const handleClick = message => () => {
+      queueRef.current.push({
+        message,
+        key: new Date().getTime(),
+      });
+  
+      if (open) {
+        // immediately begin dismissing current message
+        // to start showing new one
+        setOpen(false);
+      } else {
+        processQueue();
+      }
+    };
+  
+    const handleClose = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      setOpen(false);
+    };
+  
+    const handleExited = () => {
+      processQueue();
+    };
+    // Snackbar (Toast) message Functions ENDS HERE <<<<
 
     const classes = useStyles();
     
@@ -115,6 +169,51 @@ export const Login = ({ loginUser, isAuthenticated }) => {
           </form>
         </div>
       </Grid>
+
+
+
+
+
+
+
+      <div>
+        <Button onClick={handleClick('Message A')}>Show message A</Button>
+        <Button onClick={handleClick('Message B')}>Show message B</Button>
+        <Snackbar
+          key={messageInfo ? messageInfo.key : undefined}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={open}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          onExited={handleExited}
+          message={messageInfo ? messageInfo.message : undefined}
+          action={
+            <React.Fragment>
+              <Button color="secondary" size="small" onClick={handleClose}>
+                UNDO
+              </Button>
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                className={classes.close}
+                onClick={handleClose}
+              >
+                <Close />
+              </IconButton>
+            </React.Fragment>
+          }
+        />
+      </div>
+
+
+
+
+
+
+
     </Grid>
   );
 };

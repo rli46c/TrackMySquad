@@ -175,7 +175,7 @@ export const Appbar = ({ createBareBoneStructure }) => {
               <MenuIcon />
             </IconButton>
             <Typography className={classes.title} variant="h6" noWrap>
-              <Link to="/" style={{ color: 'white' }} onClick={(e)=>e.preventDefault()}>TrackMySquad</Link>
+              <Link to="/" className={classes.navLink} style={{ color: 'white' }}>TrackMySquad</Link>
             </Typography>
             <div className={classes.search} style={{ display: 'none' }}>
               <div className={classes.searchIcon}>
