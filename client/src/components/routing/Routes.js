@@ -6,6 +6,7 @@ import PrivateRoute from './PrivateRoutes';
 import Login from '../pages/Login';
 import HomePage from '../pages/HomePage';
 import Register from '../pages/Register';
+import ConfirmEmail from '../pages/ConfirmEmail';
 import Dash from '../dash/Dash';
 import Company from '../dash/Company';
 import Team from '../dash/Team';
@@ -26,7 +27,9 @@ const Routes = () => {
             <Switch>
                 <Route exact path='/' component={HomePage} />
                 <Route exact path='/login' component={Login} />
-                <Route exact path='/register' component={Register} />
+                <Route path='/register' component={Register} />
+                <Route exact path='/register/validateKey/:key' component={Register} />
+                <Route exact path='/confirmEmail' component={ConfirmEmail} />
                 <PrivateRoute exact path='/dash' component={Dash} />
                 <PrivateRoute exact path='/companies' component={Company} />
                 <PrivateRoute exact path='/team' component={Team} />

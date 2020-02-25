@@ -1,7 +1,12 @@
+// General Types
+export const SEND_EMAIL = 'SEND_EMAIL';
+export const EMAIL_ERRORS = 'EMAIL_ERRORS';
+
 // Auth Types - Used in Registration and Login
 export const USER_LOADED = 'USER_LOADED';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const REG_SUCCESS = 'REG_SUCCESS';
+export const DE_REGISTER = 'DE_REGISTER';
 export const LOGOUT = 'LOGOUT';
 export const AUTH_ERRORS = 'AUTH_ERRORS';
 

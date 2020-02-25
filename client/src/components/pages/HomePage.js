@@ -15,7 +15,8 @@ import image from '../../stock/img/abc.jpg';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: 'red'
+    paddingTop: theme.spacing(12),
+    paddingBottom: theme.spacing(4)
   }
 }));
 
@@ -27,9 +28,8 @@ const HomePage = ({}) => {
       <Appbar />
       <Container component='main' maxWidth='md' className={classes.root}>
         <Grid container spacing={5} alignItems='flex-end'>
-          <Grid xs={12} md={10}>
-            This is Home page
-            <img src={image} alt='hghjg' />
+          <Grid item xs={12} md={10}>
+            <h1>This is Home page</h1>
           </Grid>
         </Grid>
       </Container>

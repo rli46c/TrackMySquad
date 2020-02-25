@@ -4,6 +4,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const auth = require('../../middleware/auth');
+const nodemailer = require('nodemailer');
+const cryptoJS = require('crypto-js');
+const urlencode = require('urlencode');
 const { check, validationResult } = require('express-validator');
 
 const Users = require('../../models/Users');
@@ -85,6 +88,91 @@ router.get('/createAdmin', async (req, res) => {
 });
 
 
+// @route    POST api/auth/register
+// @desc     Register user & get token
+// @access   Public
+router.post(
+    '/register',
+    [
+        check('firstName', 'First Name is Required').not().isEmpty(),
+        check('lastName', 'Last Name is Required').not().isEmpty(),
+        check('userCompany', 'Company Name is Required').not().isEmpty(),
+        check('userEmail', 'Email is Required').not().isEmpty(),
+        check('userPass', 'Password is Required').isLength({ min: 5 })
+    ],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
+        }
+
+        const { firstName, lastName, userCompany, userEmail, userPass } = req.body;
+
+        try {            
+        
+            let user = await Users.findOne({ userEmail });
+
+            if (user) {
+                return res.status(400).json({ errors: [{ msg: 'User Already Exists' }] });
+            }
+
+            user = new Users({
+                firstName, lastName, userCompany, userEmail, userPass
+            });
+
+            const salt = await bcrypt.genSalt(10);
+            user.userPass = await bcrypt.hash(user.userPass, salt);
+
+            user.save(async (err, savedUser)=>{
+                if (err) throw err;
+
+                const { firstName, lastName, userEmail, userCompany } = savedUser;                
+
+                // Encrypt
+                var ciphertext = cryptoJS.AES.encrypt(JSON.stringify({user: savedUser.id, email: savedUser.userEmail}), config.get('cryptoJSkeySecret')).toString();
+                const emailContent = `Hello Falana Dhimkana \n your key is:\n${urlencode(ciphertext)}\n`;
+
+                let transporter = nodemailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 587,
+                    secure: false,
+                    auth: {
+                        user: 'trackmysquad@gmail.com',
+                        pass: 'Roy@lLogics46c'
+                    },
+                    tls: {
+                        rejectUnauthorized: false
+                    }
+                });
+    
+                // let sentMailResponse = await transporter.sendMail({
+                //     from: 'Track My Squad <trackmysquad@gmail.com>',
+                //     to: `${firstName} ${lastName} <${userEmail}>`,
+                //     subject: "Welcome to Track My Squad",
+                //     text: emailContent,
+                //     html: emailContent
+                // });
+    
+                // console.log(sentMailResponse);
+                
+                ciphertext = urlencode.decode('U2FsdGVkX1%2B7oBvWQf246oh3jGX%2Bk5D8%2BbaMok1IYa7gTuzlPGgVV5dyYtdEbklCBnHWiJBThYYcT1i2fgtAZsNvvbKCWHcCvjVdvKTTeR6CCnJlgqn1ARDjWX2rZ%2FWA');
+                
+                // Decrypt
+                var bytes  = cryptoJS.AES.decrypt(ciphertext, config.get('cryptoJSkeySecret'));
+                var decryptedData = JSON.parse(bytes.toString(cryptoJS.enc.Utf8));
+                console.log(decryptedData);
+            });
+    
+            return res.json({ firstName, lastName, userEmail });
+
+        } catch (err) {
+            console.error(err.message);
+            res.status(500).send('Server error');
+        }
+    }
+);
+
+
 // @route    POST api/auth
 // @desc     Authenticate user & get token
 // @access   Public
@@ -127,7 +215,10 @@ router.post(
                 config.get('jwtSecret'), 
                 { expiresIn: 3600 }, 
                 (err, token) => {
-                    if (err) throw err;
+                    if (err) {
+                        console.error(err.message);
+                        res.status(500).send('Server error');
+                    }
                     return res.json({ token, isAuthenticated: true });
                 }
             );
