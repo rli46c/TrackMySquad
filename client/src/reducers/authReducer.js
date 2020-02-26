@@ -1,73 +1,64 @@
 import {
-    LOGIN_SUCCESS,
-    REG_SUCCESS,
-    AUTH_ERRORS,
-    USER_LOADED,
-    LOGOUT,
-    DE_REGISTER
+	LOGIN_SUCCESS,
+	REG_SUCCESS,
+	USER_LOADED,
+	LOGOUT,
+	DE_REGISTER
 } from '../actions/types';
 
 const initialState = {
-    isRegistered: false,
-    isAuthenticated: false,
-    token: localStorage.getItem('token'),
-    loading: true,
-    user: null,
-    authErrors: []
+	isRegistered: false,
+	isAuthenticated: false,
+	token: localStorage.getItem('token'),
+	loading: true,
+	user: null
 };
 
-export default ( state = initialState, action) => {
-    const { type, payload } = action;
+export default (state = initialState, action) => {
+	const { type, payload } = action;
 
-    switch (type) {
-        case USER_LOADED:    
-            return {
-                ...state,
-                isAuthenticated: true,
-                loading: false,
-                user: payload
-            };
-            
-        case REG_SUCCESS: 
-            return {
-                ...state,
-                isRegistered: true,
-                user: payload
-            };
+	switch (type) {
+		case USER_LOADED:
+			return {
+				...state,
+				isAuthenticated: true,
+				loading: false,
+				user: payload
+			};
 
-        case DE_REGISTER:
-            return {
-                ...state,
-                isRegistered: false
-            };
-        
-        case LOGIN_SUCCESS:            
-            localStorage.setItem('token', payload.token);
-            return {
-                ...state,
-                ...payload,
-                isAuthenticated: payload.isAuthenticated
-            };
+		case REG_SUCCESS:
+			return {
+				...state,
+				isRegistered: true,
+				user: payload
+			};
 
-        case LOGOUT:
-            localStorage.removeItem('token');
-            return {
-              ...state,
-              token: null,
-              isAuthenticated: false,
-              isRegistered: false,
-              user: null,
-              authErrors: [],
-              loading: false,
-            };
+		case DE_REGISTER:
+			return {
+				...state,
+				isRegistered: false
+			};
 
-        case AUTH_ERRORS:
-            return {
-                ...state,
-                authErrors: [...state.authErrors, payload]
-            };
-    
-        default:
-            return state;
-    }
+		case LOGIN_SUCCESS:
+			localStorage.setItem('token', payload.token);
+			return {
+				...state,
+				...payload,
+				isAuthenticated: payload.isAuthenticated
+			};
+
+		case LOGOUT:
+			localStorage.removeItem('token');
+			return {
+				...state,
+				token: null,
+				isAuthenticated: false,
+				isRegistered: false,
+				user: null,
+				loading: false
+			};
+
+		default:
+			return state;
+	}
 };
