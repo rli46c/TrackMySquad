@@ -1,0 +1,140 @@
+.trackblock {
+	width: 255px;
+	height: 255px;
+	display: block;
+	overflow: hidden;
+	border-radius: 50%;
+	margin: 0 auto;
+	box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.1);
+}
+.trackblock img {
+	position: relative;
+	display: block;
+	clear: both;
+	width: auto;
+	height: 100%;
+	max-width: 100%;
+}
+.trackinfo h2 {
+	line-height: 1em;
+	font-weight: 200;
+	font-size: 26px;
+	color: #fff;
+	margin: 30px 0 0;
+}
+.trackinfo p {
+	font-size: 20px;
+	color: #fff;
+	margin-top: 10px;
+	font-weight: 200;
+}
+.signuplink {
+	margin: 40px auto;
+	text-align: center;
+}
+.linkbtn {
+	background: #e2540ede;
+	color: #fff;
+	padding: 15px 40px;
+	border: 4px solid #e85225de;
+	display: inline-block;
+	font-size: 20px;
+	text-decoration: none;
+	border-radius: 5px;
+	font-weight: 400;
+}
+.simplelink {
+	color: #fff;
+	padding-top: 8px;
+	display: block;
+	text-decoration: none;
+	font-size: 13px;
+}
+.companyblock {
+	margin: 55px 0;
+}
+.companyblock h2 {
+	color: #fff;
+	font-weight: 200;
+	font-size: 22px;
+	line-height: 1em;
+	margin: 18px 0 25px;
+}
+.quotationline .quote {
+	position: relative;
+}
+.quotationline .quote span {
+	display: inline-block;
+	background-color: #151515;
+	padding-left: 35px;
+	padding-right: 35px;
+	color: #fff;
+	font-size: 25px;
+	line-height: 1.35;
+	font-family: 'Arbutus Slab', serif;
+}
+.quotationline .quote span:before {
+	content: '';
+	position: absolute;
+	top: 56%;
+	left: 0;
+	right: 0;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	z-index: -1;
+}
+.quote-auth {
+	font-size: 16px;
+	color: #fff;
+}
+.screeninfo h2,
+.screeninfo h3,
+.screeninfo p {
+	color: #fff;
+}
+.screeninfo h2 {
+	margin-top: 0px;
+	font-size: 30px;
+	font-weight: 400;
+}
+.screeninfo h3 b {
+	font-size: 16.5px;
+	line-height: 1.7;
+}
+.screeninfo p {
+	font-size: 15.4px;
+	line-height: 1.7em;
+	font-weight: 300;
+}
+.bgquote {
+	background: #050505;
+}
+.bgquote .quotationline .quote {
+	z-index: 99;
+}
+.bgquote .quotationline .quote span {
+	background-color: #050505;
+}
+.trackbenefit h2 {
+	margin: 10px 0 30px;
+	color: #fff;
+	font-size: 2em;
+	font-weight: 400;
+}
+.trackbenefit p {
+	color: #fff;
+	font-size: 1.15em;
+	line-height: 1.7em;
+	font-weight: 300;
+	padding: 0 10px;
+}
+.trackbenefit .MuiSvgIcon-root {
+	color: #fff;
+	font-size: 3em;
+}
+.trackblock {
+	animation-iteration-count: inherit !important;
+}
+.trackblock:focus,
+.trackblock:hover {
+	animation-iteration-count: infinite !important;
+}
