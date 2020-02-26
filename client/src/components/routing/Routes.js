@@ -26,9 +26,9 @@ const Routes = () => {
             {/* <Alert /> */}
             <Switch>
                 <Route exact path='/' component={HomePage} />
+                <Route exact path='/login/:key' component={Login} />
                 <Route exact path='/login' component={Login} />
-                <Route path='/register' component={Register} />
-                <Route exact path='/register/validateKey/:key' component={Register} />
+                <Route exact path='/register' component={Register} />
                 <Route exact path='/confirmEmail' component={ConfirmEmail} />
                 <PrivateRoute exact path='/dash' component={Dash} />
                 <PrivateRoute exact path='/companies' component={Company} />

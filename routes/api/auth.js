@@ -42,7 +42,8 @@ router.get('/createAdmin', async (req, res) => {
                         { userType: 'Developer' },
                         { userType: 'Manager' },
                         { userType: 'Team Lead' },
-                        { userType: 'User' }
+                        { userType: 'User' },
+                        { userType: 'Demo' },
                     ]);
 
                     const savedCompanyTypes = await CompanyTypes.insertMany([
@@ -106,7 +107,7 @@ router.post(
             return res.status(422).json({ errors: errors.array() });
         }
 
-        const { firstName, lastName, userCompany, userEmail, userPass } = req.body;
+        const { firstName, lastName, userCompany, userEmail, userPass, userType } = req.body;
 
         try {            
         
@@ -117,11 +118,13 @@ router.post(
             }
 
             user = new Users({
-                firstName, lastName, userCompany, userEmail, userPass
+                firstName, lastName, userCompany, userEmail, userPass, userType
             });
 
             const salt = await bcrypt.genSalt(10);
             user.userPass = await bcrypt.hash(user.userPass, salt);
+
+            user.userType = await UserTypes.findOne({ userType: 'Demo' });
 
             user.save(async (err, savedUser)=>{
                 if (err) throw err;
@@ -130,7 +133,9 @@ router.post(
 
                 // Encrypt
                 var ciphertext = cryptoJS.AES.encrypt(JSON.stringify({user: savedUser.id, email: savedUser.userEmail}), config.get('cryptoJSkeySecret')).toString();
-                const emailContent = `Hello Falana Dhimkana \n your key is:\n${urlencode(ciphertext)}\n`;
+                ciphertext = urlencode(ciphertext);
+                const emailText = `Hello Falana Dhimkana \n your key is:\n${ciphertext}\n`;
+                const emailHtml = `Hello Falana Dhimkana <br /> your key is:<br />${ciphertext}<br /><br /><a href="http://localhost:3000/login/${ciphertext}">Verify this Email Account</a>`;
 
                 let transporter = nodemailer.createTransport({
                     host: 'smtp.gmail.com',
@@ -145,22 +150,15 @@ router.post(
                     }
                 });
     
-                // let sentMailResponse = await transporter.sendMail({
-                //     from: 'Track My Squad <trackmysquad@gmail.com>',
-                //     to: `${firstName} ${lastName} <${userEmail}>`,
-                //     subject: "Welcome to Track My Squad",
-                //     text: emailContent,
-                //     html: emailContent
-                // });
+                let sentMailResponse = await transporter.sendMail({
+                    from: 'Track My Squad <trackmysquad@gmail.com>',
+                    to: `${firstName} ${lastName} <${userEmail}>`,
+                    subject: "Welcome to Track My Squad",
+                    text: emailText,
+                    html: emailHtml
+                });
     
-                // console.log(sentMailResponse);
-                
-                ciphertext = urlencode.decode('U2FsdGVkX1%2B7oBvWQf246oh3jGX%2Bk5D8%2BbaMok1IYa7gTuzlPGgVV5dyYtdEbklCBnHWiJBThYYcT1i2fgtAZsNvvbKCWHcCvjVdvKTTeR6CCnJlgqn1ARDjWX2rZ%2FWA');
-                
-                // Decrypt
-                var bytes  = cryptoJS.AES.decrypt(ciphertext, config.get('cryptoJSkeySecret'));
-                var decryptedData = JSON.parse(bytes.toString(cryptoJS.enc.Utf8));
-                console.log(decryptedData);
+                console.log(sentMailResponse);
             });
     
             return res.json({ firstName, lastName, userEmail });
@@ -188,14 +186,48 @@ router.post(
             return res.status(422).json({ errors: errors.array() });
         }
 
+        let decryptedData = null;
+        
+        // Verify User Email
+        if ( req.body.hasOwnProperty('keyVal') ) {
+            let ciphertext = urlencode.decode(req.body.keyVal);
+
+            // Decrypt
+            let bytes  = cryptoJS.AES.decrypt(ciphertext, config.get('cryptoJSkeySecret'));
+
+            try {
+                decryptedData = JSON.parse(bytes.toString(cryptoJS.enc.Utf8));
+            } catch (e) {
+                if (e instanceof SyntaxError) {
+                    return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
+                } else {
+                    return res.status(400).json({ errors: [{ msg: 'Verify your email first.' }] });
+                }
+            }
+        }
+        
         const { un, up } = req.body;
 
         try {
 
-            let user = await Users.findOne({ userName: un });
+            let user = await Users.findOne({ $or: [ { userName: un }, { userEmail: un } ] });
 
             if (!user) {
                 return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
+            }
+
+            if (user.verifiedEmail === false) {
+                
+                if (decryptedData && decryptedData.hasOwnProperty('user') && decryptedData.hasOwnProperty('email')) {
+                    const { user, email } = decryptedData;
+                    const verifiedUser = await Users.findOneAndUpdate({ $and: [ {_id: user}, {userEmail: email} ]}, { verifiedEmail: true });
+                    
+                    if (!verifiedUser) {
+                        return res.status(400).json({ errors: [{ msg: 'Verify your email first.' }] });
+                    }
+                } else {                    
+                    return res.status(400).json({ errors: [{ msg: 'Verify your email first.' }] });
+                }
             }
 
             const isMatch = await bcrypt.compare(up, user.userPass);
