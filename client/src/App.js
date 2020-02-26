@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { CssBaseline, makeStyles } from '@material-ui/core';
 import { Provider } from 'react-redux';
 import store from './store';
+import  "../src/stock/css/app.css";
 
 import setAuthToken from './utils/setAuthToken';
 import Routes from './components/routing/Routes';
