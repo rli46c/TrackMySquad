@@ -11,6 +11,7 @@ const { check, validationResult } = require('express-validator');
 
 const Users = require('../../models/Users');
 const UserTypes = require('../../models/normalizations/UserTypes');
+const Companies = require('../../models/Companies');
 const CompanyTypes = require('../../models/normalizations/CompanyTypes');
 const ProjectTypes = require('../../models/normalizations/ProjectTypes');
 
@@ -37,7 +38,7 @@ router.get('/createAdmin', async (req, res) => {
 						{ userType: 'Manager' },
 						{ userType: 'Team Lead' },
 						{ userType: 'User' },
-						{ userType: 'Demo' }
+						{ userType: 'Dummy' }
 					]);
 
 					const savedCompanyTypes = await CompanyTypes.insertMany([
@@ -45,7 +46,8 @@ router.get('/createAdmin', async (req, res) => {
 						{ companyType: 'Telecommunication' },
 						{ companyType: 'Automobile' },
 						{ companyType: 'Pharmacy' },
-						{ companyType: 'Textile' }
+						{ companyType: 'Textile' },
+						{ companyType: 'Dummy' }
 					]);
 
 					const savedProjectTypes = await ProjectTypes.insertMany([
@@ -62,7 +64,12 @@ router.get('/createAdmin', async (req, res) => {
 						userName: 'admin123',
 						userPass: hash,
 						userType: savedUserTypes[0]._id,
-						userEmail: 'vinayak252@gmail.com'
+						userCompany: 'Super User',
+						companyType: await CompanyTypes.findOne({
+							companyType: 'Dummy'
+						}).select('id'),
+						userEmail: 'vinayak252@gmail.com',
+						verifiedEmail: true
 					});
 					const createdUser = await user.save();
 					return res.status(200).json({
@@ -104,7 +111,9 @@ router.post(
 		check('userEmail', 'Email is Required')
 			.not()
 			.isEmpty(),
-		check('userPass', 'Password is Required').isLength({ min: 5 })
+		check('userPass', 'Password should be atleast 6 characters').isLength({
+			min: 6
+		})
 	],
 	async (req, res) => {
 		const errors = validationResult(req);
@@ -130,10 +139,16 @@ router.post(
 					.json({ errors: [{ msg: 'User Already Exists' }] });
 			}
 
+			const compTyp = await CompanyTypes.findOne({
+				companyType: 'Dummy'
+			}).select('id');
+
 			user = new Users({
 				firstName,
 				lastName,
 				userCompany,
+				userName: userEmail,
+				companyType: compTyp,
 				userEmail,
 				userPass,
 				userType
@@ -142,12 +157,24 @@ router.post(
 			const salt = await bcrypt.genSalt(10);
 			user.userPass = await bcrypt.hash(user.userPass, salt);
 
-			user.userType = await UserTypes.findOne({ userType: 'Demo' });
+			user.userType = await UserTypes.findOne({ userType: 'Admin' }).select(
+				'id'
+			);
 
 			user.save(async (err, savedUser) => {
 				if (err) throw err;
 
-				const { firstName, lastName, userEmail, userCompany } = savedUser;
+				const { id, firstName, lastName, userEmail, userCompany } = savedUser;
+
+				// Make new company with provided company name
+
+				const company = new Companies({
+					companyOwner: id,
+					companyName: userCompany,
+					companyType: compTyp
+				});
+
+				await company.save();
 
 				// Encrypt
 				var ciphertext = cryptoJS.AES.encrypt(
@@ -202,9 +229,9 @@ router.post(
 			.exists()
 			.not()
 			.isEmpty(),
-		check('up', 'Password is required.')
+		check('up', 'Password should be atleast 6 characters.')
 			.exists()
-			.isLength({ min: 5 })
+			.isLength({ min: 6 })
 	],
 	async (req, res) => {
 		const errors = validationResult(req);
@@ -212,62 +239,75 @@ router.post(
 			return res.status(422).json({ errors: errors.array() });
 		}
 
-		let decryptedData = null;
-
-		// Verify User Email
-		if (req.body.hasOwnProperty('keyVal')) {
-			let ciphertext = urlencode.decode(req.body.keyVal);
-
-			// Decrypt
-			let bytes = cryptoJS.AES.decrypt(
-				ciphertext,
-				config.get('cryptoJSkeySecret')
-			);
-
-			try {
-				decryptedData = JSON.parse(bytes.toString(cryptoJS.enc.Utf8));
-			} catch (e) {
-				if (e instanceof SyntaxError) {
-					return res
-						.status(400)
-						.json({ errors: [{ msg: 'Invalid Credentials' }] });
-				} else {
-					return res
-						.status(400)
-						.json({ errors: [{ msg: 'Verify your email first.' }] });
-				}
-			}
-		}
-
 		const { un, up } = req.body;
 
 		try {
-			let user = await Users.findOne({
+			let currentUser = await Users.findOne({
 				$or: [{ userName: un }, { userEmail: un }]
 			});
 
-			if (!user) {
+			if (!currentUser) {
 				return res
 					.status(400)
 					.json({ errors: [{ msg: 'Invalid Credentials' }] });
 			}
 
-			if (user.verifiedEmail === false) {
+			if (currentUser.verifiedEmail !== true) {
+				let decryptedData = null;
+
+				// Decrypt and Verify Key Parameter
+				if (req.body.hasOwnProperty('keyVal')) {
+					let ciphertext = urlencode.decode(req.body.keyVal);
+
+					// Decrypt
+					let bytes = cryptoJS.AES.decrypt(
+						ciphertext,
+						config.get('cryptoJSkeySecret')
+					);
+
+					try {
+						decryptedData = JSON.parse(bytes.toString(cryptoJS.enc.Utf8));
+					} catch (e) {
+						if (e instanceof SyntaxError) {
+							return res
+								.status(400)
+								.json({ errors: [{ msg: 'Invalid Credentials' }] });
+						} else {
+							return res
+								.status(400)
+								.json({ errors: [{ msg: 'Verify your email first.' }] });
+						}
+					}
+				} else {
+					// In case no Key Parameter provided and Email is also not Verified
+					return res
+						.status(400)
+						.json({ errors: [{ msg: 'Verify your email first.' }] });
+				}
+
 				if (
 					decryptedData &&
 					decryptedData.hasOwnProperty('user') &&
 					decryptedData.hasOwnProperty('email')
 				) {
 					const { user, email } = decryptedData;
-					const verifiedUser = await Users.findOneAndUpdate(
-						{ $and: [{ _id: user }, { userEmail: email }] },
-						{ verifiedEmail: true }
-					);
 
-					if (!verifiedUser) {
+					// To check whether user is not using someone else's Key
+					if (user === currentUser.id) {
+						const verifiedUser = await Users.findOneAndUpdate(
+							{ $and: [{ _id: user }, { userEmail: email }] },
+							{ verifiedEmail: true }
+						);
+
+						if (!verifiedUser) {
+							return res
+								.status(400)
+								.json({ errors: [{ msg: 'Verify your email first.' }] });
+						}
+					} else {
 						return res
 							.status(400)
-							.json({ errors: [{ msg: 'Verify your email first.' }] });
+							.json({ errors: [{ msg: 'Invalid Credentials' }] });
 					}
 				} else {
 					return res
@@ -276,7 +316,7 @@ router.post(
 				}
 			}
 
-			const isMatch = await bcrypt.compare(up, user.userPass);
+			const isMatch = await bcrypt.compare(up, currentUser.userPass);
 
 			if (!isMatch) {
 				return res
@@ -286,7 +326,7 @@ router.post(
 
 			const payload = {
 				user: {
-					id: user.id
+					id: currentUser.id
 				}
 			};
 

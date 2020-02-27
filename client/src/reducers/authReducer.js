@@ -11,7 +11,7 @@ const initialState = {
 	isAuthenticated: false,
 	token: localStorage.getItem('token'),
 	loading: true,
-	user: null
+	user: {}
 };
 
 export default (state = initialState, action) => {

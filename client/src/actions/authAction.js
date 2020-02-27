@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { uuid } from 'uuidv4';
 import setAuthToken from '../utils/setAuthToken';
 import {
 	LOGIN_SUCCESS,
@@ -8,6 +9,27 @@ import {
 	REG_SUCCESS,
 	DE_REGISTER
 } from './types';
+
+const handleError = (err, dispatch) => {
+	if (err.hasOwnProperty('data')) {
+		if (err.data.hasOwnProperty('errors')) {
+			const errors = err.data.errors.map(error => ({
+				id: uuid(),
+				status: err.status,
+				msg: error.msg
+			}));
+
+			dispatch({
+				type: SET_ALERT,
+				payload: errors
+			});
+		} else {
+			console.error(err.data);
+		}
+	} else {
+		console.error(err);
+	}
+};
 
 // Create Admin and Basic Tables
 export const createBareBoneStructure = () => async () => {
@@ -27,11 +49,10 @@ export const loadUser = () => async dispatch => {
 			type: USER_LOADED,
 			payload: res.data
 		});
-	} catch (err) {
-		dispatch({
-			type: SET_ALERT,
-			payload: err.response.data.errors
-		});
+	} catch (error) {
+		error.hasOwnProperty('response')
+			? handleError(error.response, dispatch)
+			: console.error(error);
 	}
 };
 
@@ -44,13 +65,10 @@ export const registerUser = userData => async dispatch => {
 			type: REG_SUCCESS,
 			payload: res.data
 		});
-	} catch (err) {
-		console.log(err.response.data.errors);
-
-		dispatch({
-			type: SET_ALERT,
-			payload: err.response.data.errors
-		});
+	} catch (error) {
+		error.hasOwnProperty('response')
+			? handleError(error.response, dispatch)
+			: console.error(error);
 	}
 };
 
@@ -67,11 +85,10 @@ export const loginUser = userdata => async dispatch => {
 		});
 
 		dispatch(loadUser());
-	} catch (err) {
-		dispatch({
-			type: SET_ALERT,
-			payload: err.response.data.errors
-		});
+	} catch (error) {
+		error.hasOwnProperty('response')
+			? handleError(error.response, dispatch)
+			: console.error(error);
 	}
 };
 

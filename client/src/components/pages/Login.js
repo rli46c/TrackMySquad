@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Link, useParams } from 'react-router-dom';
@@ -13,12 +13,9 @@ import {
 	Paper,
 	Box,
 	Grid,
-	Typography,
-	IconButton,
-	Snackbar,
-	AppBar
+	Typography
 } from '@material-ui/core';
-import { LockOutlined, Close } from '@material-ui/icons';
+import { LockOutlined } from '@material-ui/icons';
 
 import Appbar from '../layout/Appbar';
 import { loginUser } from '../../actions/authAction';

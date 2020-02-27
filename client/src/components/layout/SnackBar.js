@@ -10,8 +10,36 @@ export const SnackBar = ({ layout: { alertMessages }, removeAlert }) => {
 	const { enqueueSnackbar } = useSnackbar();
 
 	const showSnack = alertObj => {
-		const { id, msg } = alertObj;
-		enqueueSnackbar(msg, { variant: 'success' });
+		const { id, status, msg } = alertObj;
+		let variant = 'default';
+
+		switch (true) {
+			case status >= 100 && status <= 199:
+				variant = 'info';
+				break;
+
+			case status >= 200 && status <= 299:
+				variant = 'success';
+				break;
+
+			case status >= 300 && status <= 399:
+				variant = 'default';
+				break;
+
+			case status >= 400 && status <= 499:
+				variant = 'error';
+				break;
+
+			case status >= 500 && status <= 599:
+				variant = 'warning';
+				break;
+
+			default:
+				variant = 'default';
+				break;
+		}
+
+		enqueueSnackbar(msg, { variant });
 		// setTimeout(() => removeAlert(id), 5000);
 		removeAlert(id);
 	};

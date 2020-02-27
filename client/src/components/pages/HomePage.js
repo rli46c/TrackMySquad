@@ -171,7 +171,7 @@ const HomePage = ({}) => {
 						<h2>
 							Over <b>20000+</b> businesses already trusted us
 						</h2>
-						<div class='companylogo'>
+						<div className='companylogo'>
 							<img src={Comapnylogo} alt={Comapnylogo} />
 						</div>
 					</div>
@@ -195,7 +195,7 @@ const HomePage = ({}) => {
 								</div>
 							</Grid>
 							<Grid item md={6}>
-								<div class='screeninfo'>
+								<div className='screeninfo'>
 									<h2>Track time and tasks effortlessly</h2>
 									<h3>
 										<b>
@@ -232,7 +232,7 @@ const HomePage = ({}) => {
 					<Grid item xs={12} md={12} className={classes.screentrack}>
 						<Grid container justify='center' spacing={2}>
 							<Grid item md={6}>
-								<div class='screeninfo'>
+								<div className='screeninfo'>
 									<h2>See time and screenshots on the web</h2>
 									<h3>
 										<b>
@@ -281,7 +281,7 @@ const HomePage = ({}) => {
 								</div>
 							</Grid>
 							<Grid item md={6}>
-								<div class='screeninfo'>
+								<div className='screeninfo'>
 									<h2>Get reports you need, at a glance</h2>
 									<h3>
 										<b>
@@ -328,7 +328,7 @@ const HomePage = ({}) => {
 					<Grid item xs={12} md={12}>
 						<Grid container justify='center' spacing={2}>
 							<Grid item md={4}>
-								<div class='trackbenefit'>
+								<div className='trackbenefit'>
 									<BackupIcon />
 									<h2>Track without Internet</h2>
 									<p>
@@ -342,7 +342,7 @@ const HomePage = ({}) => {
 								</div>
 							</Grid>
 							<Grid item md={4}>
-								<div class='trackbenefit'>
+								<div className='trackbenefit'>
 									<GroupIcon />
 									<h2>Use for office employees</h2>
 									<p>
@@ -356,7 +356,7 @@ const HomePage = ({}) => {
 								</div>
 							</Grid>
 							<Grid item md={4}>
-								<div class='trackbenefit'>
+								<div className='trackbenefit'>
 									<SettingsIcon />
 									<h2>Integrate using Web API</h2>
 									<p>
