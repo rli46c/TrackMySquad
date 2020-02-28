@@ -92,8 +92,6 @@ export const NavCombo = ({ auth: { user }, logout }) => {
 		setOpen(false);
 	};
 
-	console.log(user);
-
 	return (
 		<Fragment>
 			<AppBar
@@ -125,7 +123,7 @@ export const NavCombo = ({ auth: { user }, logout }) => {
 					<IconButton color='inherit'>
 						<Badge badgeContent={null} color='secondary'>
 							{/* <Notifications /> */}
-							{user.hasOwnProperty('userCompany') && user.userCompany}
+							{user && user.userCompany}
 						</Badge>
 					</IconButton>
 					<IconButton color='inherit'>
