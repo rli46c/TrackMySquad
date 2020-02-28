@@ -154,3 +154,91 @@
 .emailbox {
   padding: 35px;
 }
+.maintitleclr{
+	color: #4ab96c;
+    text-shadow: 1px 1px #000;
+}
+.topfooter{
+	background: #151515;
+    padding: 25px 0;
+    width:100%;
+    float:left;
+}
+.footermenu .MuiButtonBase-root .MuiBadge-root span{
+	font-size:16px;
+}
+.footermenu .MuiButtonBase-root .MuiIconButton-label{
+	padding: 0 10px;
+    border-right: 1px solid #fff;
+    line-height: 0.9;
+}
+.footermenu .MuiButtonBase-root{
+	padding:0px;
+}
+.footermenu{
+	float:left;
+}
+.topfooter ul li.facebook .MuiSvgIcon-root{
+	color:#90b1e2;
+}
+.topfooter ul li.twitter .MuiSvgIcon-root{
+	background: #a1e8eb;
+    color: #151515;
+    border-radius: 2px;
+    font-size: 13px;
+}
+.topfooter ul li.linkedin .MuiSvgIcon-root{
+	color:#50bbf3;
+}
+.topfooter ul li .MuiSvgIcon-root{
+	font-size:1rem;
+}
+.topfooter ul li{
+	float:left;
+	margin: 0 10px 0 0;
+}
+.topfooter ul{
+	float: left;
+    list-style: none;
+    padding: 0px;
+    margin: 0 15px;
+    position: relative;
+    top: 4px;
+}
+.fleft{
+	float:left;
+	display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+}
+.rleft{
+	float:right;
+}
+.footerright p{
+	margin:0px;
+}
+.bottomfooter{
+	padding: 15px 0;
+    clear: both;
+}
+.bottomfooter .MuiBox-root .MuiTypography-root a{
+	color:#fff;
+	opacity:0.5;
+}
+.bottomfooter .MuiBox-root{
+	margin:0px;
+}
+.signupform .MuiInputBase-root .PrivateNotchedOutline-root-310{
+	top:0px;
+}
+.signupform .MuiOutlinedInput-input{
+	padding:14px 0;
+	text-indent: 10px;
+}
+.signupform .MuiFormControl-marginNormal{
+	margin-top:6px;
+	margin-bottom:6px;
+}
+.signupform .MuiFormControlLabel-label{
+	font-size:12px;
+}

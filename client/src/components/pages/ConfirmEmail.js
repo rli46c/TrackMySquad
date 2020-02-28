@@ -6,6 +6,7 @@ import { Redirect } from 'react-router-dom';
 import { deRegister } from '../../actions/authAction';
 import { Container, makeStyles } from '@material-ui/core';
 import Appbar from '../layout/Appbar';
+import Footer from '../layout/Footer';
 export const ConfirmEmail = ({ auth: { isRegistered, user }, deRegister }) => {
   useEffect(() => {
     deRegister();
@@ -26,6 +27,7 @@ export const ConfirmEmail = ({ auth: { isRegistered, user }, deRegister }) => {
           </div>
         </div>
       </Container>
+      <Footer />
     </Fragment>
   );
 };

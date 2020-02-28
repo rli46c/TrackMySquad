@@ -104,7 +104,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
   headertop: {
-    background: '#151515'
+    background: '#404040'
   }
 }));
 
@@ -297,6 +297,17 @@ export const Appbar = ({ createBareBoneStructure }) => {
               >
                 <Badge badgeContent={null} color='secondary'>
                   <span className={classes.navSpan}>Blog</span>
+                </Badge>
+              </IconButton>
+              <IconButton
+                aria-label='show 4 new mails'
+                color='inherit'
+                className={classes.menuitem}
+              >
+                <Badge badgeContent={null} color='secondary'>
+                <Link to='/login' className={classes.navLink}>
+                  <span className={classes.navSpan}>Login</span>
+                 </Link> 
                 </Badge>
               </IconButton>
             </div>

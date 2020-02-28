@@ -14,6 +14,7 @@ import GroupIcon from '@material-ui/icons/Group';
 import BackupIcon from '@material-ui/icons/Backup';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Appbar from '../layout/Appbar';
+import Footer from '../layout/Footer';
 import bgImage from '../../stock/img/site_bg.png';
 import Userclipart from '../../stock/img/clipart-maleuser.png';
 import Smapp from '../../stock/img/sm-app.png';
@@ -372,6 +373,7 @@ const HomePage = ({}) => {
 					</Grid>
 				</Container>
 			</div>
+			<Footer />
 		</Fragment>
 	);
 };
