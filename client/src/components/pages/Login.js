@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect, Link, useParams } from 'react-router-dom';
@@ -18,6 +18,7 @@ import {
 import { LockOutlined } from '@material-ui/icons';
 
 import Appbar from '../layout/Appbar';
+import Footer from '../layout/Footer';
 import { loginUser } from '../../actions/authAction';
 
 function GetKey() {
@@ -39,9 +40,9 @@ function Copyright() {
 }
 
 const useStyles = makeStyles(theme => ({
-	root: {
-		height: '100vh'
-	},
+	//root: {
+	//	height: '100vh'
+	//},
 	image: {
 		backgroundImage:
 			'url(https://source.unsplash.com/random/?time,clock,watch,tracker)',
@@ -54,7 +55,7 @@ const useStyles = makeStyles(theme => ({
 		backgroundPosition: 'center'
 	},
 	paper: {
-		margin: theme.spacing(8, 4, 4),
+		margin: theme.spacing(4, 4, 4),
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'center'
@@ -99,9 +100,11 @@ export const Login = ({ loginUser, isAuthenticated }) => {
 	}
 
 	return (
-		<Grid container component='main' className={classes.root}>
-			<CssBaseline />
+		<Fragment>
+		<CssBaseline />
 			<Appbar />
+		<Grid container component='main' className={classes.root}>
+			
 			<Grid item xs={false} sm={4} md={7} className={classes.image} />
 			<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
 				<div className={classes.paper}>
@@ -111,7 +114,7 @@ export const Login = ({ loginUser, isAuthenticated }) => {
 					<Typography component='h1' variant='h5'>
 						Sign in
 					</Typography>
-					<form onSubmit={onSubmit} className={classes.form} noValidate>
+					<form onSubmit={onSubmit} className={`${classes.form} signupform`} noValidate>
 						<TextField
 							variant='outlined'
 							margin='normal'
@@ -174,6 +177,8 @@ export const Login = ({ loginUser, isAuthenticated }) => {
 				</div>
 			</Grid>
 		</Grid>
+		<Footer />
+		</Fragment>
 	);
 };
 
