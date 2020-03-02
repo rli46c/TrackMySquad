@@ -24,6 +24,7 @@ import Comapnylogo from '../../stock/img/companylogo.png';
 import Tracktime from '../../stock/img/tracktime.png';
 import Timescreen from '../../stock/img/timescreen.png';
 import Report from '../../stock/img/reports.png';
+import bannerimage from '../../stock/img/bannertime.jpg';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -31,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 		paddingBottom: theme.spacing(3)
 	},
 	bgbanner: {
-		backgroundImage: `url(${bgImage})`,
+		backgroundImage: `url(${bannerimage})`,
 		position: 'relative',
 		top: '0px',
 		backgroundSize: 'cover',
@@ -79,8 +80,11 @@ const useStyles = makeStyles(theme => ({
 	},
 	fullquote: {
 		paddingTop: '30px',
-		paddingBottom: '30px'
-	}
+		paddingBottom: '30px',
+	},
+	bannercontent:{
+		paddingLeft:'60px !important',
+	}	
 }));
 
 const HomePage = ({}) => {
@@ -94,8 +98,10 @@ const HomePage = ({}) => {
 					<Grid container spacing={5} alignItems='flex-end'>
 						<Grid item xs={12} md={12}>
 							<Grid container justify='center' spacing={2}>
-								<Grid item md={8}>
-									<h1>
+								<Grid item md={1}>
+								</Grid>
+								<Grid item md={7} className={classes.bannercontent}>
+									<h1 className='bennertitle'>
 										<b>Keep Watching Your Team!</b>
 									</h1>
 								</Grid>

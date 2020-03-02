@@ -228,7 +228,13 @@
 .bottomfooter .MuiBox-root{
 	margin:0px;
 }
-.signupform .MuiInputBase-root .PrivateNotchedOutline-root-310{
+.bennertitle{
+	font-size: 3em;
+    color: #fff;
+    text-shadow: 2px 2px #000;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
+.signupform .MuiInputBase-root .MuiOutlinedInput-notchedOutline{
 	top:0px;
 }
 .signupform .MuiOutlinedInput-input{
