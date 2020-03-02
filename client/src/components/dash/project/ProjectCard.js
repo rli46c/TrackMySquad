@@ -17,23 +17,21 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const ProjectCard = ({
-	projectData: { projectName, projectTypeID, companyID },
+	projectData: { _id, projectName, projectTypeID, companyID },
 	deleteProject,
 	setProjectToEdit
 }) => {
 	const onEdit = () => {
 		setProjectToEdit({
-			// _id,
-			// firstName,
-			// lastName,
-			// userType,
-			// companyType,
-			// userEmail
+			_id,
+			projectName,
+			projectTypeID,
+			companyID
 		});
 	};
 
 	const onDelete = () => {
-		// deleteProject(_id);
+		deleteProject(_id);
 	};
 
 	const classes = useStyles();
@@ -47,15 +45,11 @@ export const ProjectCard = ({
 			<TableCell>{companyID.companyName}</TableCell>
 			<TableCell>Members Here</TableCell>
 			<TableCell align='right'>
-				<input
-					type='button'
-					id='edit-member-profile'
-					style={{ display: 'none' }}
-				/>
-				<label htmlFor='edit-member-profile' onClick={onEdit}>
+				<input type='button' id='edit-project' style={{ display: 'none' }} />
+				<label htmlFor='edit-project' onClick={onEdit}>
 					<IconButton
 						color='primary'
-						aria-label='Edit Profile'
+						aria-label='Edit Project'
 						component='span'
 					>
 						<Edit />
@@ -63,12 +57,8 @@ export const ProjectCard = ({
 				</label>
 			</TableCell>
 			<TableCell align='right'>
-				<input
-					type='button'
-					id='delete-member-profile'
-					style={{ display: 'none' }}
-				/>
-				<label htmlFor='delete-member-profile' onClick={onDelete}>
+				<input type='button' id='delete-project' style={{ display: 'none' }} />
+				<label htmlFor='delete-project' onClick={onDelete}>
 					<IconButton
 						color='primary'
 						aria-label='Delete Profile'

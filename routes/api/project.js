@@ -66,9 +66,20 @@ router.post('/addProject', auth, async (req, res) => {
 			projectName
 		});
 
-		const addedProject = await project.save();
+		const prjAdded = await project.save();
 
-		res.status(200).json(addedProject);
+		Projects.populate(
+			prjAdded,
+			[
+				{ path: 'projectTypeID', select: 'projectType' },
+				{ path: 'companyID', select: 'companyName' }
+			],
+			(err, addedProject) => {
+				if (err) throw err;
+				console.log(addedProject);
+				res.status(200).json(addedProject);
+			}
+		);
 	} catch (err) {
 		console.error(err.message);
 		res.status(500).send('Server Error');
@@ -99,8 +110,8 @@ router.put('/updateProjectDetails/:id', auth, async (req, res) => {
 // @access   Private
 router.delete('/deleteProject/:id', auth, async (req, res) => {
 	try {
-		const deletedUser = await Users.findByIdAndDelete(req.params.id);
-		return res.status(200).json(deletedUser._id);
+		const deletedProject = await Projects.findByIdAndDelete(req.params.id);
+		return res.status(200).json(deletedProject._id);
 	} catch (err) {
 		console.error(err);
 		res.status(500).send('Server Error');

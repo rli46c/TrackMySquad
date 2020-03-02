@@ -1,181 +1,223 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { makeStyles, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText, Slide, 
-    FormControl, InputLabel, NativeSelect, Button, TextField } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
+import {
+	makeStyles,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogTitle,
+	DialogContentText,
+	Slide,
+	FormControl,
+	InputLabel,
+	NativeSelect,
+	Button,
+	TextField
+} from '@material-ui/core';
 
-import { setEditMemberDialog, getAllUserTypes, updateMember } from '../../../actions/teamAction';
-import { getAllCompanyTypes } from '../../../actions/companyAction';
-import UserTypesCard from './ProjectTypesCard';
-import CompanyTypesCard from '../company/CompanyTypesCard';
+import { getCompanyNames } from '../../../actions/companyAction';
+import CompanyNamesCard from '../company/CompanyNamesCard';
+import {
+	getAllProjectTypes,
+	setEditProjectDialog
+} from '../../../actions/projectAction';
+import ProjectTypesCard from './ProjectTypesCard';
 
-
-
-
-const useStyles = makeStyles(theme=>({
-    root: {
-        '& > *': {
-          margin: theme.spacing(1),
-        //   width: '100%',
-        },
-        marginRight: theme.spacing(2)
-    },
-    dialogTitle: {
-        textAlign: 'right'
-    },
-    spanTitle: {
-
-    },
-    spanGap: {
-        padding: '0px 30%'
-    },
-    times: {
-        color: '#555'
-    }
+const useStyles = makeStyles(theme => ({
+	root: {
+		'& > *': {
+			margin: theme.spacing(1)
+			//   width: '100%',
+		},
+		marginRight: theme.spacing(2)
+	},
+	dialogTitle: {
+		textAlign: 'right'
+	},
+	spanTitle: {},
+	spanGap: {
+		padding: '0px 30%'
+	},
+	times: {
+		color: '#555'
+	}
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
+	return <Slide direction='up' ref={ref} {...props} />;
 });
 
-
 export const EditProjectDetails = ({
-    company: { companyTypes }, 
-    team: { editMemberDialogOpen, memberToEdit, userTypes }, 
-    setEditMemberDialog,
-    getAllUserTypes,
-    getAllCompanyTypes,
-    updateMember }) => {
+	project: { projectToEdit, projectTypes, editProjectDialogOpen },
+	company: { companyNames },
+	getCompanyNames,
+	getAllProjectTypes,
+	setEditProjectDialog
+}) => {
+	const [fullWidth, setFullWidth] = useState(true);
+	const [maxWidth, setMaxWidth] = useState('sm');
 
-    const [fullWidth, setFullWidth] = useState(true);
-    const [maxWidth, setMaxWidth] = useState('sm');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [userEmail, setUserEmail] = useState('');
-    const [userType, setUserType] = useState('');
-    const [companyType, setCompanyType] = useState('');
+	const [projectName, setProjectName] = useState('');
+	const [projectType, setProjectType] = useState('');
+	const [companyName, setCompanyName] = useState('');
 
-    useEffect(()=>{
-        getAllUserTypes();    
-    }, [getAllUserTypes]);
+	useEffect(() => {
+		getCompanyNames();
+	}, [getCompanyNames]);
 
-    useEffect(()=>{
-        getAllCompanyTypes();    
-    }, [getAllCompanyTypes]);
+	useEffect(() => {
+		getAllProjectTypes();
+	}, [getAllProjectTypes]);
 
-    useEffect(()=>{
-        setFirstName(memberToEdit.firstName);
-        setLastName(memberToEdit.lastName);
-        setUserEmail(memberToEdit.userEmail);
-        setUserType(memberToEdit.userType);
-        setCompanyType(memberToEdit.companyType);
-        
-    }, [memberToEdit]);
+	useEffect(() => {
+		const { projectName, projectTypeID, companyID } = projectToEdit;
+		setProjectName(projectName);
+		setProjectType(projectTypeID);
+		setCompanyName(companyID);
+	}, [projectToEdit]);
 
-    const onUserTypeSelect = (e) => {
-        const selectedUserType = {
-            _id: e.target.value,
-            userType: e.target.options[e.target.selectedIndex].text
-        };
+	const onCompanyNameSelect = () => {};
+	const onProjectTypeSelect = () => {};
 
-        setUserType(selectedUserType);
-    };
+	const onReset = e => {
+		e.preventDefault();
 
-    const onCompanyTypeSelect = (e) => {
-        const selectedCompanyType = {
-            _id: e.target.value,
-            companyType: e.target.options[e.target.selectedIndex].text
-        };
+		setProjectType({ _id: '' });
+		setCompanyName({ _id: '' });
+		setProjectName('');
+	};
 
-        setCompanyType(selectedCompanyType);
-    };
+	const onSubmit = e => {
+		e.preventDefault();
 
-    const onReset = (e) => {
-        e.preventDefault();
+		// const memberData = {
+		// 	_id: projectToEdit._id,
+		// 	companyName,
+		// 	companyType,
+		// 	firstName,
+		// 	lastName,
+		// 	userEmail
+		// };
 
-        setUserType({ _id: '' })
-        setCompanyType({ _id: '' });
-        setFirstName('');
-        setLastName('');
-        setUserEmail('');
-    };
+		// updateMember(memberData);
+		// onReset(e);
+		// setEditProjectDialog(false);
+	};
 
-    const onSubmit = (e) => {
-        e.preventDefault();
+	const classes = useStyles();
+	return (
+		<Dialog
+			keepMounted
+			disableBackdropClick
+			onClose={() => setEditProjectDialog(false)}
+			open={editProjectDialogOpen}
+			TransitionComponent={Transition}
+			fullWidth={fullWidth}
+			maxWidth={maxWidth}
+			aria-labelledby='edit-project-details'
+			aria-describedby='edit-project-modal'
+		>
+			<DialogTitle className={classes.dialogTitle} id='edit-project-details'>
+				<span className={classes.spanTitle}>Edit Project Details</span>
+				<span className={classes.spanGap}>&nbsp;</span>
+				<Close
+					className={classes.times}
+					onClick={() => setEditProjectDialog(false)}
+				/>
+			</DialogTitle>
+			<DialogContent>
+				<form
+					className={classes.root}
+					noValidate
+					autoComplete='off'
+					onSubmit={onSubmit}
+					onKeyPress={e => {
+						e.key === 'Enter' && e.preventDefault();
+					}}
+					id='edit-project-modal'
+				>
+					<FormControl
+						variant='standard'
+						className={classes.formControl}
+						fullWidth
+					>
+						<InputLabel htmlFor='company-name'>Company Name</InputLabel>
+						<NativeSelect
+							value={companyName._id}
+							onChange={onCompanyNameSelect}
+							id='company-name'
+							tabIndex='1'
+						>
+							<option value='' />
+							{companyNames.map((company, id) => (
+								<CompanyNamesCard key={id} compName={company} />
+							))}
+						</NativeSelect>
+					</FormControl>
 
-        const memberData = { 
-            _id: memberToEdit._id, 
-            userType, companyType, firstName, lastName, userEmail
-        };
-        
-        updateMember(memberData);
-        onReset(e);
-        setEditMemberDialog(false);
-    }
+					<FormControl
+						variant='standard'
+						className={classes.formControl}
+						fullWidth
+					>
+						<InputLabel htmlFor='project-type'>Project Type</InputLabel>
+						<NativeSelect
+							value={projectType._id}
+							onChange={onProjectTypeSelect}
+							id='project-type'
+							tabIndex='2'
+						>
+							<option value='' />
+							{projectTypes.map((project, id) => (
+								<ProjectTypesCard key={id} prjType={project} />
+							))}
+						</NativeSelect>
+					</FormControl>
 
-    const classes = useStyles();
-
-    return (
-    <Dialog keepMounted disableBackdropClick onClose={ ()=>setEditMemberDialog(false) }
-    open={editMemberDialogOpen} TransitionComponent={Transition} fullWidth={fullWidth} 
-    maxWidth={maxWidth} aria-labelledby="add-member-profile" aria-describedby="add-member-modal">
-        <DialogTitle className={ classes.dialogTitle } id="add-member-profile">
-            <span className={ classes.spanTitle }>Edit Member Profile</span>
-            <span className={ classes.spanGap }>&nbsp;</span>
-            <Close className={ classes.times } onClick={ ()=>setEditMemberDialog(false) } />
-        </DialogTitle>
-        <DialogContent>
-            <form className={classes.root} noValidate autoComplete="off" onSubmit={onSubmit}
-                onKeyPress={ (e)=>{ (e.key === 'Enter') && e.preventDefault() } } id="add-member-modal">
-                {/* <DialogContentText>Some Text</DialogContentText> */}
-                <FormControl variant="standard" className={classes.formControl} fullWidth>
-                    <InputLabel htmlFor="member-type">Member Type</InputLabel>
-                    <NativeSelect value={ userType._id } onChange={ onUserTypeSelect } id="member-type" autoFocus tabIndex="1" >
-                        <option value="" />
-                        { userTypes.map((type, id) => <UserTypesCard key={id} usrType={type} />) }
-                    </NativeSelect>
-                </FormControl>
-                <FormControl variant="standard" className={classes.formControl} fullWidth>
-                    <InputLabel htmlFor="company-type">Company Type</InputLabel>
-                    <NativeSelect value={ companyType._id } onChange={ onCompanyTypeSelect } id="company-type" tabIndex="2" >
-                        <option value="" />
-                        { companyTypes.map((type, id) => <CompanyTypesCard key={id} compType={type} />) }
-                    </NativeSelect>
-                </FormControl>
-                <TextField value={ firstName } onChange={ (e)=>setFirstName(e.target.value) } label="First Name" variant="outlined" fullWidth tabIndex="3" />
-                <TextField value={ lastName } onChange={ (e)=>setLastName(e.target.value) } label="Last Name" variant="outlined" fullWidth tabIndex="4" />
-                <TextField value={ userEmail } onChange={ (e)=>setUserEmail(e.target.value) } label="Email" variant="outlined" fullWidth tabIndex="5" />
-            </form>
-        </DialogContent>
-        <DialogActions>
-            <Button onClick={onReset} color="primary" tabIndex="-1">
-                Reset
-            </Button>
-            <Button onClick={ onSubmit } color="secondary" variant="contained" tabIndex="0">
-                Update Profile
-            </Button>
-        </DialogActions>
-    </Dialog>
-    );
+					<TextField
+						value={projectName}
+						onChange={e => setProjectName(e.target.value)}
+						label='Project Name'
+						variant='outlined'
+						fullWidth
+						tabIndex='3'
+					/>
+				</form>
+			</DialogContent>
+			<DialogActions>
+				<Button onClick={onReset} color='primary' tabIndex='-1'>
+					Reset
+				</Button>
+				<Button
+					onClick={onSubmit}
+					color='secondary'
+					variant='contained'
+					tabIndex='0'
+				>
+					Update Details
+				</Button>
+			</DialogActions>
+		</Dialog>
+	);
 };
 
 EditProjectDetails.propTypes = {
-    team: PropTypes.object.isRequired,
-    company: PropTypes.object.isRequired,
-    setEditMemberDialog: PropTypes.func.isRequired,
-    getAllUserTypes: PropTypes.func.isRequired,
-    getAllCompanyTypes: PropTypes.func.isRequired,
-    updateMember: PropTypes.func.isRequired,
-}
+	project: PropTypes.object.isRequired,
+	getAllProjectTypes: PropTypes.func.isRequired,
+	setEditProjectDialog: PropTypes.func.isRequired
+};
 
-const mapStateToProps = (state) => ({
-    team: state.team,
-    company: state.company
+const mapStateToProps = state => ({
+	project: state.project,
+	company: state.company
 });
 
 const mapDispatchToProps = {
-    setEditMemberDialog, getAllUserTypes, getAllCompanyTypes, updateMember
+	getCompanyNames,
+	getAllProjectTypes,
+	setEditProjectDialog
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProjectDetails);

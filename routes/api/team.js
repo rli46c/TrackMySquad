@@ -48,7 +48,7 @@ router.get('/getAllUserTypes', auth, async (req, res) => {
 router.post('/addMemberProfile', auth, async (req, res) => {
 	try {
 		const user = new Users(req.body);
-			
+
 		const addedUser = await user.save();
 
 		// Could be fetched from the req.body itself to improve performace but will be less secure
@@ -63,39 +63,35 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 		}).select('companyType');
 		addedUser.companyType = cmpType;
 		var ciphertext = cryptoJS.AES.encrypt(
-					JSON.stringify({ user: addedUser.id, email: addedUser.userEmail }),
-					config.get('cryptoJSkeySecret')
-				).toString();
-				ciphertext = urlencode(ciphertext);
+			JSON.stringify({ user: addedUser.id, email: addedUser.userEmail }),
+			config.get('cryptoJSkeySecret')
+		).toString();
+		ciphertext = urlencode(ciphertext);
 		const emailText = `Hello Falana Dhimkana \n your key is:\n${ciphertext}\n`;
-				const emailHtml = `Hello Falana Dhimkana <br /> your key is:<br />${ciphertext}<br /><br /><a href="http://localhost:3000/login/${ciphertext}">Verify this Email Account</a>`;
+		const emailHtml = `Hello Falana Dhimkana <br /> your key is:<br />${ciphertext}<br /><br /><a href="http://localhost:3000/login/${ciphertext}">Verify this Email Account</a>`;
 
-				let transporter = nodemailer.createTransport({
-					host: 'smtp.gmail.com',
-					port: 587,
-					secure: false,
-					auth: {
-						user: 'trackmysquad@gmail.com',
-						pass: 'Roy@lLogics46c'
-					},
-					tls: {
-						rejectUnauthorized: false
-					}
-				});
+		let transporter = nodemailer.createTransport({
+			host: 'smtp.gmail.com',
+			port: 587,
+			secure: false,
+			auth: {
+				user: 'trackmysquad@gmail.com',
+				pass: 'Roy@lLogics46c'
+			},
+			tls: {
+				rejectUnauthorized: false
+			}
+		});
 
-<<<<<<< HEAD
-		return res.status(200).json(addedUser);
-=======
-				let sentMailResponse = await transporter.sendMail({
-					from: 'Track My Squad <trackmysquad@gmail.com>',
-					to: addedUser.userEmail,
-					subject: 'Welcome to Track My Squad',
-					text: emailText,
-					html: emailHtml
-				});
-				console.log(sentMailResponse);
+		let sentMailResponse = await transporter.sendMail({
+			from: 'Track My Squad <trackmysquad@gmail.com>',
+			to: addedUser.userEmail,
+			subject: 'Welcome to Track My Squad',
+			text: emailText,
+			html: emailHtml
+		});
+		console.log(sentMailResponse);
 		res.status(200).json(addedUser);
->>>>>>> 001d1a4ab47d319d9e1a12f4fe578b4b0e46b2a0
 	} catch (err) {
 		console.error(err.message);
 		return res.status(500).send('Server Error');

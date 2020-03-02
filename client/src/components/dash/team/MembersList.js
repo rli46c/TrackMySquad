@@ -40,8 +40,6 @@ export const MembersList = ({
 
 	const classes = useStyles();
 
-	console.log(typeof teamMembers, teamMembers);
-
 	return (
 		<Fragment>
 			<Table size='small'>
