@@ -32,9 +32,9 @@ const Footer = ({}) => {
 	return (
 		<Fragment>
 			<div className='topfooter'>
-				<Container>	
+				<Container >	
 					<Grid item xs={12} md={12}>
-						<Grid Container justify='center' spacing={2}>
+						<Grid container justify='center' spacing={2}>
 							<Grid item md={9} className='fleft'>
 								<div className='footermenu'>
 									<IconButton
@@ -112,7 +112,7 @@ const Footer = ({}) => {
 			<div className='bottomfooter'>
 				<Container >
 					<Grid item xs={12} md={12}>
-						<Grid Container justify='center' spacing={2}>
+						<Grid container justify='center' spacing={2}>
 							<Box mt={5}>
 								<Copyright />
 							</Box>
