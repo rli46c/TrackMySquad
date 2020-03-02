@@ -6,9 +6,10 @@ import { makeStyles, Dialog, DialogActions, DialogContent, DialogTitle, DialogCo
 import { Close } from '@material-ui/icons';
 
 import { getAllUserTypes, setAddMemberDialog, addMember } from '../../../actions/teamAction';
-import { getAllCompanyTypes } from '../../../actions/companyAction';
 import CompanyTypesCard from '../company/CompanyTypesCard';
 import UserTypesCard from './UserTypesCard';
+import { getProjectNames } from '../../../actions/projectAction';
+import ProjectNamesCard from '../project/ProjectNamesCard';
 
 const useStyles = makeStyles(theme=>({
     root: {
@@ -42,27 +43,27 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export const AddNewMember = ({ 
     team: { userTypes, addMemberDialogOpen }, 
-    company: { companyTypes }, 
-    getAllCompanyTypes,
+    project: { projectNames }, 
     getAllUserTypes,
+    getProjectNames,
     setAddMemberDialog, 
     addMember }) => {
 
     const [fullWidth, setFullWidth] = useState(true);
     const [maxWidth, setMaxWidth] = useState('sm');
 
-    const [companyType, setCompanyType] = useState('');
     const [userType, setUserType] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [userName, setUserName] = useState('');
     const [userPass, setUserPass] = useState('');
     const [userEmail, setUserEmail] = useState('');
+    const [projectName, setProjectName] = useState('');
 
-    useEffect(()=>{
-        getAllCompanyTypes();
-    }, [getAllCompanyTypes]);
-
+	useEffect(()=>{
+		getProjectNames();	
+	},[getProjectNames]);
+	
     useEffect(()=>{
         getAllUserTypes();
     }, [getAllUserTypes]);
@@ -73,13 +74,14 @@ export const AddNewMember = ({
             userType: e.target.options[e.target.selectedIndex].text
         });
     };
-
-    const onSelectCompanyType = (e) => {
-        setCompanyType({
-            _id: e.target.value,
-            companyType: e.target.options[e.target.selectedIndex].text
-        });
-    };
+	
+	const onSelectProjectName = e => {
+		setProjectName({
+			_id:e.target.value,
+			projectName: e.target.options[e.target.selectedIndex].text	
+		});
+	};
+	
 
     const onReset = (e) => {
         e.preventDefault();
@@ -89,7 +91,7 @@ export const AddNewMember = ({
         setUserName('');
         setUserPass('');
         setUserType('');
-        setCompanyType('');
+        setProjectName('');
     };
 
     const onSubmit = (e) => {
@@ -97,7 +99,7 @@ export const AddNewMember = ({
         
         const memberData = { 
             userEmail, firstName, lastName, userName, 
-            userPass, userType, companyType 
+            userPass, userType, projectName 
         };
         addMember(memberData);
         onReset(e);
@@ -105,7 +107,7 @@ export const AddNewMember = ({
     };    
 
     const classes = useStyles();   
-
+		console.log('projectid',projectNames);
     return (
     <Dialog keepMounted disableBackdropClick onClose={ ()=>setAddMemberDialog(false) }
     open={addMemberDialogOpen} TransitionComponent={Transition} fullWidth={fullWidth} 
@@ -119,15 +121,16 @@ export const AddNewMember = ({
             <form className={classes.root} noValidate autoComplete="off" onSubmit={onSubmit}
                 onKeyPress={ (e)=>{ (e.key === 'Enter') && e.preventDefault() } } id="add-member-modal">
                 {/* <DialogContentText>Some Text</DialogContentText> */}
-                <FormControl variant="standard" className={classes.formControl} fullWidth>
-                    <InputLabel htmlFor="company-type">Company Type</InputLabel>
-                    <NativeSelect value={ companyType._id } onChange={ onSelectCompanyType } id="company-type" >
+
+                 <FormControl variant="standard" className={classes.formControl} fullWidth>
+                    <InputLabel htmlFor="project-name">Project Name</InputLabel>
+                    <NativeSelect value={ projectNames._id } onChange={ onSelectProjectName } id="project-name" >
                         <option value="" />
-                        { companyTypes.map((type, id) => <CompanyTypesCard key={id} compType={type} />) }
+                        { projectNames.map((name, id) => <ProjectNamesCard key={id} projName={name} />) }
                     </NativeSelect>
                 </FormControl>
                 <FormControl variant="standard" className={classes.formControl} fullWidth>
-                    <InputLabel htmlFor="user-type">User Type</InputLabel>
+                    <InputLabel htmlFor="user-type">User Role</InputLabel>
                     <NativeSelect value={ userType._id } onChange={ onSelectUserType } id="user-type">
                         <option value="" />
                         { userTypes.map((type, id) => <UserTypesCard key={id} usrType={type} />) }
@@ -155,20 +158,20 @@ export const AddNewMember = ({
 
 AddNewMember.propTypes = {
     team: PropTypes.object.isRequired,
-    company: PropTypes.object.isRequired,
+    project: PropTypes.object.isRequired,
     setAddMemberDialog: PropTypes.func.isRequired,
     addMember: PropTypes.func.isRequired,
-    getAllCompanyTypes: PropTypes.func.isRequired,
     getAllUserTypes: PropTypes.func.isRequired,
+    getProjectNames: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
     team: state.team,
-    company: state.company
+    project: state.project
 });
 
 const mapDispatchToProps = {
-    setAddMemberDialog, addMember, getAllCompanyTypes, getAllUserTypes
+    setAddMemberDialog, addMember, getProjectNames, getAllUserTypes
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddNewMember);

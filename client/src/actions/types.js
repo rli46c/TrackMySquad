@@ -38,6 +38,7 @@ export const TEAM_ERRORS = 'TEAM_ERRORS';
 // Project Types
 export const GET_ALL_PROJECTS = 'GET_ALL_PROJECTS';
 export const GET_ALL_PROJECT_TYPES = 'GET_ALL_PROJECT_TYPES';
+export const GET_PROJECT_NAMES = 'GET_PROJECT_NAMES';
 export const ADD_PROJECT = 'ADD_PROJECT';
 export const DELETE_PROJECT = 'DELETE_PROJECT';
 export const UPDATE_PROJECT = 'UPDATE_PROJECT';

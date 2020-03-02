@@ -42,7 +42,6 @@ export default (state = initailState, action) => {
             };
         
         case ADD_TEAM_MEMBER:
-			console.log('GET_ALL_MEMBERS',...state.teamMembers);
             return {
                 ...state,
                 teamMembers: [payload, ...state.teamMembers]

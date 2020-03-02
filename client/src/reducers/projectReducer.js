@@ -7,11 +7,13 @@ import {
 	SET_ADD_PROJECT_DIALOG,
 	SET_EDIT_PROJECT_DIALOG,
 	SET_PROJECT_TO_EDIT,
-	PROJECT_ERRORS
+	PROJECT_ERRORS,
+	GET_PROJECT_NAMES
 } from '../actions/types';
 
 const initailState = {
 	projects: [],
+	projectNames: [],
 	projectTypes: [],
 	projectToEdit: {},
 	addProjectDialogOpen: false,
@@ -73,13 +75,17 @@ export default (state = initailState, action) => {
 					member._id === payload._id ? payload : member
 				)
 			};
-
+		case GET_PROJECT_NAMES:
+			console.log('dsg',payload);
+			return {
+				...state,
+				projectNames:payload
+			};
 		case PROJECT_ERRORS:
 			return {
 				...state,
 				projectErrors: payload
 			};
-
 		default:
 			return state;
 	}

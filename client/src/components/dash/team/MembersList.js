@@ -50,7 +50,7 @@ export const MembersList = ({
 						<TableCell>First Name</TableCell>
 						<TableCell>Last Name</TableCell>
 						<TableCell>User Type</TableCell>
-						<TableCell>Company Type</TableCell>
+						<TableCell>Project Name</TableCell>
 						<TableCell>User Email</TableCell>
 						<TableCell align='center' colSpan='2'>
 							Actions

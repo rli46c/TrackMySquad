@@ -75,6 +75,16 @@ router.post('/addProject', auth, async (req, res) => {
 	}
 });
 
+router.get('/getProjectNames', auth, async (req, res) => {
+	try{
+		const projectNames = await Projects.find({}).select('projectName');
+		res.status(200).json(projectNames);
+	}catch(err){
+		console.error(err.message);
+		res.status(500).send('Server Error');
+	}
+});
+
 // @route    PUT api/project/updateProjectDetails/id
 // @desc     Update an existing Project
 // @access   Private
