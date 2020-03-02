@@ -6,6 +6,7 @@ Organise your team, projects and tasks. Real-time updates and notifications ensu
 ## ToDo
 
 Timestamps in Models
+Use Loading in PrivateRoutes.js
 Email verification link expiry time
 
 ### Error Responses

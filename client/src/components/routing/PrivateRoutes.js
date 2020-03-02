@@ -4,32 +4,32 @@ import { connect } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 
 export const PrivateRoutes = ({
-    component: Component,
-    auth: { isAuthenticated, loading },
-    ...rest
+	component: Component,
+	auth: { isAuthenticated, loading },
+	...rest
 }) => (
-    <Route
-        {...rest}
-        render={ (props) => 
-            (!isAuthenticated && !loading) ? (
-                <Redirect to='/' />
-            ) : (
-                <Component {...props} />
-            )
-        }
-    />
+	<Route
+		{...rest}
+		render={props =>
+			// !isAuthenticated && !loading ? (
+			// 	<Redirect to='/' />
+			// ) : (
+			// 	<Component {...props} />
+			// )
+
+			!isAuthenticated ? <Redirect to='/' /> : <Component {...props} />
+		}
+	/>
 );
 
 PrivateRoutes.propTypes = {
-    auth: PropTypes.object.isRequired,
-}
+	auth: PropTypes.object.isRequired
+};
 
-const mapStateToProps = (state) => ({
-    auth: state.auth
+const mapStateToProps = state => ({
+	auth: state.auth
 });
 
-const mapDispatchToProps = {
-    
-};
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(PrivateRoutes);

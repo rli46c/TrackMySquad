@@ -4,7 +4,6 @@ export const EMAIL_ERRORS = 'EMAIL_ERRORS';
 export const SET_ALERT = 'SET_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
 
-
 // Auth Types - Used in Registration and Login
 export const USER_LOADED = 'USER_LOADED';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
@@ -15,6 +14,7 @@ export const AUTH_ERRORS = 'AUTH_ERRORS';
 
 // Company Profile Types
 export const GET_COMPANIES = 'GET_COMPANIES';
+export const GET_COMPANY_NAMES = 'GET_COMPANY_NAMES';
 export const GET_ALL_COMPANY_TYPES = 'GET_ALL_COMPANY_TYPES';
 export const ADD_COMPANY = 'ADD_COMPANY';
 export const DELETE_COMPANY = 'DELETE_COMPANY';

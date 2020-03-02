@@ -50,8 +50,6 @@ export const SnackBar = ({ layout: { alertMessages }, removeAlert }) => {
 			alertMessages.map(alert => showSnack(alert));
 	}, [showSnack]);
 
-	console.log(alertMessages);
-
 	return true;
 };
 

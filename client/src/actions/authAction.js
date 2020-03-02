@@ -31,12 +31,6 @@ const handleError = (err, dispatch) => {
 	}
 };
 
-// Create Admin and Basic Tables
-export const createBareBoneStructure = () => async () => {
-	const res = await axios.get('/api/auth/createAdmin');
-	console.log(res.data);
-};
-
 export const loadUser = () => async dispatch => {
 	if (localStorage.token) {
 		setAuthToken(localStorage.token);

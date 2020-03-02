@@ -60,10 +60,10 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 		}).select('companyType');
 		addedUser.companyType = cmpType;
 
-		res.status(200).json(addedUser);
+		return res.status(200).json(addedUser);
 	} catch (err) {
 		console.error(err.message);
-		res.status(500).send('Server Error');
+		return res.status(500).send('Server Error');
 	}
 });
 

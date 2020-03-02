@@ -2,24 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-export const ProjectTypesCard = ({ usrType }) => {
-    const { _id, userType } = usrType;
-    
-    return (
-        <option value={ _id }>{ userType }</option>
-    );
+export const ProjectTypesCard = ({ prjType }) => {
+	const { _id, projectType } = prjType;
+
+	return <option value={_id}>{projectType}</option>;
 };
 
 ProjectTypesCard.propTypes = {
-    usrType: PropTypes.object.isRequired,
-}
-
-const mapStateToProps = (state) => ({
-    
-});
-
-const mapDispatchToProps = {
-    
+	prjType: PropTypes.object.isRequired
 };
+
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectTypesCard);
