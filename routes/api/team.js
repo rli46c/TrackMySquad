@@ -100,7 +100,7 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 			secure: false,
 			auth: {
 				user: 'trackmysquad@gmail.com',
-				pass: 'Roy@lLogics46c'
+				pass: config.get('mailingCredentials')
 			},
 			tls: {
 				rejectUnauthorized: false
