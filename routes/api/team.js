@@ -47,10 +47,28 @@ router.get('/getAllUserTypes', auth, async (req, res) => {
 // @access   Private
 router.post('/addMemberProfile', auth, async (req, res) => {
 	try {
+		console.log('addedUser', req.body);
 		const user = new Users(req.body);
 
 		const addedUser = await user.save();
-
+		console.log('addedUsernew', addedUser);
+		//Projects.teamMembers.push({memberID: <ID>}, {roleInProject: <ROLE-ID>});
+		//person.save(done);
+		//~ const projectUpdate = await Projects.findByIdAndUpdate( req.body.projectName._id, { $push: { memberID: addedUser._id, roleInProject: req.body.userType._id } });
+		const member = {
+			memberID: addedUser._id,
+			roleInProject: req.body.userType._id
+		};
+		const projectUpdate = await Projects.findByIdAndUpdate(
+			req.body.projectName._id,
+			{
+				$push: {
+					teamMembers: [
+						{ memberID: addedUser._id, roleInProject: req.body.userType._id }
+					]
+				}
+			}
+		);
 		// Could be fetched from the req.body itself to improve performace but will be less secure
 		const usrTyp = await UserTypes.findOne({ _id: addedUser.userType }).select(
 			'userType'
@@ -58,10 +76,16 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 		addedUser.userType = usrTyp;
 
 		// Could be fetched from the req.body itself to improve performace but will be less secure
-		const cmpType = await CompanyTypes.findOne({
-			_id: addedUser.companyType
-		}).select('companyType');
-		addedUser.companyType = cmpType;
+		/*const cmpType = await CompanyTypes.findOne({
+      _id: addedUser.companyType
+    }).select('companyType');
+    addedUser.companyType = cmpType;*/
+
+		const projName = await Projects.findOne({
+			_id: addedUser.projectName
+		}).select('projectName');
+		addedUser.projectName = projName;
+
 		var ciphertext = cryptoJS.AES.encrypt(
 			JSON.stringify({ user: addedUser.id, email: addedUser.userEmail }),
 			config.get('cryptoJSkeySecret')

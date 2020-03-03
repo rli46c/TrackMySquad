@@ -59,7 +59,7 @@ export const getAllUserTypes = () => async dispatch => {
 
 export const addMember = memberData => async dispatch => {
 	const config = { headers: { 'Content-Type': 'application/json' } };
-
+	console.log('memberData',memberData)
 	try {
 		const res = await axios.post(
 			'/api/team/addMemberProfile',

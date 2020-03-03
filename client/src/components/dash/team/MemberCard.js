@@ -36,7 +36,6 @@ export const MemberCard = ({
             <TableCell className={ classes.tableCell }>{ firstName }</TableCell>
             <TableCell className={ classes.tableCell }>{ lastName }</TableCell>
             <TableCell>{ userType.userType }</TableCell>
-            <TableCell>{ projectName.projectName }</TableCell>
             <TableCell className={ classes.tableCell }>{ userEmail }</TableCell>
             <TableCell align="right">
                 <input type="button" id="edit-member-profile" style={{ display: 'none' }} />
