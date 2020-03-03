@@ -25,3 +25,5 @@ console.log(error.response.status);
 console.log(error.response.headers);
 }
 });
+
+git rm --cached name_of_file
