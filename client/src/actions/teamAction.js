@@ -14,8 +14,6 @@ import {
 export const getAllMembers = () => async dispatch => {
 	try {
 		const res = await axios.get('/api/team');
-		console.log(res.data);
-
 		dispatch({
 			type: GET_ALL_MEMBERS,
 			payload: res.data

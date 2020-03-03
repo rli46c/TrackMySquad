@@ -1,126 +1,90 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Close } from '@material-ui/icons';
+import { getAllUserTypes, updateMember } from '../../../actions/teamAction';
 import {
-	makeStyles,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogTitle,
-	DialogContentText,
-	Slide,
-	FormControl,
-	InputLabel,
-	NativeSelect,
-	Button,
-	TextField
-} from '@material-ui/core';
-
+	setEditProjectDialog,
+	getAllProjectTypes
+} from '../../../actions/projectAction';
 import { getCompanyNames } from '../../../actions/companyAction';
 import CompanyNamesCard from '../company/CompanyNamesCard';
-import {
-	getAllProjectTypes,
-	setEditProjectDialog,
-	updateProject
-} from '../../../actions/projectAction';
-import ProjectTypesCard from './ProjectTypesCard';
-
-const useStyles = makeStyles(theme => ({
-	root: {
-		'& > *': {
-			margin: theme.spacing(1)
-			//   width: '100%',
-		},
-		marginRight: theme.spacing(2)
-	},
-	dialogTitle: {
-		textAlign: 'right'
-	},
-	spanTitle: {},
-	spanGap: {
-		padding: '0px 30%'
-	},
-	times: {
-		color: '#555'
-	}
-}));
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-	return <Slide direction='up' ref={ref} {...props} />;
-});
+import CompanyTypesCard from '../company/CompanyTypesCard';
 
 export const EditProjectDetails = ({
-	project: { projectToEdit, projectTypes, editProjectDialogOpen },
-	company: { companyNames },
-	getCompanyNames,
-	getAllProjectTypes,
+	company: { companyToEdit, companyNames },
+	team: { userTypes },
+	project: { editProjectDialogOpen, projectToEdit },
 	setEditProjectDialog,
-	updateProject
+	getAllUserTypes,
+	getAllProjectTypes,
+	updateMember
 }) => {
-	const [fullWidth, setFullWidth] = useState(true);
-	const [maxWidth, setMaxWidth] = useState('sm');
-
-	const [projectName, setProjectName] = useState('');
-	const [projectType, setProjectType] = useState('');
+	const [firstName, setFirstName] = useState('');
+	const [lastName, setLastName] = useState('');
+	const [userEmail, setUserEmail] = useState('');
 	const [companyName, setCompanyName] = useState('');
+	const [companyType, setCompanyType] = useState('');
 
-	useEffect(() => {
-		getCompanyNames();
-	}, [getCompanyNames]);
+	// useEffect(() => {
+	// 	getCompanyNames();
+	// }, [getCompanyNames]);
 
-	useEffect(() => {
-		getAllProjectTypes();
-	}, [getAllProjectTypes]);
+	// useEffect(() => {
+	// 	getAllProjectTypes();
+	// }, [getAllProjectTypes]);
 
-	useEffect(() => {
-		const { projectName, projectTypeID, companyID } = projectToEdit;
-		setProjectName(projectName);
-		setProjectType(projectTypeID);
-		setCompanyName(companyID);
-	}, [projectToEdit]);
+	// useEffect(() => {
+	// 	setFirstName(projectToEdit.firstName);
+	// 	setLastName(projectToEdit.lastName);
+	// 	setUserEmail(projectToEdit.userEmail);
+	// 	setCompanyName(projectToEdit.companyName);
+	// 	setCompanyType(projectToEdit.companyType);
+	// }, [projectToEdit]);
 
 	const onCompanyNameSelect = e => {
-		const selectedCompany = {
+		const selectedUserType = {
 			_id: e.target.value,
 			companyName: e.target.options[e.target.selectedIndex].text
 		};
 
-		setCompanyName(selectedCompany);
+		setCompanyName(selectedUserType);
 	};
-	const onProjectTypeSelect = e => {
-		const selectedProjectType = {
+
+	const onCompanyTypeSelect = e => {
+		const selectedCompanyType = {
 			_id: e.target.value,
-			projectType: e.target.options[e.target.selectedIndex].text
+			companyType: e.target.options[e.target.selectedIndex].text
 		};
 
-		setProjectType(selectedProjectType);
+		setCompanyType(selectedCompanyType);
 	};
 
 	const onReset = e => {
 		e.preventDefault();
 
-		setProjectType({ _id: '' });
 		setCompanyName({ _id: '' });
-		setProjectName('');
+		setCompanyType({ _id: '' });
+		setFirstName('');
+		setLastName('');
+		setUserEmail('');
 	};
 
 	const onSubmit = e => {
 		e.preventDefault();
 
-		const projectData = {
+		const memberData = {
 			_id: projectToEdit._id,
-			projectName,
-			projectType,
-			companyName
+			companyName,
+			companyType,
+			firstName,
+			lastName,
+			userEmail
 		};
 
-		updateProject(projectData);
+		updateMember(memberData);
 		onReset(e);
 		setEditProjectDialog(false);
 	};
 
-	const classes = useStyles();
+	console.log(companyToEdit);
+
 	return (
 		<Dialog
 			keepMounted
@@ -162,6 +126,7 @@ export const EditProjectDetails = ({
 							value={companyName._id}
 							onChange={onCompanyNameSelect}
 							id='company-name'
+							autoFocus
 							tabIndex='1'
 						>
 							<option value='' />
@@ -170,33 +135,47 @@ export const EditProjectDetails = ({
 							))}
 						</NativeSelect>
 					</FormControl>
-
 					<FormControl
 						variant='standard'
 						className={classes.formControl}
 						fullWidth
 					>
-						<InputLabel htmlFor='project-type'>Project Type</InputLabel>
+						<InputLabel htmlFor='company-type'>Company Type</InputLabel>
 						<NativeSelect
-							value={projectType._id}
-							onChange={onProjectTypeSelect}
-							id='project-type'
+							value={companyType._id}
+							onChange={onCompanyTypeSelect}
+							id='company-type'
 							tabIndex='2'
 						>
 							<option value='' />
-							{projectTypes.map((project, id) => (
-								<ProjectTypesCard key={id} prjType={project} />
+							{companyTypes.map((type, id) => (
+								<CompanyTypesCard key={id} compType={type} />
 							))}
 						</NativeSelect>
 					</FormControl>
-
 					<TextField
-						value={projectName}
-						onChange={e => setProjectName(e.target.value)}
-						label='Project Name'
+						value={firstName}
+						onChange={e => setFirstName(e.target.value)}
+						label='First Name'
 						variant='outlined'
 						fullWidth
 						tabIndex='3'
+					/>
+					<TextField
+						value={lastName}
+						onChange={e => setLastName(e.target.value)}
+						label='Last Name'
+						variant='outlined'
+						fullWidth
+						tabIndex='4'
+					/>
+					<TextField
+						value={userEmail}
+						onChange={e => setUserEmail(e.target.value)}
+						label='Email'
+						variant='outlined'
+						fullWidth
+						tabIndex='5'
 					/>
 				</form>
 			</DialogContent>
@@ -218,22 +197,26 @@ export const EditProjectDetails = ({
 };
 
 EditProjectDetails.propTypes = {
-	project: PropTypes.object.isRequired,
-	getAllProjectTypes: PropTypes.func.isRequired,
+	team: PropTypes.object.isRequired,
+	company: PropTypes.object.isRequired,
+	project: PromiseRejectionEvent,
 	setEditProjectDialog: PropTypes.func.isRequired,
-	updateProject: PropTypes.func.isRequired
+	getCompanyNames: PropTypes.func.isRequired,
+	getAllProjectTypes: PropTypes.func.isRequired,
+	updateMember: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
 	project: state.project,
+	team: state.team,
 	company: state.company
 });
 
 const mapDispatchToProps = {
+	setEditProjectDialog,
 	getCompanyNames,
 	getAllProjectTypes,
-	setEditProjectDialog,
-	updateProject
+	updateMember
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProjectDetails);

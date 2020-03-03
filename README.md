@@ -5,9 +5,15 @@ Organise your team, projects and tasks. Real-time updates and notifications ensu
 
 ## ToDo
 
+Replace Users.companyName/CompanyType with CompanyID
 Timestamps in Models
+ownerId in Company, Projects and Members Model
 Use Loading in PrivateRoutes.js
 Email verification link expiry time
+
+## How to kill a process running on particular port in Linux?
+
+    sudo kill -9 `sudo lsof -t -i:3000`
 
 ### Error Responses
 

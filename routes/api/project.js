@@ -66,9 +66,20 @@ router.post('/addProject', auth, async (req, res) => {
 			projectName
 		});
 
-		const addedProject = await project.save();
+		const prjAdded = await project.save();
 
-		res.status(200).json(addedProject);
+		Projects.populate(
+			prjAdded,
+			[
+				{ path: 'projectTypeID', select: 'projectType' },
+				{ path: 'companyID', select: 'companyName' }
+			],
+			(err, addedProject) => {
+				if (err) throw err;
+				console.log(addedProject);
+				res.status(200).json(addedProject);
+			}
+		);
 	} catch (err) {
 		console.error(err.message);
 		res.status(500).send('Server Error');
@@ -76,10 +87,10 @@ router.post('/addProject', auth, async (req, res) => {
 });
 
 router.get('/getProjectNames', auth, async (req, res) => {
-	try{
+	try {
 		const projectNames = await Projects.find({}).select('projectName');
 		res.status(200).json(projectNames);
-	}catch(err){
+	} catch (err) {
 		console.error(err.message);
 		res.status(500).send('Server Error');
 	}
@@ -90,13 +101,20 @@ router.get('/getProjectNames', auth, async (req, res) => {
 // @access   Private
 router.put('/updateProjectDetails/:id', auth, async (req, res) => {
 	try {
-		const updatedUser = await Users.findByIdAndUpdate(req.params.id, req.body);
+		const updatedProject = await Users.findByIdAndUpdate(
+			{ _id: req.params.id },
+			{
+				companyID: req.body.companyName._id,
+				projectName: req.body.projectName,
+				projectTypeID: req.body.projectType._id
+			}
+		);
 
 		// Types of IDs are different one is ObjectID and other is string.
-		if (updatedUser._id == req.body._id) {
+		if (updatedProject._id == req.body._id) {
 			res.status(200).json(req.body);
 		} else {
-			res.status(400).send('Profile updation failed');
+			res.status(400).send('Project updation failed');
 		}
 	} catch (err) {
 		console.error(err);
@@ -109,8 +127,8 @@ router.put('/updateProjectDetails/:id', auth, async (req, res) => {
 // @access   Private
 router.delete('/deleteProject/:id', auth, async (req, res) => {
 	try {
-		const deletedUser = await Users.findByIdAndDelete(req.params.id);
-		return res.status(200).json(deletedUser._id);
+		const deletedProject = await Projects.findByIdAndDelete(req.params.id);
+		return res.status(200).json(deletedProject._id);
 	} catch (err) {
 		console.error(err);
 		res.status(500).send('Server Error');

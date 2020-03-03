@@ -28,17 +28,16 @@ export const getAllProjects = () => async dispatch => {
 };
 
 export const getProjectNames = () => async dispatch => {
-	try{
+	try {
 		const res = await axios.get('/api/project/getProjectNames');
 		dispatch({
-			type:GET_PROJECT_NAMES,
-			payload:res.data
+			type: GET_PROJECT_NAMES,
+			payload: res.data
 		});
-		
-	}catch(err){
+	} catch (err) {
 		dispatch({
-			type:PROJECT_ERRORS,
-			payload:err.response
+			type: PROJECT_ERRORS,
+			payload: err.response
 		});
 	}
 };
