@@ -57,6 +57,7 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 	//~ const projectUpdate = await Projects.findByIdAndUpdate( req.body.projectName._id, { $push: { memberID: addedUser._id, roleInProject: req.body.userType._id } });
 	const member = { memberID: addedUser._id, roleInProject: req.body.userType._id };
 	const projectUpdate = await Projects.findByIdAndUpdate( req.body.projectName._id, { $push: {teamMembers: [{ memberID: addedUser._id, roleInProject: req.body.userType._id }]}});
+	
     // Could be fetched from the req.body itself to improve performace but will be less secure
     const usrTyp = await UserTypes.findOne({ _id: addedUser.userType }).select(
       'userType'
