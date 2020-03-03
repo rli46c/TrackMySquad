@@ -21,7 +21,8 @@ import { getCompanyNames } from '../../../actions/companyAction';
 import CompanyNamesCard from '../company/CompanyNamesCard';
 import {
 	getAllProjectTypes,
-	setEditProjectDialog
+	setEditProjectDialog,
+	updateProject
 } from '../../../actions/projectAction';
 import ProjectTypesCard from './ProjectTypesCard';
 
@@ -54,7 +55,8 @@ export const EditProjectDetails = ({
 	company: { companyNames },
 	getCompanyNames,
 	getAllProjectTypes,
-	setEditProjectDialog
+	setEditProjectDialog,
+	updateProject
 }) => {
 	const [fullWidth, setFullWidth] = useState(true);
 	const [maxWidth, setMaxWidth] = useState('sm');
@@ -78,8 +80,22 @@ export const EditProjectDetails = ({
 		setCompanyName(companyID);
 	}, [projectToEdit]);
 
-	const onCompanyNameSelect = () => {};
-	const onProjectTypeSelect = () => {};
+	const onCompanyNameSelect = e => {
+		const selectedCompany = {
+			_id: e.target.value,
+			companyName: e.target.options[e.target.selectedIndex].text
+		};
+
+		setCompanyName(selectedCompany);
+	};
+	const onProjectTypeSelect = e => {
+		const selectedProjectType = {
+			_id: e.target.value,
+			projectType: e.target.options[e.target.selectedIndex].text
+		};
+
+		setProjectType(selectedProjectType);
+	};
 
 	const onReset = e => {
 		e.preventDefault();
@@ -92,18 +108,16 @@ export const EditProjectDetails = ({
 	const onSubmit = e => {
 		e.preventDefault();
 
-		// const memberData = {
-		// 	_id: projectToEdit._id,
-		// 	companyName,
-		// 	companyType,
-		// 	firstName,
-		// 	lastName,
-		// 	userEmail
-		// };
+		const projectData = {
+			_id: projectToEdit._id,
+			projectName,
+			projectType,
+			companyName
+		};
 
-		// updateMember(memberData);
-		// onReset(e);
-		// setEditProjectDialog(false);
+		updateProject(projectData);
+		onReset(e);
+		setEditProjectDialog(false);
 	};
 
 	const classes = useStyles();
@@ -206,7 +220,8 @@ export const EditProjectDetails = ({
 EditProjectDetails.propTypes = {
 	project: PropTypes.object.isRequired,
 	getAllProjectTypes: PropTypes.func.isRequired,
-	setEditProjectDialog: PropTypes.func.isRequired
+	setEditProjectDialog: PropTypes.func.isRequired,
+	updateProject: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -217,7 +232,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
 	getCompanyNames,
 	getAllProjectTypes,
-	setEditProjectDialog
+	setEditProjectDialog,
+	updateProject
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProjectDetails);

@@ -15,13 +15,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const MemberCard = ({ 
-    memberData: { _id, firstName, lastName, userType, companyType, userEmail }, 
+    memberData: { _id, firstName, lastName, userType, projectName, userEmail }, 
     deleteMember, 
     setMemberToEdit }) => {
 
     const onEdit = () => {
         setMemberToEdit({
-            _id, firstName, lastName, userType, companyType, userEmail
+            _id, firstName, lastName, userType, projectName, userEmail
         });
     };
 
@@ -36,7 +36,7 @@ export const MemberCard = ({
             <TableCell className={ classes.tableCell }>{ firstName }</TableCell>
             <TableCell className={ classes.tableCell }>{ lastName }</TableCell>
             <TableCell>{ userType.userType }</TableCell>
-            <TableCell>{ companyType.companyType }</TableCell>
+            <TableCell>{ projectName.projectName }</TableCell>
             <TableCell className={ classes.tableCell }>{ userEmail }</TableCell>
             <TableCell align="right">
                 <input type="button" id="edit-member-profile" style={{ display: 'none' }} />

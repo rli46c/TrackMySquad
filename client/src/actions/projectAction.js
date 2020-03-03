@@ -8,7 +8,8 @@ import {
 	SET_ADD_PROJECT_DIALOG,
 	SET_EDIT_PROJECT_DIALOG,
 	SET_PROJECT_TO_EDIT,
-	PROJECT_ERRORS
+	PROJECT_ERRORS,
+	GET_PROJECT_NAMES
 } from './types';
 
 export const getAllProjects = () => async dispatch => {
@@ -16,6 +17,21 @@ export const getAllProjects = () => async dispatch => {
 		const res = await axios.get('/api/project');
 		dispatch({
 			type: GET_ALL_PROJECTS,
+			payload: res.data
+		});
+	} catch (err) {
+		dispatch({
+			type: PROJECT_ERRORS,
+			payload: err.response
+		});
+	}
+};
+
+export const getProjectNames = () => async dispatch => {
+	try {
+		const res = await axios.get('/api/project/getProjectNames');
+		dispatch({
+			type: GET_PROJECT_NAMES,
 			payload: res.data
 		});
 	} catch (err) {

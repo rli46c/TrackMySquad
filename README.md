@@ -7,6 +7,7 @@ Organise your team, projects and tasks. Real-time updates and notifications ensu
 
 Replace Users.companyName/CompanyType with CompanyID
 Timestamps in Models
+ownerId in Company, Projects and Members Model
 Use Loading in PrivateRoutes.js
 Email verification link expiry time
 
