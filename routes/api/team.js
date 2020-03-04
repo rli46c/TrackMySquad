@@ -22,11 +22,17 @@ router.get('/', auth, async (req, res) => {
 			.select('-userPass');
 			console.log('teamMember',teamMember);
 			//const projectname = await Projects.findOne({teamMembers: {memberID : teamMember._id}});
-			const projectname = await Projects.find({ teamMembers :{ "$elemMatch":{_id : teamMember[2]._id } }});
-			console.log('projectname2',projectname);
-		
+			//const project = await Projects.find();
+			//const teanm = project[0].teamMembers;
+			//console.log('project',project);
+			elemntid = [];
+			 teamMember.forEach((element) => {
+				const elemnt = elemntid.push(element._id);
+			});
+			const project = await Projects.find({ teamMembers :{ "$elemMatch":{memberID : {'$in': elemntid} } }});
+			
 		//console.log('projectname',projectname);
-		res.status(200).json(teamMember);
+		res.status(200).json({teamMember,project});
 	} catch (err) {
 		console.error(err);
 		res.status(500).send('Server Error');
@@ -88,7 +94,7 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 			secure: false,
 			auth: {
 				user: 'trackmysquad@gmail.com',
-				pass: 'Roy@lLogics46c'
+				pass: config.get('mailingCredentials')
 			},
 			tls: {
 				rejectUnauthorized: false
