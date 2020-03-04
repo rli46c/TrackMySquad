@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
@@ -16,7 +15,6 @@ import {
 	Container
 } from '@material-ui/core';
 import {
-	AirlineSeatReclineExtra,
 	LiveHelp,
 	LocalAtm,
 	GetApp,
@@ -106,7 +104,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-export const Appbar = ({}) => {
+export const Appbar = () => {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -327,10 +325,6 @@ export const Appbar = ({}) => {
 			{renderMenu}
 		</div>
 	);
-};
-
-Appbar.propTypes = {
-	// prop: propType
 };
 
 const mapStateToProps = state => ({});

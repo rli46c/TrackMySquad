@@ -101,7 +101,7 @@ router.get('/getProjectNames', auth, async (req, res) => {
 // @access   Private
 router.put('/updateProjectDetails/:id', auth, async (req, res) => {
 	try {
-		const updatedProject = await Users.findByIdAndUpdate(
+		const projToUpdate = await Projects.findByIdAndUpdate(
 			{ _id: req.params.id },
 			{
 				companyID: req.body.companyName._id,
@@ -111,8 +111,19 @@ router.put('/updateProjectDetails/:id', auth, async (req, res) => {
 		);
 
 		// Types of IDs are different one is ObjectID and other is string.
-		if (updatedProject._id == req.body._id) {
-			res.status(200).json(req.body);
+		if (projToUpdate._id == req.body._id) {
+			const updProj = await Projects.findById(projToUpdate._id);
+			Projects.populate(
+				updProj,
+				[
+					{ path: 'companyID', select: 'companyName' },
+					{ path: 'projectTypeID' }
+				],
+				(err, updatedProject) => {
+					if (err) throw err;
+					res.status(200).json(updatedProject);
+				}
+			);
 		} else {
 			res.status(400).send('Project updation failed');
 		}

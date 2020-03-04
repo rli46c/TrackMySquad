@@ -8,7 +8,6 @@ import {
 	DialogActions,
 	DialogContent,
 	DialogTitle,
-	DialogContentText,
 	Slide,
 	FormControl,
 	InputLabel,
@@ -58,8 +57,8 @@ export const EditProjectDetails = ({
 	setEditProjectDialog,
 	updateProject
 }) => {
-	const [fullWidth, setFullWidth] = useState(true);
-	const [maxWidth, setMaxWidth] = useState('sm');
+	const [fullWidth] = useState(true);
+	const [maxWidth] = useState('sm');
 
 	const [projectName, setProjectName] = useState('');
 	const [projectType, setProjectType] = useState('');

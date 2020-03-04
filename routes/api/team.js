@@ -51,14 +51,7 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 		const user = new Users(req.body);
 
 		const addedUser = await user.save();
-		console.log('addedUsernew', addedUser);
-		//Projects.teamMembers.push({memberID: <ID>}, {roleInProject: <ROLE-ID>});
-		//person.save(done);
-		//~ const projectUpdate = await Projects.findByIdAndUpdate( req.body.projectName._id, { $push: { memberID: addedUser._id, roleInProject: req.body.userType._id } });
-		const member = {
-			memberID: addedUser._id,
-			roleInProject: req.body.userType._id
-		};
+
 		const projectUpdate = await Projects.findByIdAndUpdate(
 			req.body.projectName._id,
 			{
@@ -69,6 +62,8 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 				}
 			}
 		);
+		console.log(projectUpdate);
+
 		// Could be fetched from the req.body itself to improve performace but will be less secure
 		const usrTyp = await UserTypes.findOne({ _id: addedUser.userType }).select(
 			'userType'

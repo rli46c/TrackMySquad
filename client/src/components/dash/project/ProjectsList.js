@@ -58,8 +58,8 @@ export const ProjectsList = ({
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{projects.map((project, id) => (
-						<ProjectCard key={id} projectData={project} />
+					{projects.map((prj, id) => (
+						<ProjectCard key={id} projectData={prj} />
 					))}
 				</TableBody>
 			</Table>

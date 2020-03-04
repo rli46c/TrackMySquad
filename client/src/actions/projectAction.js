@@ -97,6 +97,7 @@ export const updateProject = projectData => async dispatch => {
 			projectData,
 			config
 		);
+
 		dispatch({
 			type: UPDATE_PROJECT,
 			payload: res.data

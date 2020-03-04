@@ -7,7 +7,6 @@ import {
 	DialogActions,
 	DialogContent,
 	DialogTitle,
-	DialogContentText,
 	Slide,
 	FormControl,
 	InputLabel,
@@ -54,8 +53,8 @@ export const EditCompanyDetails = ({
 	getAllCompanyTypes,
 	updateCompany
 }) => {
-	const [fullWidth, setFullWidth] = useState(true);
-	const [maxWidth, setMaxWidth] = useState('sm');
+	const [fullWidth] = useState(true);
+	const [maxWidth] = useState('sm');
 	const [name, setName] = useState('');
 	const [companyType, setCompanyType] = useState('');
 	const [adrs, setAdrs] = useState('');
@@ -135,7 +134,6 @@ export const EditCompanyDetails = ({
 					}}
 					id='add-company-modal'
 				>
-					{/* <DialogContentText>Some Text</DialogContentText> */}
 					<FormControl
 						variant='standard'
 						className={classes.formControl}

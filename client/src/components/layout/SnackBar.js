@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 
 import { removeAlert } from '../../actions/layoutAction';

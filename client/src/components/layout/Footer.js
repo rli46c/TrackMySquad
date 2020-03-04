@@ -1,19 +1,16 @@
 import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
-		makeStyles,
-		CssBaseline,
-		Toolbar,
-		IconButton,
-		Typography,
-		Badge,
-		Box,
-		Grid,
-		Container
+	IconButton,
+	Typography,
+	Badge,
+	Box,
+	Grid,
+	Container
 } from '@material-ui/core';
-import {Facebook,LinkedIn, Twitter} from '@material-ui/icons';
+import { Facebook, LinkedIn, Twitter } from '@material-ui/icons';
 
 function Copyright() {
 	return (
@@ -28,76 +25,61 @@ function Copyright() {
 	);
 }
 
-const Footer = ({}) => {
+const Footer = () => {
 	return (
 		<Fragment>
 			<div className='topfooter'>
-				<Container >	
+				<Container>
 					<Grid item xs={12} md={12}>
 						<Grid container justify='center' spacing={2}>
 							<Grid item md={9} className='fleft'>
 								<div className='footermenu'>
-									<IconButton
-											aria-label='show 4 new mails'
-											color='inherit'
-										  >
-											<Badge badgeContent={null} color='secondary'>
-											  <span>Support</span>
-											</Badge>
+									<IconButton aria-label='show 4 new mails' color='inherit'>
+										<Badge badgeContent={null} color='secondary'>
+											<span>Support</span>
+										</Badge>
 									</IconButton>
-									<IconButton
-											aria-label='show 4 new mails'
-											color='inherit'
-										  >
-											<Badge badgeContent={null} color='secondary'>
-											  <span>Blog</span>
-											</Badge>
+									<IconButton aria-label='show 4 new mails' color='inherit'>
+										<Badge badgeContent={null} color='secondary'>
+											<span>Blog</span>
+										</Badge>
 									</IconButton>
-									<IconButton
-											aria-label='show 4 new mails'
-											color='inherit'
-										  >
-											<Badge badgeContent={null} color='secondary'>
-											  <span>About us</span>
-											</Badge>
+									<IconButton aria-label='show 4 new mails' color='inherit'>
+										<Badge badgeContent={null} color='secondary'>
+											<span>About us</span>
+										</Badge>
 									</IconButton>
-									<IconButton
-											aria-label='show 4 new mails'
-											color='inherit'
-										  >
-											<Badge badgeContent={null} color='secondary'>
-											  <span>Contact</span>
-											</Badge>
+									<IconButton aria-label='show 4 new mails' color='inherit'>
+										<Badge badgeContent={null} color='secondary'>
+											<span>Contact</span>
+										</Badge>
 									</IconButton>
-									<IconButton
-											aria-label='show 4 new mails'
-											color='inherit'
-										  >
-											<Badge badgeContent={null} color='secondary'>
-											  <span>Affiliate program</span>
-											</Badge>
+									<IconButton aria-label='show 4 new mails' color='inherit'>
+										<Badge badgeContent={null} color='secondary'>
+											<span>Affiliate program</span>
+										</Badge>
 									</IconButton>
-									<IconButton
-											aria-label='show 4 new mails'
-											color='inherit'
-										  >
-											<Badge badgeContent={null} color='secondary'>
-											  <span>Terms</span>
-											</Badge>
+									<IconButton aria-label='show 4 new mails' color='inherit'>
+										<Badge badgeContent={null} color='secondary'>
+											<span>Terms</span>
+										</Badge>
 									</IconButton>
-									<IconButton
-											aria-label='show 4 new mails'
-											color='inherit'
-										  >
-											<Badge badgeContent={null} color='secondary'>
-											  <span>Privacy</span>
-											</Badge>
+									<IconButton aria-label='show 4 new mails' color='inherit'>
+										<Badge badgeContent={null} color='secondary'>
+											<span>Privacy</span>
+										</Badge>
 									</IconButton>
 								</div>
 								<ul>
-									<li className='facebook'><Facebook /></li>
-									<li className='twitter'><Twitter /></li>
-									<li className='linkedin'><LinkedIn /></li>
+									<li className='facebook'>
+										<Facebook />
+									</li>
+									<li className='twitter'>
+										<Twitter />
+									</li>
+									<li className='linkedin'>
+										<LinkedIn />
+									</li>
 								</ul>
 							</Grid>
 							<Grid item md={3} className='rleft'>
@@ -110,24 +92,22 @@ const Footer = ({}) => {
 				</Container>
 			</div>
 			<div className='bottomfooter'>
-				<Container >
+				<Container>
 					<Grid item xs={12} md={12}>
 						<Grid container justify='center' spacing={2}>
 							<Box mt={5}>
 								<Copyright />
 							</Box>
-						</Grid>	
-					</Grid>		
+						</Grid>
+					</Grid>
 				</Container>
 			</div>
 		</Fragment>
 	);
 };
-  
-Footer.propTypes = {
-		
-}
+
+Footer.propTypes = {};
 
 const mapStateToProps = state => ({});
 const mapDispatchToProps = {};
-export default connect (mapStateToProps, mapDispatchToProps)(Footer); 
+export default connect(mapStateToProps, mapDispatchToProps)(Footer);

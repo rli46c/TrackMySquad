@@ -71,15 +71,15 @@ export default (state = initailState, action) => {
 		case UPDATE_PROJECT:
 			return {
 				...state,
-				projects: state.projects.map(member =>
-					member._id === payload._id ? payload : member
+				projects: state.projects.map(project =>
+					project._id === payload._id ? payload : project
 				)
 			};
 		case GET_PROJECT_NAMES:
-			console.log('dsg',payload);
+			console.log('dsg', payload);
 			return {
 				...state,
-				projectNames:payload
+				projectNames: payload
 			};
 		case PROJECT_ERRORS:
 			return {

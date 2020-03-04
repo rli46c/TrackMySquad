@@ -4,13 +4,13 @@ import { CssBaseline, makeStyles } from '@material-ui/core';
 import { SnackbarProvider } from 'notistack';
 import { Provider } from 'react-redux';
 import store from './store';
-import  "../src/stock/css/app.css";
+import '../src/stock/css/app.css';
 
 import setAuthToken from './utils/setAuthToken';
 import Routes from './components/routing/Routes';
 import HomePage from './components//pages/HomePage';
 import { loadUser } from './actions/authAction';
-import color from '@material-ui/core/colors/amber';
+// import color from '@material-ui/core/colors/amber';
 
 const useStyle = makeStyles(theme => ({
 	bgcolor: {

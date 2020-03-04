@@ -7,7 +7,6 @@ import {
 	DialogActions,
 	DialogContent,
 	DialogTitle,
-	DialogContentText,
 	Slide,
 	FormControl,
 	InputLabel,
@@ -63,8 +62,8 @@ export const AddNewProject = ({
 	setAddProjectDialog,
 	addProject
 }) => {
-	const [fullWidth, setFullWidth] = useState(true);
-	const [maxWidth, setMaxWidth] = useState('sm');
+	const [fullWidth] = useState(true);
+	const [maxWidth] = useState('sm');
 
 	const [companyName, setCompanyName] = useState('');
 	const [projectType, setProjectType] = useState('');
@@ -146,7 +145,6 @@ export const AddNewProject = ({
 					}}
 					id='add-project-modal'
 				>
-					{/* <DialogContentText>Some Text</DialogContentText> */}
 					<FormControl
 						variant='standard'
 						className={classes.formControl}

@@ -11,9 +11,7 @@ import {
 	Checkbox,
 	Grid,
 	Paper,
-	Box,
-	Typography,
-	Container
+	Typography
 } from '@material-ui/core';
 import { LockOutlined } from '@material-ui/icons';
 import { Link, Redirect } from 'react-router-dom';
@@ -24,21 +22,7 @@ import { registerUser } from '../../actions/authAction';
 import { showAlert } from '../../actions/layoutAction';
 import Timetracker from '../../stock/img/timetracker.png';
 
-function Copyright() {
-	return (
-		<Typography variant='body2' color='textSecondary' align='center'>
-			{'Copyright © '}
-			<Link color='inherit' to='https://material-ui.com/'>
-				Your Website
-			</Link>{' '}
-			{new Date().getFullYear()}
-			{'.'}
-		</Typography>
-	);
-}
-
 const useStyles = makeStyles(theme => ({
-
 	avatar: {
 		margin: theme.spacing(1),
 		backgroundColor: theme.palette.secondary.main
@@ -47,7 +31,7 @@ const useStyles = makeStyles(theme => ({
 		margin: theme.spacing(3, 0, 2)
 	},
 	image: {
-		backgroundImage:`url(${Timetracker})`,
+		backgroundImage: `url(${Timetracker})`,
 		backgroundRepeat: 'no-repeat',
 		backgroundColor:
 			theme.palette.type === 'dark'
@@ -62,7 +46,7 @@ const useStyles = makeStyles(theme => ({
 		flexDirection: 'column',
 		alignItems: 'center'
 	},
-	
+
 	form: {
 		width: '100%', // Fix IE 11 issue.
 		marginTop: theme.spacing(1)
@@ -113,21 +97,24 @@ export const Register = ({ isRegistered, registerUser, showAlert }) => {
 
 	return (
 		<Fragment>
-		<CssBaseline />
+			<CssBaseline />
 			<Appbar />
-		<Grid container component='main' className={classes.root}>
-			
-			<Grid item xs={false} sm={4} md={7} className={classes.image} />
-			<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-				<div className={classes.paper}>
-					<Avatar className={classes.avatar}>
-						<LockOutlined />
-					</Avatar>
-					<Typography component='h1' variant='h5'>
-						Sign Up
-					</Typography>
-					<form className={`${classes.form} signupform`} noValidate onSubmit={onSubmit}>
-						<TextField
+			<Grid container component='main' className={classes.root}>
+				<Grid item xs={false} sm={4} md={7} className={classes.image} />
+				<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+					<div className={classes.paper}>
+						<Avatar className={classes.avatar}>
+							<LockOutlined />
+						</Avatar>
+						<Typography component='h1' variant='h5'>
+							Sign Up
+						</Typography>
+						<form
+							className={`${classes.form} signupform`}
+							noValidate
+							onSubmit={onSubmit}
+						>
+							<TextField
 								value={firstName}
 								onChange={e => setFirstName(e.target.value)}
 								variant='outlined'
@@ -139,7 +126,7 @@ export const Register = ({ isRegistered, registerUser, showAlert }) => {
 								autoComplete='fname'
 							/>
 
-						<TextField
+							<TextField
 								value={lastName}
 								onChange={e => setLastName(e.target.value)}
 								variant='outlined'
@@ -202,22 +189,22 @@ export const Register = ({ isRegistered, registerUser, showAlert }) => {
 								variant='contained'
 								color='primary'
 								className={classes.submit}
-								>
-									Sign Up
+							>
+								Sign Up
 							</Button>
 
-						<Grid container justify='flex-end'>
-						<Grid item>
-							<Link to='/login' variant='body2'>
-								Already have an account? Sign in
-							</Link>
-						</Grid>
-					</Grid>
-					</form>
-				</div>
+							<Grid container justify='flex-end'>
+								<Grid item>
+									<Link to='/login' variant='body2'>
+										Already have an account? Sign in
+									</Link>
+								</Grid>
+							</Grid>
+						</form>
+					</div>
+				</Grid>
 			</Grid>
-		</Grid>
-		<Footer />
+			<Footer />
 		</Fragment>
 	);
 };

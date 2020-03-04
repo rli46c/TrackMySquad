@@ -79,7 +79,7 @@ const useStyles = makeStyles(theme => ({
 export const Login = ({ loginUser, isAuthenticated }) => {
 	const [un, setUn] = useState('');
 	const [up, setUp] = useState('');
-	const [keyVal, setKeyVal] = useState(GetKey());
+	const [keyVal] = useState(GetKey());
 
 	const onSubmit = e => {
 		e.preventDefault();
@@ -101,83 +101,86 @@ export const Login = ({ loginUser, isAuthenticated }) => {
 
 	return (
 		<Fragment>
-		<CssBaseline />
+			<CssBaseline />
 			<Appbar />
-		<Grid container component='main' className={classes.root}>
-			
-			<Grid item xs={false} sm={4} md={7} className={classes.image} />
-			<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-				<div className={classes.paper}>
-					<Avatar className={classes.avatar}>
-						<LockOutlined />
-					</Avatar>
-					<Typography component='h1' variant='h5'>
-						Sign in
-					</Typography>
-					<form onSubmit={onSubmit} className={`${classes.form} signupform`} noValidate>
-						<TextField
-							variant='outlined'
-							margin='normal'
-							required
-							fullWidth
-							id='un'
-							label='Username'
-							name='un'
-							autoComplete='Username'
-							autoFocus
-							value={un}
-							onChange={e => setUn(e.target.value)}
-						/>
-
-						<TextField
-							variant='outlined'
-							margin='normal'
-							required
-							fullWidth
-							name='up'
-							label='Password'
-							type='password'
-							id='up'
-							autoComplete='current-password'
-							value={up}
-							onChange={e => setUp(e.target.value)}
-						/>
-
-						<FormControlLabel
-							control={<Checkbox value='remember' color='primary' />}
-							label='Remember me'
-						/>
-
-						<Button
-							type='submit'
-							fullWidth
-							variant='contained'
-							color='primary'
-							className={classes.submit}
+			<Grid container component='main' className={classes.root}>
+				<Grid item xs={false} sm={4} md={7} className={classes.image} />
+				<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+					<div className={classes.paper}>
+						<Avatar className={classes.avatar}>
+							<LockOutlined />
+						</Avatar>
+						<Typography component='h1' variant='h5'>
+							Sign in
+						</Typography>
+						<form
+							onSubmit={onSubmit}
+							className={`${classes.form} signupform`}
+							noValidate
 						>
-							Sign In
-						</Button>
+							<TextField
+								variant='outlined'
+								margin='normal'
+								required
+								fullWidth
+								id='un'
+								label='Username'
+								name='un'
+								autoComplete='Username'
+								autoFocus
+								value={un}
+								onChange={e => setUn(e.target.value)}
+							/>
 
-						<Grid container>
-							<Grid item xs>
-								<Link to='!#' variant='body2'>
-									Forgot password?
-								</Link>
+							<TextField
+								variant='outlined'
+								margin='normal'
+								required
+								fullWidth
+								name='up'
+								label='Password'
+								type='password'
+								id='up'
+								autoComplete='current-password'
+								value={up}
+								onChange={e => setUp(e.target.value)}
+							/>
+
+							<FormControlLabel
+								control={<Checkbox value='remember' color='primary' />}
+								label='Remember me'
+							/>
+
+							<Button
+								type='submit'
+								fullWidth
+								variant='contained'
+								color='primary'
+								className={classes.submit}
+							>
+								Sign In
+							</Button>
+
+							<Grid container>
+								<Grid item xs>
+									<Link to='!#' variant='body2'>
+										Forgot password?
+									</Link>
+								</Grid>
+								<Grid item>
+									<Link to='/register' variant='body2'>
+										{"Don't have an account? Sign Up"}
+									</Link>
+								</Grid>
 							</Grid>
-							<Grid item>
-								<Link to='/register' variant='body2'>
-									{"Don't have an account? Sign Up"}
-								</Link>
-							</Grid>
-						</Grid>
-						<Box mt={5}>
-							<Copyright />
-						</Box>
-					</form>
-				</div>
+							<Box mt={5}>
+								<Copyright />
+							</Box>
+						</form>
+					</div>
+				</Grid>
 			</Grid>
-		</Grid>
-		<Footer />
+			<Footer />
 		</Fragment>
 	);
 };

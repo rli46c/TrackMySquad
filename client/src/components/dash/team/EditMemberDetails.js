@@ -7,7 +7,6 @@ import {
 	DialogActions,
 	DialogContent,
 	DialogTitle,
-	DialogContentText,
 	Slide,
 	FormControl,
 	InputLabel,
@@ -58,8 +57,8 @@ export const EditMemberDetails = ({
 	getAllCompanyTypes,
 	updateMember
 }) => {
-	const [fullWidth, setFullWidth] = useState(true);
-	const [maxWidth, setMaxWidth] = useState('sm');
+	const [fullWidth] = useState(true);
+	const [maxWidth] = useState('sm');
 	const [firstName, setFirstName] = useState('');
 	const [lastName, setLastName] = useState('');
 	const [userEmail, setUserEmail] = useState('');
@@ -167,7 +166,6 @@ export const EditMemberDetails = ({
 					}}
 					id='add-member-modal'
 				>
-					{/* <DialogContentText>Some Text</DialogContentText> */}
 					<FormControl
 						variant='standard'
 						className={classes.formControl}

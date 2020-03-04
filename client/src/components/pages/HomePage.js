@@ -1,21 +1,13 @@
 import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import {
-	makeStyles,
-	CssBaseline,
-	Grid,
-	Paper,
-	Container
-} from '@material-ui/core';
-import { ArchiveRounded } from '@material-ui/icons';
+import { makeStyles, CssBaseline, Grid, Container } from '@material-ui/core';
 import GroupIcon from '@material-ui/icons/Group';
 import BackupIcon from '@material-ui/icons/Backup';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Appbar from '../layout/Appbar';
 import Footer from '../layout/Footer';
-import bgImage from '../../stock/img/site_bg.png';
 import Userclipart from '../../stock/img/clipart-maleuser.png';
 import Smapp from '../../stock/img/sm-app.png';
 import Smshot from '../../stock/img/sm-shot.png';
@@ -80,14 +72,14 @@ const useStyles = makeStyles(theme => ({
 	},
 	fullquote: {
 		paddingTop: '30px',
-		paddingBottom: '30px',
+		paddingBottom: '30px'
 	},
-	bannercontent:{
-		paddingLeft:'60px !important',
-	}	
+	bannercontent: {
+		paddingLeft: '60px !important'
+	}
 }));
 
-const HomePage = ({}) => {
+const HomePage = () => {
 	const classes = useStyles();
 	return (
 		<Fragment>
@@ -98,8 +90,7 @@ const HomePage = ({}) => {
 					<Grid container spacing={5} alignItems='flex-end'>
 						<Grid item xs={12} md={12}>
 							<Grid container justify='center' spacing={2}>
-								<Grid item md={1}>
-								</Grid>
+								<Grid item md={1}></Grid>
 								<Grid item md={7} className={classes.bannercontent}>
 									<h1 className='bennertitle'>
 										<b>Keep Watching Your Team!</b>
