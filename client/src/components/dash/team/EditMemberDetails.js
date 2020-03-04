@@ -192,7 +192,7 @@ export const EditMemberDetails = ({
 						className={classes.formControl}
 						fullWidth
 					>
-						<InputLabel htmlFor='company-type'>Company Type</InputLabel>
+						<InputLabel htmlFor='company-type'>Project Name</InputLabel>
 						<NativeSelect
 							value={companyType._id}
 							onChange={onCompanyTypeSelect}

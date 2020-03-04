@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const auth = require('../../middleware/auth');
 const Users = require('../../models/Users');
 const UserTypes = require('../../models/normalizations/UserTypes');
@@ -66,7 +67,7 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 	//person.save(done);
 	//~ const projectUpdate = await Projects.findByIdAndUpdate( req.body.projectName._id, { $push: { memberID: addedUser._id, roleInProject: req.body.userType._id } });
 	const member = { memberID: addedUser._id, roleInProject: req.body.userType._id };
-	const projectUpdate = await Projects.findByIdAndUpdate( req.body.projectName._id, { $push: {teamMembers: [{ memberID: addedUser._id, roleInProject: req.body.userType._id }]}});
+	const projectUpdate = await Projects.findByIdAndUpdate( req.body.projectName._id, { $push: {teamMembers: [{ memberID: mongoose.Types.ObjectId(addedUser._id), roleInProject: mongoose.Types.ObjectId(req.body.userType._id) }]}});
 	console.log('projectUpdate',projectUpdate.projectName);
     // Could be fetched from the req.body itself to improve performace but will be less secure
     const usrTyp = await UserTypes.findOne({ _id: addedUser.userType }).select(
