@@ -30,14 +30,20 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const MembersList = ({
-	team: { teamMembers, projectNamelist, addMemberDialogOpen, memberToEdit, teamErrors },
+	team: {
+		teamMembers,
+		projectNamelist,
+		addMemberDialogOpen,
+		memberToEdit,
+		teamErrors
+	},
 	getAllMembers,
 	setAddMemberDialog
 }) => {
 	useEffect(() => {
 		getAllMembers();
 	}, [getAllMembers]);
-	
+
 	const classes = useStyles();
 
 	return (
@@ -58,7 +64,11 @@ export const MembersList = ({
 				<TableBody>
 					{teamMembers.length >= 0 &&
 						teamMembers.map((member, id) => (
-							<MemberCard key={id} memberData={member} projectNames={{projNams: projectNamelist}} />
+							<MemberCard
+								key={id}
+								memberData={member}
+								projectNames={{ projNams: projectNamelist }}
+							/>
 						))}
 				</TableBody>
 			</Table>
@@ -91,7 +101,7 @@ MembersList.propTypes = {
 };
 
 const mapStateToProps = state => ({
-	team: state.team,
+	team: state.team
 });
 
 const mapDispatchToProps = {

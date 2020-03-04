@@ -59,7 +59,7 @@ export const getAllUserTypes = () => async dispatch => {
 
 export const addMember = memberData => async dispatch => {
 	const config = { headers: { 'Content-Type': 'application/json' } };
-	console.log('memberData',memberData)
+
 	try {
 		const res = await axios.post(
 			'/api/team/addMemberProfile',
@@ -79,8 +79,10 @@ export const addMember = memberData => async dispatch => {
 	}
 };
 
-export const deleteMember = id => async dispatch => {
-	const res = await axios.delete(`/api/team/deleteMember/${id}`);
+export const deleteMember = idsObj => async dispatch => {
+	const res = await axios.delete(
+		`/api/team/deleteMember/${idsObj.userID}/${idsObj.teamMemberID}`
+	);
 
 	dispatch({
 		type: DELETE_TEAM_MEMBER,

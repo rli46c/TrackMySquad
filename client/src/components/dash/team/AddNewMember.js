@@ -123,7 +123,6 @@ export const AddNewMember = ({
 	};
 
 	const classes = useStyles();
-	console.log('projectid', projectNames);
 	return (
 		<Dialog
 			keepMounted

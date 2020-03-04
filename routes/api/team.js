@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const auth = require('../../middleware/auth');
 const Users = require('../../models/Users');
+const Projects = require('../../models/Projects');
+
 const UserTypes = require('../../models/normalizations/UserTypes');
 const CompanyTypes = require('../../models/normalizations/CompanyTypes');
 const urlencode = require('urlencode');
@@ -21,7 +23,6 @@ router.get('/', auth, async (req, res) => {
 		const teamMember = await Users.find({ userType: { $ne: adminType._id } })
 			.populate('userType', 'userType')
 			.select('-userPass');
-		console.log('teamMember', teamMember);
 		//const projectname = await Projects.findOne({teamMembers: {memberID : teamMember._id}});
 		//const project = await Projects.find();
 		//const teanm = project[0].teamMembers;
@@ -60,11 +61,9 @@ router.get('/getAllUserTypes', auth, async (req, res) => {
 // @access   Private
 router.post('/addMemberProfile', auth, async (req, res) => {
 	try {
-		console.log('addedUser', req.body);
 		const user = new Users(req.body);
 
 		const addedUser = await user.save();
-		console.log('addedUsernew', addedUser);
 		//Projects.teamMembers.push({memberID: <ID>}, {roleInProject: <ROLE-ID>});
 		//person.save(done);
 		//~ const projectUpdate = await Projects.findByIdAndUpdate( req.body.projectName._id, { $push: { memberID: addedUser._id, roleInProject: req.body.userType._id } });
@@ -85,7 +84,6 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 				}
 			}
 		);
-		console.log('projectUpdate', projectUpdate.projectName);
 		// Could be fetched from the req.body itself to improve performace but will be less secure
 		const usrTyp = await UserTypes.findOne({ _id: addedUser.userType }).select(
 			'userType'
@@ -150,9 +148,14 @@ router.put('/updateMemberProfile/:id', auth, async (req, res) => {
 	}
 });
 
-router.delete('/deleteMember/:id', auth, async (req, res) => {
+router.delete('/deleteMember/:userID/:teamMemberID', auth, async (req, res) => {
 	try {
-		const deletedUser = await Users.findByIdAndDelete(req.params.id);
+		await Projects.findOneAndUpdate(req.params.userID, {
+			$pull: { teamMembers: { _id: req.params.teamMemberID } }
+		});
+		const deletedUser = await Users.findByIdAndDelete(req.params.userID);
+
+		// const deletedMember = await Projects.findOneAndUpdate({ teamMembers: { memberID: { $eq: req.params.id }}});
 		return res.status(200).json(deletedUser._id);
 	} catch (err) {
 		console.error(err);
