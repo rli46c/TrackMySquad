@@ -15,13 +15,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const MemberCard = ({ 
-    memberData: { _id, firstName, lastName, userType, projectName, userEmail }, 
+    memberData: { _id, firstName, lastName, userType, userEmail }, 
+    projectNames: {projNams},
     deleteMember, 
     setMemberToEdit }) => {
 
     const onEdit = () => {
         setMemberToEdit({
-            _id, firstName, lastName, userType, projectName, userEmail
+            _id, firstName, lastName, userType, userEmail
         });
     };
 
@@ -30,12 +31,15 @@ export const MemberCard = ({
     };
 
     const classes = useStyles();
+    
+    console.log(projNams);
 
     return (
         <TableRow>
             <TableCell className={ classes.tableCell }>{ firstName }</TableCell>
             <TableCell className={ classes.tableCell }>{ lastName }</TableCell>
             <TableCell>{ userType.userType }</TableCell>
+            <TableCell>{ projNams.map(namelist=> namelist.teamMembers.map( member => _id === member.memberID ? namelist.projectName : '' )) }</TableCell>
             <TableCell className={ classes.tableCell }>{ userEmail }</TableCell>
             <TableCell align="right">
                 <input type="button" id="edit-member-profile" style={{ display: 'none' }} />
@@ -59,6 +63,7 @@ export const MemberCard = ({
 
 MemberCard.propTypes = {
     memberData: PropTypes.object.isRequired,
+    projectNames: PropTypes.object.isRequired,
     deleteMember: PropTypes.func.isRequired,
     setMemberToEdit: PropTypes.func.isRequired,
 }

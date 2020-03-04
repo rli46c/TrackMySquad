@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const auth = require('../../middleware/auth');
 const Users = require('../../models/Users');
 const UserTypes = require('../../models/normalizations/UserTypes');
@@ -17,12 +18,24 @@ router.get('/', auth, async (req, res) => {
 		const adminType = await UserTypes.findOne({ userType: 'Admin' });
 
 		// Select userType field only from userType Reference
-		const teamMembers = await Users.find({ userType: { $ne: adminType._id } })
+		const teamMember = await Users.find({ userType: { $ne: adminType._id } })
 			.populate('userType', 'userType')
-			.populate('companyType', 'companyType')
 			.select('-userPass');
+		console.log('teamMember', teamMember);
+		//const projectname = await Projects.findOne({teamMembers: {memberID : teamMember._id}});
+		//const project = await Projects.find();
+		//const teanm = project[0].teamMembers;
+		//console.log('project',project);
+		elemntid = [];
+		teamMember.forEach(element => {
+			const elemnt = elemntid.push(element._id);
+		});
+		const project = await Projects.find({
+			teamMembers: { $elemMatch: { memberID: { $in: elemntid } } }
+		});
 
-		res.status(200).json(teamMembers);
+		//console.log('projectname',projectname);
+		res.status(200).json({ teamMember, project });
 	} catch (err) {
 		console.error(err);
 		res.status(500).send('Server Error');
@@ -51,30 +64,34 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 		const user = new Users(req.body);
 
 		const addedUser = await user.save();
-
+		console.log('addedUsernew', addedUser);
+		//Projects.teamMembers.push({memberID: <ID>}, {roleInProject: <ROLE-ID>});
+		//person.save(done);
+		//~ const projectUpdate = await Projects.findByIdAndUpdate( req.body.projectName._id, { $push: { memberID: addedUser._id, roleInProject: req.body.userType._id } });
+		const member = {
+			memberID: addedUser._id,
+			roleInProject: req.body.userType._id
+		};
 		const projectUpdate = await Projects.findByIdAndUpdate(
 			req.body.projectName._id,
 			{
 				$push: {
 					teamMembers: [
-						{ memberID: addedUser._id, roleInProject: req.body.userType._id }
+						{
+							memberID: mongoose.Types.ObjectId(addedUser._id),
+							roleInProject: mongoose.Types.ObjectId(req.body.userType._id)
+						}
 					]
 				}
 			}
 		);
-		console.log(projectUpdate);
-
+		console.log('projectUpdate', projectUpdate.projectName);
 		// Could be fetched from the req.body itself to improve performace but will be less secure
 		const usrTyp = await UserTypes.findOne({ _id: addedUser.userType }).select(
 			'userType'
 		);
+		addedUser.projectName = projectUpdate.projectName;
 		addedUser.userType = usrTyp;
-
-		// Could be fetched from the req.body itself to improve performace but will be less secure
-		/*const cmpType = await CompanyTypes.findOne({
-      _id: addedUser.companyType
-    }).select('companyType');
-    addedUser.companyType = cmpType;*/
 
 		const projName = await Projects.findOne({
 			_id: addedUser.projectName

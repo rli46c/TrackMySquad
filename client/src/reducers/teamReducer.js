@@ -12,6 +12,7 @@ import {
 
 const initailState = {
     teamMembers: [],
+    projectNamelist: [],
     userTypes: [],
     memberToEdit: {},
     addMemberDialogOpen: false,
@@ -23,10 +24,11 @@ export default (state = initailState, action) => {
     const { type, payload } = action;
 
     switch (type) {
-        case GET_ALL_MEMBERS:
+        case GET_ALL_MEMBERS:	
             return {
                 ...state,
-                teamMembers: payload
+                teamMembers: payload.teamMember,
+                projectNamelist: payload.project,
             };
 
         case GET_ALL_USER_TYPES:
