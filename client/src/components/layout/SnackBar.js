@@ -47,7 +47,7 @@ export const SnackBar = ({ layout: { alertMessages }, removeAlert }) => {
 		alertMessages !== null &&
 			alertMessages.length > 0 &&
 			alertMessages.map(alert => showSnack(alert));
-	}, [showSnack]);
+	}, [alertMessages, showSnack]);
 
 	return true;
 };

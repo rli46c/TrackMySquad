@@ -76,7 +76,6 @@ export default (state = initailState, action) => {
 				)
 			};
 		case GET_PROJECT_NAMES:
-			console.log('dsg', payload);
 			return {
 				...state,
 				projectNames: payload

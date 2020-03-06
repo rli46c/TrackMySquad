@@ -3,11 +3,11 @@ import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { makeStyles, CssBaseline, Grid, Container } from '@material-ui/core';
-import GroupIcon from '@material-ui/icons/Group';
-import BackupIcon from '@material-ui/icons/Backup';
-import SettingsIcon from '@material-ui/icons/Settings';
+import { Group, Backup, Settings } from '@material-ui/icons';
+
 import Appbar from '../layout/Appbar';
 import Footer from '../layout/Footer';
+
 import Userclipart from '../../stock/img/clipart-maleuser.png';
 import Smapp from '../../stock/img/sm-app.png';
 import Smshot from '../../stock/img/sm-shot.png';
@@ -327,7 +327,7 @@ const HomePage = () => {
 						<Grid container justify='center' spacing={2}>
 							<Grid item md={4}>
 								<div className='trackbenefit'>
-									<BackupIcon />
+									<Backup />
 									<h2>Track without Internet</h2>
 									<p>
 										The app will continue time tracking and screenshot capture
@@ -341,7 +341,7 @@ const HomePage = () => {
 							</Grid>
 							<Grid item md={4}>
 								<div className='trackbenefit'>
-									<GroupIcon />
+									<Group />
 									<h2>Use for office employees</h2>
 									<p>
 										ScreenshotMonitor is a great monitoring software for both
@@ -355,7 +355,7 @@ const HomePage = () => {
 							</Grid>
 							<Grid item md={4}>
 								<div className='trackbenefit'>
-									<SettingsIcon />
+									<Settings />
 									<h2>Integrate using Web API</h2>
 									<p>
 										It is simple to retrieve tracked time and task notes by

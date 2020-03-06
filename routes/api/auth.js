@@ -10,6 +10,7 @@ const urlencode = require('urlencode');
 const { check, validationResult } = require('express-validator');
 
 const Users = require('../../models/Users');
+const StatusTypes = require('../../models/normalizations/StatusTypes');
 const UserTypes = require('../../models/normalizations/UserTypes');
 const Companies = require('../../models/Companies');
 const CompanyTypes = require('../../models/normalizations/CompanyTypes');
@@ -32,6 +33,14 @@ router.get('/createAdmin', async (req, res) => {
 				const hasAdmin = await Users.find({});
 
 				if (hasAdmin.length === 0) {
+					const savedStatusTypes = await StatusTypes.insertMany([
+						{ statusType: 'Active' },
+						{ statusType: 'Inactive' },
+						{ statusType: 'Blocked' },
+						{ statusType: 'Removed' },
+						{ statusType: 'Restricted' }
+					]);
+
 					const savedUserTypes = await UserTypes.insertMany([
 						{ userType: 'Admin' },
 						{ userType: 'Developer' },
@@ -76,7 +85,8 @@ router.get('/createAdmin', async (req, res) => {
 						savedUserTypes,
 						savedCompanyTypes,
 						createdUser,
-						savedProjectTypes
+						savedProjectTypes,
+						savedStatusTypes
 					});
 				} else {
 					return res.status(400).json({
