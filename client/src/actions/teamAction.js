@@ -8,7 +8,8 @@ import {
 	TEAM_ERRORS,
 	SET_ADD_MEMBER_DIALOG,
 	SET_EDIT_MEMBER_DIALOG,
-	SET_MEMBER_TO_EDIT
+	SET_MEMBER_TO_EDIT,
+	MANAGE_TEAMLIST
 } from './types';
 
 export const getAllMembers = () => async dispatch => {
@@ -78,8 +79,10 @@ export const addMember = memberData => async dispatch => {
 	}
 };
 
-export const deleteMember = id => async dispatch => {
-	const res = await axios.delete(`/api/team/deleteMember/${id}`);
+export const deleteMember = idsObj => async dispatch => {
+	const res = await axios.delete(
+		`/api/team/deleteMember/${idsObj.userID}/${idsObj.teamMemberID}`
+	);
 
 	dispatch({
 		type: DELETE_TEAM_MEMBER,
@@ -125,5 +128,12 @@ export const setMemberToEdit = memberData => dispatch => {
 	dispatch({
 		type: SET_MEMBER_TO_EDIT,
 		payload: memberData
+	});
+};
+
+export const setManageTeamList = teamlist => dispatch => {
+	dispatch({
+		type: MANAGE_TEAMLIST,
+		payload: teamlist
 	});
 };

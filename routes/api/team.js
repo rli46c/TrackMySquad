@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const auth = require('../../middleware/auth');
 const Users = require('../../models/Users');
+const Projects = require('../../models/Projects');
+
 const UserTypes = require('../../models/normalizations/UserTypes');
 const urlencode = require('urlencode');
 const nodemailer = require('nodemailer');
@@ -78,7 +80,6 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 				}
 			}
 		);
-		console.log('projectUpdate', projectUpdate.projectName);
 		// Could be fetched from the req.body itself to improve performace but will be less secure
 		const usrTyp = await UserTypes.findOne({ _id: addedUser.userType }).select(
 			'userType'
@@ -143,9 +144,14 @@ router.put('/updateMemberProfile/:id', auth, async (req, res) => {
 	}
 });
 
-router.delete('/deleteMember/:id', auth, async (req, res) => {
+router.delete('/deleteMember/:userID/:teamMemberID', auth, async (req, res) => {
 	try {
-		const deletedUser = await Users.findByIdAndDelete(req.params.id);
+		await Projects.findOneAndUpdate(req.params.userID, {
+			$pull: { teamMembers: { _id: req.params.teamMemberID } }
+		});
+		const deletedUser = await Users.findByIdAndDelete(req.params.userID);
+
+		// const deletedMember = await Projects.findOneAndUpdate({ teamMembers: { memberID: { $eq: req.params.id }}});
 		return res.status(200).json(deletedUser._id);
 	} catch (err) {
 		console.error(err);

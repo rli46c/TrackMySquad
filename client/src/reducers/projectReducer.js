@@ -13,6 +13,7 @@ import {
 
 const initailState = {
 	projects: [],
+	teamusers: [],
 	projectNames: [],
 	projectTypes: [],
 	projectToEdit: {},
@@ -26,9 +27,12 @@ export default (state = initailState, action) => {
 
 	switch (type) {
 		case GET_ALL_PROJECTS:
+			console.log('payloaduser', payload);
+
 			return {
 				...state,
-				projects: payload
+				projects: payload.projectsList,
+				teamusers: payload.teamUser
 			};
 
 		case GET_ALL_PROJECT_TYPES:

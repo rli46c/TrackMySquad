@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { makeStyles, TableRow, TableCell, IconButton } from '@material-ui/core';
 import { Edit, DeleteForever } from '@material-ui/icons';
+import { setManageTeamList } from '../../../actions/teamAction';
 
 import {
 	deleteProject,
+	getAllProjects,
 	setProjectToEdit
 } from '../../../actions/projectAction';
 
@@ -18,9 +20,15 @@ const useStyles = makeStyles(theme => ({
 
 export const ProjectCard = ({
 	projectData: { _id, projectName, projectTypeID, companyID },
+	// usermember: { teamusers },
 	deleteProject,
+	getAllProjects,
 	setProjectToEdit
 }) => {
+	useEffect(() => {
+		getAllProjects();
+	}, [getAllProjects]);
+
 	const onEdit = () => {
 		setProjectToEdit({
 			_id,
@@ -35,6 +43,7 @@ export const ProjectCard = ({
 	};
 
 	const classes = useStyles();
+	// console.log('userrr', teamusers);
 
 	return (
 		<TableRow>
@@ -74,13 +83,17 @@ export const ProjectCard = ({
 
 ProjectCard.propTypes = {
 	projectData: PropTypes.object.isRequired,
+	usermember: PropTypes.object.isRequired,
 	deleteProject: PropTypes.func.isRequired,
 	setProjectToEdit: PropTypes.func.isRequired
 };
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+	usermember: state.usermember
+});
 
 const mapDispatchToProps = {
+	getAllProjects,
 	deleteProject,
 	setProjectToEdit
 };

@@ -30,7 +30,15 @@ export const MemberCard = ({
 	};
 
 	const onDelete = () => {
-		deleteMember(_id);
+		let teamMemberID = null;
+		projNams.forEach(projectData => {
+			projectData.teamMembers.forEach(memberData => {
+				if (memberData.memberID === _id) {
+					teamMemberID = memberData._id;
+				}
+			});
+		});
+		deleteMember({ userID: _id, teamMemberID });
 	};
 
 	const classes = useStyles();
