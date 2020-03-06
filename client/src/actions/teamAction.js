@@ -9,7 +9,7 @@ import {
 	SET_ADD_MEMBER_DIALOG,
 	SET_EDIT_MEMBER_DIALOG,
 	SET_MEMBER_TO_EDIT,
-	MANAGE_TEAMLIST
+	SET_MANAGE_TEAMLIST
 } from './types';
 
 export const getAllMembers = () => async dispatch => {
@@ -134,7 +134,7 @@ export const setMemberToEdit = memberData => dispatch => {
 
 export const setManageTeamList = teamlist => dispatch => {
 	dispatch({
-		type: MANAGE_TEAMLIST,
+		type: SET_MANAGE_TEAMLIST,
 		payload: teamlist
 	});
 };

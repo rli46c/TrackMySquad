@@ -27,8 +27,6 @@ export default (state = initailState, action) => {
 
 	switch (type) {
 		case GET_ALL_PROJECTS:
-			console.log('payloaduser', payload);
-
 			return {
 				...state,
 				projects: payload.projectsList,
