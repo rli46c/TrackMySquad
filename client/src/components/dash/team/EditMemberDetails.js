@@ -23,7 +23,6 @@ import {
 } from '../../../actions/teamAction';
 import { getAllCompanyTypes } from '../../../actions/companyAction';
 import UserTypesCard from './UserTypesCard';
-import CompanyTypesCard from '../company/CompanyTypesCard';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -63,29 +62,17 @@ export const EditMemberDetails = ({
 	const [lastName, setLastName] = useState('');
 	const [userEmail, setUserEmail] = useState('');
 	const [userType, setUserType] = useState('');
-	const [companyType, setCompanyType] = useState('');
 
 	useEffect(() => {
 		getAllUserTypes();
 	}, [getAllUserTypes]);
 
 	useEffect(() => {
-		getAllCompanyTypes();
-	}, [getAllCompanyTypes]);
-
-	useEffect(() => {
-		const {
-			firstName,
-			lastName,
-			userEmail,
-			userType,
-			companyType
-		} = memberToEdit;
+		const { firstName, lastName, userEmail, userType } = memberToEdit;
 		firstName && setFirstName(firstName);
 		lastName && setLastName(lastName);
 		userEmail && setUserEmail(userEmail);
 		userType && setUserType(userType);
-		companyType && setCompanyType(companyType);
 	}, [memberToEdit]);
 
 	const onUserTypeSelect = e => {
@@ -97,20 +84,10 @@ export const EditMemberDetails = ({
 		setUserType(selectedUserType);
 	};
 
-	const onCompanyTypeSelect = e => {
-		const selectedCompanyType = {
-			_id: e.target.value,
-			companyType: e.target.options[e.target.selectedIndex].text
-		};
-
-		setCompanyType(selectedCompanyType);
-	};
-
 	const onReset = e => {
 		e.preventDefault();
 
 		setUserType({ _id: '' });
-		setCompanyType({ _id: '' });
 		setFirstName('');
 		setLastName('');
 		setUserEmail('');
@@ -122,7 +99,6 @@ export const EditMemberDetails = ({
 		const memberData = {
 			_id: memberToEdit._id,
 			userType,
-			companyType,
 			firstName,
 			lastName,
 			userEmail
@@ -185,24 +161,7 @@ export const EditMemberDetails = ({
 							))}
 						</NativeSelect>
 					</FormControl>
-					<FormControl
-						variant='standard'
-						className={classes.formControl}
-						fullWidth
-					>
-						<InputLabel htmlFor='company-type'>Project Name</InputLabel>
-						<NativeSelect
-							value={companyType._id}
-							onChange={onCompanyTypeSelect}
-							id='company-type'
-							tabIndex='2'
-						>
-							<option value='' />
-							{companyTypes.map((type, id) => (
-								<CompanyTypesCard key={id} compType={type} />
-							))}
-						</NativeSelect>
-					</FormControl>
+
 					<TextField
 						value={firstName}
 						onChange={e => setFirstName(e.target.value)}
@@ -251,7 +210,6 @@ EditMemberDetails.propTypes = {
 	company: PropTypes.object.isRequired,
 	setEditMemberDialog: PropTypes.func.isRequired,
 	getAllUserTypes: PropTypes.func.isRequired,
-	getAllCompanyTypes: PropTypes.func.isRequired,
 	updateMember: PropTypes.func.isRequired
 };
 

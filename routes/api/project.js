@@ -27,13 +27,17 @@ router.get('/', auth, async (req, res) => {
 		// console.log(addedProject);
 
 		// Select userType field only from userType Reference
+		const adminType = await UserTypes.findOne({ userType: 'Admin' });
 		const projectsList = await Projects.find({})
 			.populate('companyID', 'companyName')
 			.populate('projectTypeID', 'projectType');
-
+		const teamUser = await Users.find({ userType: { $ne: adminType._id } })
+			.populate('userType', 'userType')
+			.select('-userPass');
+		// projectsList.users = teamUser;
 		// const projectsList = await Projects.find({});
 
-		res.status(200).json(projectsList);
+		res.status(200).json({ projectsList, teamUser });
 	} catch (err) {
 		console.error(err);
 		res.status(500).send('Server Error');

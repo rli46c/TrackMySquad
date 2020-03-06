@@ -20,7 +20,6 @@ import {
 import ProjectCard from './ProjectCard';
 import AddNewProject from './AddNewProject';
 import EditProjectDetails from './EditProjectDetails';
-
 const useStyles = makeStyles(theme => ({
 	seeMore: {
 		marginTop: theme.spacing(3)
@@ -33,7 +32,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const ProjectsList = ({
-	project: { projects, projectToEdit, addProjectDialogOpen, projectErrors },
+	project: {
+		projects,
+		teamusers,
+		projectToEdit,
+		addProjectDialogOpen,
+		projectErrors
+	},
 	getAllProjects,
 	setAddProjectDialog
 }) => {
@@ -42,6 +47,7 @@ export const ProjectsList = ({
 	}, [getAllProjects]);
 
 	const classes = useStyles();
+	console.log('teamusers', teamusers);
 
 	return (
 		<Fragment>
