@@ -1,7 +1,8 @@
-import { SET_ALERT, REMOVE_ALERT } from '../actions/types';
+import { SET_ALERT, REMOVE_ALERT, SET_CURRENT_MODULE } from '../actions/types';
 
 const initialState = {
-	alertMessages: []
+	alertMessages: [],
+	currentModule: { moduleRoute: 'dash', moduleName: 'Dashboard' }
 };
 
 export default (state = initialState, action) => {
@@ -20,6 +21,12 @@ export default (state = initialState, action) => {
 			return {
 				...state,
 				alertMessages: state.alertMessages.filter(alert => alert.id !== payload)
+			};
+
+		case SET_CURRENT_MODULE:
+			return {
+				...state,
+				currentModule: payload
 			};
 
 		default:

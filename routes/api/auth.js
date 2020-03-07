@@ -378,7 +378,9 @@ router.post(
 // @access   Private
 router.get('/', auth, async (req, res) => {
 	try {
-		const user = await Users.findById(req.user.id).select('-userPass');
+		const user = await Users.findById(req.user.id).select(
+			'_id firstName lastName userCompany'
+		);
 		return res.status(200).json(user);
 	} catch (err) {
 		console.error(err);

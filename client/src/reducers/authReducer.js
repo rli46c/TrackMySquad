@@ -41,7 +41,10 @@ export default (state = initialState, action) => {
 
 		case LOGIN_SUCCESS:
 			localStorage.setItem('token', payload.token);
-			localStorage.setItem('currentModule', 'dash');
+			localStorage.setItem(
+				'currentModule',
+				JSON.stringify({ moduleRoute: 'dash', moduleName: 'Dashboard' })
+			);
 			return {
 				...state,
 				...payload,

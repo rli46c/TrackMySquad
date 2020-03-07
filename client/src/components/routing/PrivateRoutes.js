@@ -21,7 +21,7 @@ export const PrivateRoutes = ({
 				<Redirect
 					to={
 						localStorage.currentModule
-							? `/${localStorage.currentModule}`
+							? `/${JSON.parse(localStorage.currentModule).moduleRoute}`
 							: '/login'
 					}
 				/>

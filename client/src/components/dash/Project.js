@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import clsx from 'clsx';
 import {
@@ -13,6 +13,7 @@ import {
 	Link
 } from '@material-ui/core';
 
+import { setCurrentModule } from '../../actions/layoutAction';
 import NavCombo from './dashboard/NavCombo';
 import ProjectsList from './project/ProjectsList';
 
@@ -54,12 +55,16 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-const Project = () => {
+export const Project = ({ setCurrentModule }) => {
 	useEffect(() => {
 		if (localStorage.currentModule) {
-			localStorage.setItem('currentModule', 'projects');
+			setCurrentModule({ moduleRoute: 'projects', moduleName: 'Project' });
+			localStorage.setItem(
+				'currentModule',
+				JSON.stringify({ moduleRoute: 'projects', moduleName: 'Project' })
+			);
 		}
-	}, []);
+	}, [setCurrentModule]);
 
 	const classes = useStyles();
 	const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -96,10 +101,14 @@ const Project = () => {
 	);
 };
 
-Project.propTypes = {};
+Project.propTypes = {
+	setCurrentModule: PropTypes.func.isRequired
+};
 
 const mapStateToProps = state => ({});
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+	setCurrentModule
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Project);

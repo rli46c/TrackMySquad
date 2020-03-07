@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import clsx from 'clsx';
 import {
@@ -13,6 +13,7 @@ import {
 	Link
 } from '@material-ui/core';
 
+import { setCurrentModule } from '../../actions/layoutAction';
 import NavCombo from './dashboard/NavCombo';
 import MembersList from './team/MembersList';
 
@@ -54,12 +55,16 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-export const Team = () => {
+export const Team = ({ setCurrentModule }) => {
 	useEffect(() => {
+		setCurrentModule({ moduleRoute: 'team', moduleName: 'Team Members' });
 		if (localStorage.currentModule) {
-			localStorage.setItem('currentModule', 'team');
+			localStorage.setItem(
+				'currentModule',
+				JSON.stringify({ moduleRoute: 'team', moduleName: 'Team Members' })
+			);
 		}
-	}, []);
+	}, [setCurrentModule]);
 
 	const classes = useStyles();
 	const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -98,10 +103,14 @@ export const Team = () => {
 	);
 };
 
-Team.propTypes = {};
+Team.propTypes = {
+	setCurrentModule: PropTypes.func.isRequired
+};
 
 const mapStateToProps = state => ({});
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+	setCurrentModule
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Team);

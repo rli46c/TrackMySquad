@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import clsx from 'clsx';
@@ -14,6 +14,7 @@ import {
 	Badge
 } from '@material-ui/core';
 import {
+	PersonPin,
 	Menu,
 	ChevronLeft,
 	Notifications,
@@ -26,6 +27,9 @@ import { logout } from '../../../actions/authAction';
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
+	profile: {
+		fontSize: 'large'
+	},
 	toolbar: {
 		paddingRight: 24 // keep right padding when drawer closed
 	},
@@ -82,15 +86,21 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-export const NavCombo = ({ auth: { user }, logout }) => {
-	const classes = useStyles();
-	const [open, setOpen] = React.useState(true);
+export const NavCombo = ({
+	auth: { user },
+	logout,
+	layout: { currentModule }
+}) => {
+	const [open, setOpen] = useState(true);
+
 	const handleDrawerOpen = () => {
 		setOpen(true);
 	};
 	const handleDrawerClose = () => {
 		setOpen(false);
 	};
+
+	const classes = useStyles();
 
 	return (
 		<Fragment>
@@ -118,7 +128,7 @@ export const NavCombo = ({ auth: { user }, logout }) => {
 						noWrap
 						className={classes.title}
 					>
-						Dashboard
+						{currentModule.moduleName}
 					</Typography>
 					<IconButton color='inherit'>
 						<Badge badgeContent={null} color='secondary'>
@@ -146,6 +156,10 @@ export const NavCombo = ({ auth: { user }, logout }) => {
 				open={open}
 			>
 				<div className={classes.toolbarIcon}>
+					<span className={classes.profile}>
+						<PersonPin />
+						{user && ` ${user.firstName} ${user.lastName}`}
+					</span>
 					<IconButton onClick={handleDrawerClose}>
 						<ChevronLeft />
 					</IconButton>
@@ -161,11 +175,13 @@ export const NavCombo = ({ auth: { user }, logout }) => {
 
 NavCombo.propTypes = {
 	auth: PropTypes.object.isRequired,
+	layout: PropTypes.object.isRequired,
 	logout: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-	auth: state.auth
+	auth: state.auth,
+	layout: state.layout
 });
 
 const mapDispatchToProps = {

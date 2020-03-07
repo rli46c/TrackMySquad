@@ -3,6 +3,7 @@ export const SEND_EMAIL = 'SEND_EMAIL';
 export const EMAIL_ERRORS = 'EMAIL_ERRORS';
 export const SET_ALERT = 'SET_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
+export const SET_CURRENT_MODULE = 'SET_CURRENT_MODULE';
 
 // Auth Types - Used in Registration and Login
 export const USER_LOADED = 'USER_LOADED';

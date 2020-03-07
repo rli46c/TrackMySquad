@@ -7,7 +7,8 @@ import {
 	LOGOUT,
 	SET_ALERT,
 	REG_SUCCESS,
-	DE_REGISTER
+	DE_REGISTER,
+	SET_CURRENT_MODULE
 } from './types';
 
 const handleError = (err, dispatch) => {
@@ -76,6 +77,11 @@ export const loginUser = userdata => async dispatch => {
 		dispatch({
 			type: LOGIN_SUCCESS,
 			payload: res.data
+		});
+
+		dispatch({
+			type: SET_CURRENT_MODULE,
+			payload: { moduleRoute: 'dash', moduleName: 'Dashboard' }
 		});
 
 		dispatch(loadUser());
