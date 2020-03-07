@@ -15,14 +15,17 @@ const useStyles = makeStyles(theme => ({
 	tableCell: {
 		whiteSpace: 'normal',
 		wordWrap: 'break-word'
+	},
+	pointer: {
+		cursor: 'pointer'
 	}
 }));
 
 export const ProjectCard = ({
 	projectData: { _id, projectName, projectTypeID, companyID },
-	// usermember: { teamusers },
 	deleteProject,
 	getAllProjects,
+	setManageTeamList,
 	setProjectToEdit
 }) => {
 	useEffect(() => {
@@ -52,7 +55,13 @@ export const ProjectCard = ({
 				{projectTypeID.projectType}
 			</TableCell>
 			<TableCell>{companyID.companyName}</TableCell>
-			<TableCell>Members Here</TableCell>
+			<TableCell
+				onClick={() => setManageTeamList(true)}
+				aria-label='add'
+				className={classes.pointer}
+			>
+				Members Here
+			</TableCell>
 			<TableCell align='right'>
 				<input type='button' id='edit-project' style={{ display: 'none' }} />
 				<label htmlFor='edit-project' onClick={onEdit}>
@@ -83,19 +92,17 @@ export const ProjectCard = ({
 
 ProjectCard.propTypes = {
 	projectData: PropTypes.object.isRequired,
-	usermember: PropTypes.object.isRequired,
 	deleteProject: PropTypes.func.isRequired,
 	setProjectToEdit: PropTypes.func.isRequired
 };
 
-const mapStateToProps = state => ({
-	usermember: state.usermember
-});
+const mapStateToProps = state => ({});
 
 const mapDispatchToProps = {
 	getAllProjects,
 	deleteProject,
-	setProjectToEdit
+	setProjectToEdit,
+	setManageTeamList
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectCard);
