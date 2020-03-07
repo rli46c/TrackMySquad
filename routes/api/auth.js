@@ -8,7 +8,7 @@ const nodemailer = require('nodemailer');
 const cryptoJS = require('crypto-js');
 const urlencode = require('urlencode');
 const { check, validationResult } = require('express-validator');
-
+const SuperUser = require('../../models/SuperUser');
 const Users = require('../../models/Users');
 const StatusTypes = require('../../models/normalizations/StatusTypes');
 const UserTypes = require('../../models/normalizations/UserTypes');
@@ -33,6 +33,12 @@ router.get('/createAdmin', async (req, res) => {
 				const hasAdmin = await Users.find({});
 
 				if (hasAdmin.length === 0) {
+					const superUserSettings = new SuperUser({
+						sendMail: false,
+						emailValidationRequired: false
+					});
+					constsuperUserSettings = await superUserSettings.save();
+
 					const savedStatusTypes = await StatusTypes.insertMany([
 						{ statusType: 'Active' },
 						{ statusType: 'Inactive' },
@@ -186,37 +192,41 @@ router.post(
 
 				await company.save();
 
-				// Encrypt
-				var ciphertext = cryptoJS.AES.encrypt(
-					JSON.stringify({ user: savedUser.id, email: savedUser.userEmail }),
-					config.get('cryptoJSkeySecret')
-				).toString();
-				ciphertext = urlencode(ciphertext);
-				const emailText = `Hello Falana Dhimkana \n your key is:\n${ciphertext}\n`;
-				const emailHtml = `Hello Falana Dhimkana <br /> your key is:<br />${ciphertext}<br /><br /><a href="http://localhost:3000/login/${ciphertext}">Verify this Email Account</a>`;
+				const superUserSettings = await SuperUser.findOne().select('sendMail');
 
-				let transporter = nodemailer.createTransport({
-					host: 'smtp.gmail.com',
-					port: 587,
-					secure: false,
-					auth: {
-						user: 'trackmysquad@gmail.com',
-						pass: config.get('mailingCredentials')
-					},
-					tls: {
-						rejectUnauthorized: false
-					}
-				});
+				if (superUserSettings.sendMail) {
+					// Encrypt
+					var ciphertext = cryptoJS.AES.encrypt(
+						JSON.stringify({ user: savedUser.id, email: savedUser.userEmail }),
+						config.get('cryptoJSkeySecret')
+					).toString();
+					ciphertext = urlencode(ciphertext);
+					const emailText = `Hello Falana Dhimkana \n your key is:\n${ciphertext}\n`;
+					const emailHtml = `Hello Falana Dhimkana <br /> your key is:<br />${ciphertext}<br /><br /><a href="http://localhost:3000/login/${ciphertext}">Verify this Email Account</a>`;
 
-				let sentMailResponse = await transporter.sendMail({
-					from: 'Track My Squad <trackmysquad@gmail.com>',
-					to: `${firstName} ${lastName} <${userEmail}>`,
-					subject: 'Welcome to Track My Squad',
-					text: emailText,
-					html: emailHtml
-				});
+					let transporter = nodemailer.createTransport({
+						host: 'smtp.gmail.com',
+						port: 587,
+						secure: false,
+						auth: {
+							user: 'trackmysquad@gmail.com',
+							pass: config.get('mailingCredentials')
+						},
+						tls: {
+							rejectUnauthorized: false
+						}
+					});
 
-				console.log(sentMailResponse);
+					let sentMailResponse = await transporter.sendMail({
+						from: 'Track My Squad <trackmysquad@gmail.com>',
+						to: `${firstName} ${lastName} <${userEmail}>`,
+						subject: 'Welcome to Track My Squad',
+						text: emailText,
+						html: emailHtml
+					});
+
+					console.log(sentMailResponse);
+				}
 			});
 
 			return res.status(200).json({ firstName, lastName, userEmail });

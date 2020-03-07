@@ -62,38 +62,30 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 	try {
 		const user = new Users(req.body);
 
-		const addedUser = await user.save();
-		//Projects.teamMembers.push({memberID: <ID>}, {roleInProject: <ROLE-ID>});
-		//person.save(done);
-		//~ const projectUpdate = await Projects.findByIdAndUpdate( req.body.projectName._id, { $push: { memberID: addedUser._id, roleInProject: req.body.userType._id } });
+		let userAdded = await user.save();
 
-		const projectUpdate = await Projects.findByIdAndUpdate(
+		const addedUser = await Users.findById(userAdded.id)
+			.select('-userPass')
+			.populate('userType', 'userType');
+
+		const updatedProject = await Projects.findByIdAndUpdate(
 			req.body.projectName._id,
 			{
 				$push: {
 					teamMembers: [
 						{
-							memberID: mongoose.Types.ObjectId(addedUser._id),
+							memberID: mongoose.Types.ObjectId(userAdded._id),
 							roleInProject: mongoose.Types.ObjectId(req.body.userType._id)
 						}
 					]
 				}
 			}
 		);
-		// Could be fetched from the req.body itself to improve performace but will be less secure
-		const usrTyp = await UserTypes.findOne({ _id: addedUser.userType }).select(
-			'userType'
-		);
-		addedUser.projectName = projectUpdate.projectName;
-		addedUser.userType = usrTyp;
 
-		const projName = await Projects.findOne({
-			_id: addedUser.projectName
-		}).select('projectName');
-		addedUser.projectName = projName;
+		const projectUpdated = await Projects.findById(updatedProject.id);
 
 		var ciphertext = cryptoJS.AES.encrypt(
-			JSON.stringify({ user: addedUser.id, email: addedUser.userEmail }),
+			JSON.stringify(addedUser),
 			config.get('cryptoJSkeySecret')
 		).toString();
 		ciphertext = urlencode(ciphertext);
@@ -120,8 +112,12 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 			text: emailText,
 			html: emailHtml
 		});
-		console.log(sentMailResponse);
-		res.status(200).json(addedUser);
+		console.log('Email Response', sentMailResponse);
+
+		return res.status(200).json({
+			addedUser,
+			projectUpdated
+		});
 	} catch (err) {
 		console.error(err.message);
 		return res.status(500).send('Server Error');

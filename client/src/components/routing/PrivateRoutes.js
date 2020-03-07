@@ -17,7 +17,7 @@ export const PrivateRoutes = ({
 			// 	<Component {...props} />
 			// )
 
-			!isAuthenticated ? <Redirect to='/' /> : <Component {...props} />
+			!isAuthenticated ? <Redirect to='/login' /> : <Component {...props} />
 		}
 	/>
 );

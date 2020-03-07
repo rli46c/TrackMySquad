@@ -47,7 +47,6 @@ export const ProjectsList = ({
 	}, [getAllProjects]);
 
 	const classes = useStyles();
-	console.log('teamusers', teamusers);
 
 	return (
 		<Fragment>

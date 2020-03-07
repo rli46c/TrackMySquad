@@ -10,6 +10,7 @@ Timestamps in Models
 ownerId in Company, Projects and Members Model
 Use Loading in PrivateRoutes.js
 Email verification link expiry time
+DashTabs State Variable
 
 ## How to kill a process running on particular port in Linux?
 
