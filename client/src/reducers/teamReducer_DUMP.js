@@ -46,6 +46,32 @@ export default (state = initailState, action) => {
 			};
 
 		case ADD_TEAM_MEMBER:
+<<<<<<< HEAD
+			return {
+				...state,
+				teamMembers: [payload, ...state.teamMembers]
+			};
+
+		case DELETE_TEAM_MEMBER:
+			return {
+				...state,
+				teamMembers: state.teamMembers.filter(member => member._id !== payload)
+			};
+
+		case SET_MEMBER_TO_EDIT:
+			return {
+				...state,
+				memberToEdit: payload,
+				editMemberDialogOpen: true
+			};
+
+		case SET_EDIT_MEMBER_DIALOG:
+			return {
+				...state,
+				editMemberDialogOpen: false
+			};
+
+=======
 			let projectAlreadyInState = false;
 			state.projectNamelist.map(project =>
 				project._id === payload.projectUpdated._id
@@ -87,6 +113,7 @@ export default (state = initailState, action) => {
 				editMemberDialogOpen: false
 			};
 
+>>>>>>> 8f02254cb5ac6e79f6c9fb3be8df85d5db556009
 		case UPDATE_TEAM_MEMBER:
 			return {
 				...state,

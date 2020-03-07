@@ -1,9 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const auth = require('../../middleware/auth');
+const SuperUser = require('../../models/SuperUser');
 const Users = require('../../models/Users');
 const Projects = require('../../models/Projects');
-
 const UserTypes = require('../../models/normalizations/UserTypes');
 const urlencode = require('urlencode');
 const nodemailer = require('nodemailer');
@@ -62,66 +62,66 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 	try {
 		const user = new Users(req.body);
 
-		const addedUser = await user.save();
-		//Projects.teamMembers.push({memberID: <ID>}, {roleInProject: <ROLE-ID>});
-		//person.save(done);
-		//~ const projectUpdate = await Projects.findByIdAndUpdate( req.body.projectName._id, { $push: { memberID: addedUser._id, roleInProject: req.body.userType._id } });
+		let userAdded = await user.save();
 
-		const projectUpdate = await Projects.findByIdAndUpdate(
+		const addedUser = await Users.findById(userAdded.id)
+			.select('-userPass')
+			.populate('userType', 'userType');
+
+		const updatedProject = await Projects.findByIdAndUpdate(
 			req.body.projectName._id,
 			{
 				$push: {
 					teamMembers: [
 						{
-							memberID: mongoose.Types.ObjectId(addedUser._id),
+							memberID: mongoose.Types.ObjectId(userAdded._id),
 							roleInProject: mongoose.Types.ObjectId(req.body.userType._id)
 						}
 					]
 				}
 			}
 		);
-		// Could be fetched from the req.body itself to improve performace but will be less secure
-		const usrTyp = await UserTypes.findOne({ _id: addedUser.userType }).select(
-			'userType'
-		);
-		addedUser.projectName = projectUpdate.projectName;
-		addedUser.userType = usrTyp;
 
-		const projName = await Projects.findOne({
-			_id: addedUser.projectName
-		}).select('projectName');
-		addedUser.projectName = projName;
+		const projectUpdated = await Projects.findById(updatedProject.id);
 
-		var ciphertext = cryptoJS.AES.encrypt(
-			JSON.stringify({ user: addedUser.id, email: addedUser.userEmail }),
-			config.get('cryptoJSkeySecret')
-		).toString();
-		ciphertext = urlencode(ciphertext);
-		const emailText = `Hello Falana Dhimkana \n your key is:\n${ciphertext}\n`;
-		const emailHtml = `Hello Falana Dhimkana <br /> your key is:<br />${ciphertext}<br /><br /><a href="http://localhost:3000/login/${ciphertext}">Verify this Email Account</a>`;
+		const superUserSettings = await SuperUser.findOne().select('sendMail');
+		if (superUserSettings.sendMail) {
+			// Encrypt
+			var ciphertext = cryptoJS.AES.encrypt(
+				JSON.stringify(addedUser),
+				config.get('cryptoJSkeySecret')
+			).toString();
+			ciphertext = urlencode(ciphertext);
+			const emailText = `Hello Falana Dhimkana \n your key is:\n${ciphertext}\n`;
+			const emailHtml = `Hello Falana Dhimkana <br /> your key is:<br />${ciphertext}<br /><br /><a href="http://localhost:3000/login/${ciphertext}">Verify this Email Account</a>`;
 
-		let transporter = nodemailer.createTransport({
-			host: 'smtp.gmail.com',
-			port: 587,
-			secure: false,
-			auth: {
-				user: 'trackmysquad@gmail.com',
-				pass: config.get('mailingCredentials')
-			},
-			tls: {
-				rejectUnauthorized: false
-			}
+			let transporter = nodemailer.createTransport({
+				host: 'smtp.gmail.com',
+				port: 587,
+				secure: false,
+				auth: {
+					user: 'trackmysquad@gmail.com',
+					pass: config.get('mailingCredentials')
+				},
+				tls: {
+					rejectUnauthorized: false
+				}
+			});
+
+			let sentMailResponse = await transporter.sendMail({
+				from: 'Track My Squad <trackmysquad@gmail.com>',
+				to: addedUser.userEmail,
+				subject: 'Welcome to Track My Squad',
+				text: emailText,
+				html: emailHtml
+			});
+			console.log('Email Response', sentMailResponse);
+		}
+
+		return res.status(200).json({
+			addedUser,
+			projectUpdated
 		});
-
-		let sentMailResponse = await transporter.sendMail({
-			from: 'Track My Squad <trackmysquad@gmail.com>',
-			to: addedUser.userEmail,
-			subject: 'Welcome to Track My Squad',
-			text: emailText,
-			html: emailHtml
-		});
-		console.log(sentMailResponse);
-		res.status(200).json(addedUser);
 	} catch (err) {
 		console.error(err.message);
 		return res.status(500).send('Server Error');

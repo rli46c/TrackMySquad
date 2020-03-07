@@ -15,6 +15,7 @@ import {
 export const getAllMembers = () => async dispatch => {
 	try {
 		const res = await axios.get('/api/team');
+
 		dispatch({
 			type: GET_ALL_MEMBERS,
 			payload: res.data
@@ -66,7 +67,6 @@ export const addMember = memberData => async dispatch => {
 			memberData,
 			config
 		);
-
 		dispatch({
 			type: ADD_TEAM_MEMBER,
 			payload: res.data

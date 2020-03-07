@@ -1,10 +1,7 @@
 import { SET_ALERT, REMOVE_ALERT } from '../actions/types';
 
 const initialState = {
-	alertMessages: [
-		// { id: 464654, msg: 'Invalid Credentials' },
-		// { id: 646655, msg: 'Server Error' }
-	]
+	alertMessages: []
 };
 
 export default (state = initialState, action) => {

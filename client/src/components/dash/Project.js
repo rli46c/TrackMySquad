@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import clsx from 'clsx';
@@ -55,6 +55,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Project = () => {
+	useEffect(() => {
+		if (localStorage.currentModule) {
+			localStorage.setItem('currentModule', 'projects');
+		}
+	}, []);
+
 	const classes = useStyles();
 	const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
@@ -90,9 +96,7 @@ const Project = () => {
 	);
 };
 
-Project.propTypes = {
-	// prop: PropTypes
-};
+Project.propTypes = {};
 
 const mapStateToProps = state => ({});
 

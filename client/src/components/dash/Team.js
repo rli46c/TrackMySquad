@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import clsx from 'clsx';
@@ -55,6 +55,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const Team = () => {
+	useEffect(() => {
+		if (localStorage.currentModule) {
+			localStorage.setItem('currentModule', 'team');
+		}
+	}, []);
+
 	const classes = useStyles();
 	const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
@@ -92,9 +98,7 @@ export const Team = () => {
 	);
 };
 
-Team.propTypes = {
-	// prop: PropTypes
-};
+Team.propTypes = {};
 
 const mapStateToProps = state => ({});
 

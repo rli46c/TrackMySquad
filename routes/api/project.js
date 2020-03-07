@@ -4,7 +4,6 @@ const auth = require('../../middleware/auth');
 const Projects = require('../../models/Projects');
 const Users = require('../../models/Users');
 const UserTypes = require('../../models/normalizations/UserTypes');
-const CompanyTypes = require('../../models/normalizations/CompanyTypes');
 const ProjectTypes = require('../../models/normalizations/ProjectTypes');
 
 const router = express.Router();
@@ -14,18 +13,6 @@ const router = express.Router();
 // @access   Private
 router.get('/', auth, async (req, res) => {
 	try {
-		// const project = new Projects({
-		//     companyID: '5e4e69623627231553c39e50',
-		//     projectName: 'Track My Squad',
-		//     projectTypeID: '5e4e68f23627231553c39e4c',
-		//     teamMembers: [{
-		//         memberID: '5e4e68f23627231553c39e4f',
-		//         roleInProject: '5e4e68f23627231553c39e40'
-		//     }],
-		// });
-		// const addedProject = await project.save();
-		// console.log(addedProject);
-
 		// Select userType field only from userType Reference
 		const adminType = await UserTypes.findOne({ userType: 'Admin' });
 		const projectsList = await Projects.find({})
@@ -125,7 +112,7 @@ router.put('/updateProjectDetails/:id', auth, async (req, res) => {
 				],
 				(err, updatedProject) => {
 					if (err) throw err;
-					res.status(200).json(updatedProject);
+					return res.status(200).json(updatedProject);
 				}
 			);
 		} else {

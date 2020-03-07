@@ -23,7 +23,6 @@ const useStyles = makeStyles(theme => ({
 
 export const ProjectCard = ({
 	projectData: { _id, projectName, projectTypeID, companyID },
-	// usermember: { teamusers },
 	deleteProject,
 	getAllProjects,
 	setManageTeamList,
@@ -93,14 +92,11 @@ export const ProjectCard = ({
 
 ProjectCard.propTypes = {
 	projectData: PropTypes.object.isRequired,
-	usermember: PropTypes.object.isRequired,
 	deleteProject: PropTypes.func.isRequired,
 	setProjectToEdit: PropTypes.func.isRequired
 };
 
-const mapStateToProps = state => ({
-	usermember: state.usermember
-});
+const mapStateToProps = state => ({});
 
 const mapDispatchToProps = {
 	getAllProjects,

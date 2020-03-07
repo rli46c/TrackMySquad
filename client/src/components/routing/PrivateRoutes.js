@@ -17,7 +17,17 @@ export const PrivateRoutes = ({
 			// 	<Component {...props} />
 			// )
 
-			!isAuthenticated ? <Redirect to='/' /> : <Component {...props} />
+			!isAuthenticated ? (
+				<Redirect
+					to={
+						localStorage.currentModule
+							? `/${localStorage.currentModule}`
+							: '/login'
+					}
+				/>
+			) : (
+				<Component {...props} />
+			)
 		}
 	/>
 );
