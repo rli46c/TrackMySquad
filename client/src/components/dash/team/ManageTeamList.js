@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getAllProjects } from '../../../actions/projectAction';
 import { setManageTeamList } from '../../../actions/teamAction';
+import TeamListCard from './TeamListCard';
 import {
 	makeStyles,
 	Dialog,
@@ -34,11 +35,14 @@ const useStyles = makeStyles(theme => ({
 	formControl: {
 		margin: theme.spacing(1),
 		minWidth: 120
+	},
+	closebtn: {
+		float: 'right'
 	}
 }));
 
 export const Projectteamlist = ({
-	project: { teamusers },
+	project: { teamusers, projects },
 	team: { addMemberlistDialogOpen },
 	getAllProjects,
 	setManageTeamList
@@ -48,13 +52,20 @@ export const Projectteamlist = ({
 	useEffect(() => {
 		getAllProjects();
 	}, [getAllProjects]);
-	console.log('teamusers', teamusers);
 	const classes = useStyles();
+	const tmembers = [];
+	projects.forEach(projectData => {
+		tmembers.push(projectData.teamMembers);
+	});
+	// tmembers.map((member, id) => console.log('member', member));
+	console.log('teamusers', teamusers);
+	// console.log('projects', projects);
+	const memberteam = tmembers[0];
 	return (
 		<Dialog
 			keepMounted
 			disableBackdropClick
-			onClick={() => setManageTeamList(false)}
+			onClose={() => setManageTeamList(false)}
 			open={addMemberlistDialogOpen}
 			TransitionComponent={Transition}
 			fullWidth={fullWidth}
@@ -64,7 +75,10 @@ export const Projectteamlist = ({
 		>
 			<DialogTitle>
 				<span>Member List</span>
-				<Close onClick={() => setManageTeamList(false)} />
+				<Close
+					onClick={() => setManageTeamList(false)}
+					className={classes.closebtn}
+				/>
 			</DialogTitle>
 			<DialogContent>
 				<form
@@ -81,11 +95,26 @@ export const Projectteamlist = ({
 						className={classes.formControl}
 						fullWidth
 					>
-						<FormControlLabel
-							control={<Checkbox value='checkedB' color='primary' />}
-							label='Primary'
-						/>
+						{teamusers.map((team, id) => (
+							<TeamListCard
+								key={id}
+								teamData={team}
+								projteamData={{ projects }}
+							/>
+						))}
 					</FormControl>
+					{/* <FormControl
+						variant='standard'
+						className={classes.formControl}
+						fullWidth
+					>
+						{projects.map(memberlist =>
+							memberlist.teamMembers.map((memberdata, id) => (
+								<TeamListCard key={id} projteamData={memberdata} />
+							))
+						)}
+					
+					</FormControl> */}
 				</form>
 			</DialogContent>
 			<DialogActions>
@@ -100,6 +129,7 @@ export const Projectteamlist = ({
 Projectteamlist.propTypes = {
 	getAllProjects: PropTypes.func.isRequired,
 	team: PropTypes.object.isRequired,
+	project: PropTypes.object.isRequired,
 	setManageTeamList: PropTypes.func.isRequired
 };
 

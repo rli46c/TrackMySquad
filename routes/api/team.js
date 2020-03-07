@@ -5,7 +5,6 @@ const Users = require('../../models/Users');
 const Projects = require('../../models/Projects');
 
 const UserTypes = require('../../models/normalizations/UserTypes');
-const CompanyTypes = require('../../models/normalizations/CompanyTypes');
 const urlencode = require('urlencode');
 const nodemailer = require('nodemailer');
 const cryptoJS = require('crypto-js');
@@ -29,7 +28,7 @@ router.get('/', auth, async (req, res) => {
 		//console.log('project',project);
 		elemntid = [];
 		teamMember.forEach(element => {
-			const elemnt = elemntid.push(element._id);
+			elemntid.push(element._id);
 		});
 		const project = await Projects.find({
 			teamMembers: { $elemMatch: { memberID: { $in: elemntid } } }
@@ -67,10 +66,7 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 		//Projects.teamMembers.push({memberID: <ID>}, {roleInProject: <ROLE-ID>});
 		//person.save(done);
 		//~ const projectUpdate = await Projects.findByIdAndUpdate( req.body.projectName._id, { $push: { memberID: addedUser._id, roleInProject: req.body.userType._id } });
-		const member = {
-			memberID: addedUser._id,
-			roleInProject: req.body.userType._id
-		};
+
 		const projectUpdate = await Projects.findByIdAndUpdate(
 			req.body.projectName._id,
 			{

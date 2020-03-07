@@ -49,7 +49,6 @@ export const ProjectsList = ({
 	}, [getAllProjects]);
 
 	const classes = useStyles();
-	console.log('addMemberlistDialogOpen', addMemberlistDialogOpen);
 
 	return (
 		<Fragment>
