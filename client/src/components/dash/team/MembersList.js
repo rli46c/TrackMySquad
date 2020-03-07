@@ -46,8 +46,6 @@ export const MembersList = ({
 
 	const classes = useStyles();
 
-	console.log(projectNamelist);
-
 	return (
 		<Fragment>
 			<Table size='small'>

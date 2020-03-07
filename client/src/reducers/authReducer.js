@@ -41,6 +41,7 @@ export default (state = initialState, action) => {
 
 		case LOGIN_SUCCESS:
 			localStorage.setItem('token', payload.token);
+			localStorage.setItem('currentModule', 'dash');
 			return {
 				...state,
 				...payload,
@@ -49,6 +50,7 @@ export default (state = initialState, action) => {
 
 		case LOGOUT:
 			localStorage.removeItem('token');
+			localStorage.removeItem('currentModule');
 			return {
 				...state,
 				token: null,

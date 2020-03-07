@@ -1,9 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const auth = require('../../middleware/auth');
+const SuperUser = require('../../models/SuperUser');
 const Users = require('../../models/Users');
 const Projects = require('../../models/Projects');
-
 const UserTypes = require('../../models/normalizations/UserTypes');
 const urlencode = require('urlencode');
 const nodemailer = require('nodemailer');
@@ -84,35 +84,39 @@ router.post('/addMemberProfile', auth, async (req, res) => {
 
 		const projectUpdated = await Projects.findById(updatedProject.id);
 
-		var ciphertext = cryptoJS.AES.encrypt(
-			JSON.stringify(addedUser),
-			config.get('cryptoJSkeySecret')
-		).toString();
-		ciphertext = urlencode(ciphertext);
-		const emailText = `Hello Falana Dhimkana \n your key is:\n${ciphertext}\n`;
-		const emailHtml = `Hello Falana Dhimkana <br /> your key is:<br />${ciphertext}<br /><br /><a href="http://localhost:3000/login/${ciphertext}">Verify this Email Account</a>`;
+		const superUserSettings = await SuperUser.findOne().select('sendMail');
+		if (superUserSettings.sendMail) {
+			// Encrypt
+			var ciphertext = cryptoJS.AES.encrypt(
+				JSON.stringify(addedUser),
+				config.get('cryptoJSkeySecret')
+			).toString();
+			ciphertext = urlencode(ciphertext);
+			const emailText = `Hello Falana Dhimkana \n your key is:\n${ciphertext}\n`;
+			const emailHtml = `Hello Falana Dhimkana <br /> your key is:<br />${ciphertext}<br /><br /><a href="http://localhost:3000/login/${ciphertext}">Verify this Email Account</a>`;
 
-		let transporter = nodemailer.createTransport({
-			host: 'smtp.gmail.com',
-			port: 587,
-			secure: false,
-			auth: {
-				user: 'trackmysquad@gmail.com',
-				pass: config.get('mailingCredentials')
-			},
-			tls: {
-				rejectUnauthorized: false
-			}
-		});
+			let transporter = nodemailer.createTransport({
+				host: 'smtp.gmail.com',
+				port: 587,
+				secure: false,
+				auth: {
+					user: 'trackmysquad@gmail.com',
+					pass: config.get('mailingCredentials')
+				},
+				tls: {
+					rejectUnauthorized: false
+				}
+			});
 
-		let sentMailResponse = await transporter.sendMail({
-			from: 'Track My Squad <trackmysquad@gmail.com>',
-			to: addedUser.userEmail,
-			subject: 'Welcome to Track My Squad',
-			text: emailText,
-			html: emailHtml
-		});
-		console.log('Email Response', sentMailResponse);
+			let sentMailResponse = await transporter.sendMail({
+				from: 'Track My Squad <trackmysquad@gmail.com>',
+				to: addedUser.userEmail,
+				subject: 'Welcome to Track My Squad',
+				text: emailText,
+				html: emailHtml
+			});
+			console.log('Email Response', sentMailResponse);
+		}
 
 		return res.status(200).json({
 			addedUser,
