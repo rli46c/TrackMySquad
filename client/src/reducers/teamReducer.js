@@ -95,6 +95,8 @@ export default (state = initailState, action) => {
 				)
 			};
 		case SET_MANAGE_TEAMLIST:
+			console.log('payload', payload);
+
 			return {
 				...state,
 				addMemberlistDialogOpen: payload

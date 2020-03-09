@@ -28,3 +28,11 @@ console.log(error.response.headers);
 });
 
 git rm --cached name_of_file
+
+use my_db_name
+db.createUser({ user: "exampleUser",
+pwd: "changeThisInfo",
+roles: [{ role: "readAnyDatabase", db: "admin" },
+"readWrite"] })
+db.auth("exampleUser","changeThisInfo");
+exit

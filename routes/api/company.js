@@ -6,22 +6,6 @@ const CompanyTypes = require('../../models/normalizations/CompanyTypes');
 
 const router = express.Router();
 
-// @route    GET api/company
-// @desc     Get all company profiles
-// @access   Private
-router.get('/', auth, async (req, res) => {
-	try {
-		// Populate with companyType only
-		const companiesList = await Companies.find({}).populate(
-			'companyType',
-			'companyType'
-		);
-		res.status(200).json(companiesList);
-	} catch (err) {
-		res.status(500).send('Server Error');
-	}
-});
-
 // @route    GET api/company/getAllCompanyTypes
 // @desc     Get all company types
 // @access   Private
@@ -106,6 +90,21 @@ router.put('/updateCompanyProfile/:id', auth, async (req, res) => {
 		}
 	} catch (err) {
 		console.error(err.message);
+		res.status(500).send('Server Error');
+	}
+});
+
+// @route    GET api/company
+// @desc     Get all company profiles
+// @access   Private
+router.get('/:currentUser', auth, async (req, res) => {
+	try {
+		// Populate with companyType only
+		const companiesList = await Companies.find({
+			companyOwner: req.params.currentUser
+		}).populate('companyType', 'companyType');
+		res.status(200).json(companiesList);
+	} catch (err) {
 		res.status(500).send('Server Error');
 	}
 });

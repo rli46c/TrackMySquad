@@ -135,7 +135,6 @@ export const setManageTeamList = (dialog, proid, userid) => async dispatch => {
 	const res = await axios.get(
 		`/api/team/getTeamlist/${dialog}/${proid}/${userid}`
 	);
-
 	dispatch({
 		type: SET_MANAGE_TEAMLIST,
 		payload: res.data

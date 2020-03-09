@@ -22,7 +22,7 @@ router.get('/', auth, async (req, res) => {
 		// Select userType field only from userType Reference
 		const teamMember = await Users.find({ userType: { $ne: adminType._id } })
 			.populate('userType', 'userType')
-			.select('-userPass');
+			.select('id firstName lastName userType userEmail');
 		//const projectname = await Projects.findOne({teamMembers: {memberID : teamMember._id}});
 		//const project = await Projects.find();
 		//const teanm = project[0].teamMembers;
@@ -167,9 +167,18 @@ router.get('/getTeamlist/:dialog/:proid/:userid', auth, async (req, res) => {
 		const companyList = await Companies.find({
 			companyOwner: req.params.userid
 		}).select('id');
-		// console.log('companyList', companyList);
-		return true;
-	} catch (err) {}
+		const comid = [];
+		companyList.map(comapny => comid.push(comapny._id));
+
+		const projectList = await Projects.find({
+			$and: [{ companyID: { $in: comid } }, { _id: req.params.proid }]
+		});
+		console.log('projectList', projectList);
+		return res.status(200).json(projectList);
+	} catch (err) {
+		console.error(err);
+		res.status(500).send('Server Error');
+	}
 });
 
 module.exports = router;

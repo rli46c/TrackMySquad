@@ -33,6 +33,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const ProjectsList = ({
+	auth: {
+		user: { _id: currentUser }
+	},
 	project: {
 		projects,
 		teamusers,
@@ -45,8 +48,8 @@ export const ProjectsList = ({
 	setAddProjectDialog
 }) => {
 	useEffect(() => {
-		getAllProjects();
-	}, [getAllProjects]);
+		getAllProjects(currentUser);
+	}, [currentUser, getAllProjects]);
 
 	const classes = useStyles();
 
@@ -94,6 +97,7 @@ export const ProjectsList = ({
 };
 
 ProjectsList.propTypes = {
+	auth: PropTypes.object.isRequired,
 	project: PropTypes.object.isRequired,
 	team: PropTypes.object.isRequired,
 	getAllProjects: PropTypes.func.isRequired,
@@ -101,6 +105,7 @@ ProjectsList.propTypes = {
 };
 
 const mapStateToProps = state => ({
+	auth: state.auth,
 	project: state.project,
 	team: state.team
 });
