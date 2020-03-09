@@ -72,7 +72,7 @@ export const ProjectCard = ({
 
 	const onDelete = () => {
 		handleChange();
-		deleteProject(_id);
+		deleteProject(projectId);
 	};
 
 	const classes = useStyles();
