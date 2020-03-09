@@ -52,7 +52,6 @@ export default (state = initailState, action) => {
 					? (projectAlreadyInState = true)
 					: null
 			);
-			console.log(projectAlreadyInState);
 
 			return {
 				...state,
