@@ -8,6 +8,7 @@ import Login from '../pages/Login';
 import HomePage from '../pages/HomePage';
 import Register from '../pages/Register';
 import ConfirmEmail from '../pages/ConfirmEmail';
+import Profile from '../dash/Profile';
 import Dash from '../dash/Dash';
 import Company from '../dash/Company';
 import Team from '../dash/Team';
@@ -31,6 +32,7 @@ const Routes = () => {
 				<Route exact path='/login' component={Login} />
 				<Route exact path='/register' component={Register} />
 				<Route exact path='/confirmEmail' component={ConfirmEmail} />
+				<PrivateRoute exact path='/profile' component={Profile} />
 				<PrivateRoute exact path='/dash' component={Dash} />
 				<PrivateRoute exact path='/companies' component={Company} />
 				<PrivateRoute exact path='/team' component={Team} />

@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import clsx from 'clsx';
 import {
@@ -28,7 +29,10 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
 	profile: {
-		fontSize: 'large'
+		fontSize: '20px',
+		display: 'inline',
+		verticalAlign: 'middle',
+		textDecoration: 'none'
 	},
 	toolbar: {
 		paddingRight: 24 // keep right padding when drawer closed
@@ -156,10 +160,12 @@ export const NavCombo = ({
 				open={open}
 			>
 				<div className={classes.toolbarIcon}>
-					<span className={classes.profile}>
-						<PersonPin />
-						{user && ` ${user.firstName} ${user.lastName}`}
-					</span>
+					<Link to='/profile' className={classes.profile}>
+						<span>
+							<PersonPin />
+							{user && ` ${user.firstName} ${user.lastName}`}
+						</span>
+					</Link>
 					<IconButton onClick={handleDrawerClose}>
 						<ChevronLeft />
 					</IconButton>

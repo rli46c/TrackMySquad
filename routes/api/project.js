@@ -1,35 +1,13 @@
 const express = require('express');
 const auth = require('../../middleware/auth');
 
+const Companies = require('../../models/Companies');
 const Projects = require('../../models/Projects');
 const Users = require('../../models/Users');
 const UserTypes = require('../../models/normalizations/UserTypes');
 const ProjectTypes = require('../../models/normalizations/ProjectTypes');
 
 const router = express.Router();
-
-// @route    GET api/project/
-// @desc     Get all projects
-// @access   Private
-router.get('/', auth, async (req, res) => {
-	try {
-		// Select userType field only from userType Reference
-		const adminType = await UserTypes.findOne({ userType: 'Admin' });
-		const projectsList = await Projects.find({})
-			.populate('companyID', 'companyName')
-			.populate('projectTypeID', 'projectType');
-		const teamUser = await Users.find({ userType: { $ne: adminType._id } })
-			.populate('userType', 'userType')
-			.select('-userPass');
-		// projectsList.users = teamUser;
-		// const projectsList = await Projects.find({});
-
-		res.status(200).json({ projectsList, teamUser });
-	} catch (err) {
-		console.error(err);
-		res.status(500).send('Server Error');
-	}
-});
 
 // @route    GET api/project/getAllUserTypes
 // @desc     Get all project types
@@ -131,6 +109,41 @@ router.delete('/deleteProject/:id', auth, async (req, res) => {
 	try {
 		const deletedProject = await Projects.findByIdAndDelete(req.params.id);
 		return res.status(200).json(deletedProject._id);
+	} catch (err) {
+		console.error(err);
+		res.status(500).send('Server Error');
+	}
+});
+
+// @route    GET api/project/
+// @desc     Get all projects
+// @access   Private
+router.get('/:currentUser', auth, async (req, res) => {
+	try {
+		const companiesList = await Companies.find({
+			companyOwner: req.params.currentUser
+		}).select('id');
+
+		let compIdList = new Array();
+		companiesList.map(company => compIdList.push(company.id));
+
+		const projectsList = await Projects.find({
+			companyID: {
+				$in: compIdList
+			}
+		})
+			.populate('companyID', 'companyName')
+			.populate('projectTypeID', 'projectType');
+
+		// Select userType field only from userType Reference
+		const adminType = await UserTypes.findOne({ userType: 'Admin' });
+		const teamUser = await Users.find({ userType: { $ne: adminType._id } })
+			.populate('userType', 'userType')
+			.select('-userPass');
+		// projectsList.users = teamUser;
+		// const projectsList = await Projects.find({});
+
+		res.status(200).json({ projectsList, teamUser });
 	} catch (err) {
 		console.error(err);
 		res.status(500).send('Server Error');

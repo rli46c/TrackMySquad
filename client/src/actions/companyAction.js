@@ -12,14 +12,16 @@ import {
 	SET_COMPANY_TO_EDIT
 } from './types';
 
-export const getAllCompanies = () => async dispatch => {
+export const getAllCompanies = currentUser => async dispatch => {
 	try {
-		const res = await axios.get('/api/company');
+		if (typeof currentUser !== 'undefined') {
+			const res = await axios.get(`/api/company/${currentUser}`);
 
-		dispatch({
-			type: GET_COMPANIES,
-			payload: res.data
-		});
+			dispatch({
+				type: GET_COMPANIES,
+				payload: res.data
+			});
+		}
 	} catch (err) {
 		dispatch({
 			type: COMPANY_ERRORS,

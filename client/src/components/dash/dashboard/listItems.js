@@ -26,6 +26,15 @@ export const mainListItems = (
 			</ListItem>
 		</Link>
 
+		<Link to='/companies' style={{ textDecoration: 'none' }}>
+			<ListItem button>
+				<ListItemIcon>
+					<AccountBalance />
+				</ListItemIcon>
+				<ListItemText primary='Companies' />
+			</ListItem>
+		</Link>
+
 		<Link to='/projects' style={{ textDecoration: 'none' }}>
 			<ListItem button>
 				<ListItemIcon>
@@ -41,15 +50,6 @@ export const mainListItems = (
 					<People />
 				</ListItemIcon>
 				<ListItemText primary='Team Members' />
-			</ListItem>
-		</Link>
-
-		<Link to='/companies' style={{ textDecoration: 'none' }}>
-			<ListItem button>
-				<ListItemIcon>
-					<AccountBalance />
-				</ListItemIcon>
-				<ListItemText primary='Companies' />
 			</ListItem>
 		</Link>
 

@@ -12,13 +12,15 @@ import {
 	GET_PROJECT_NAMES
 } from './types';
 
-export const getAllProjects = () => async dispatch => {
+export const getAllProjects = currentUser => async dispatch => {
 	try {
-		const res = await axios.get('/api/project');
-		dispatch({
-			type: GET_ALL_PROJECTS,
-			payload: res.data
-		});
+		if (typeof currentUser !== 'undefined') {
+			const res = await axios.get(`/api/project/${currentUser}`);
+			dispatch({
+				type: GET_ALL_PROJECTS,
+				payload: res.data
+			});
+		}
 	} catch (err) {
 		dispatch({
 			type: PROJECT_ERRORS,
