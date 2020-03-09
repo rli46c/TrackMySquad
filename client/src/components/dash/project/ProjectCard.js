@@ -1,8 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { makeStyles, TableRow, TableCell, IconButton } from '@material-ui/core';
-import { Edit, DeleteForever } from '@material-ui/icons';
+import {
+	makeStyles,
+	TableRow,
+	TableCell,
+	IconButton,
+	Button,
+	Slide
+} from '@material-ui/core';
+import { Edit, DeleteForever, Cancel } from '@material-ui/icons';
 import { setManageTeamList } from '../../../actions/teamAction';
 
 import {
@@ -18,6 +25,19 @@ const useStyles = makeStyles(theme => ({
 	},
 	pointer: {
 		cursor: 'pointer'
+	},
+	rowToSlide: {
+		zIndex: 1,
+		position: 'relative',
+		margin: theme.spacing(1)
+	},
+	deleteButton: {
+		borderWidth: '2px',
+		borderStyle: 'solid'
+	},
+	highlightText: {
+		color: '#fff',
+		fontWeight: 'bold'
 	}
 }));
 
@@ -28,6 +48,12 @@ export const ProjectCard = ({
 	setManageTeamList,
 	setProjectToEdit
 }) => {
+	const [checked, setChecked] = useState(false);
+
+	const handleChange = () => {
+		setChecked(prev => !prev);
+	};
+
 	useEffect(() => {
 		getAllProjects();
 	}, [getAllProjects]);
@@ -42,6 +68,7 @@ export const ProjectCard = ({
 	};
 
 	const onDelete = () => {
+		handleChange();
 		deleteProject(_id);
 	};
 
@@ -49,44 +76,77 @@ export const ProjectCard = ({
 	// console.log('userrr', teamusers);
 
 	return (
-		<TableRow>
-			<TableCell className={classes.tableCell}>{projectName}</TableCell>
-			<TableCell className={classes.tableCell}>
-				{projectTypeID.projectType}
-			</TableCell>
-			<TableCell>{companyID.companyName}</TableCell>
-			<TableCell
-				onClick={() => setManageTeamList(true)}
-				aria-label='add'
-				className={classes.pointer}
-			>
-				Members Here
-			</TableCell>
-			<TableCell align='right'>
-				<input type='button' id='edit-project' style={{ display: 'none' }} />
-				<label htmlFor='edit-project' onClick={onEdit}>
-					<IconButton
-						color='primary'
-						aria-label='Edit Project'
-						component='span'
-					>
-						<Edit />
-					</IconButton>
-				</label>
-			</TableCell>
-			<TableCell align='right'>
-				<input type='button' id='delete-project' style={{ display: 'none' }} />
-				<label htmlFor='delete-project' onClick={onDelete}>
-					<IconButton
-						color='primary'
-						aria-label='Delete Profile'
-						component='span'
-					>
-						<DeleteForever />
-					</IconButton>
-				</label>
-			</TableCell>
-		</TableRow>
+		<Fragment>
+			<TableRow style={checked ? { backgroundColor: '#ff0000' } : null}>
+				<TableCell
+					className={checked ? classes.highlightText : classes.tableCell}
+				>
+					{projectName}
+				</TableCell>
+				<TableCell
+					className={checked ? classes.highlightText : classes.tableCell}
+				>
+					{projectTypeID.projectType}
+				</TableCell>
+				<TableCell className={checked ? classes.highlightText : null}>
+					{companyID.companyName}
+				</TableCell>
+				<TableCell
+					onClick={() => setManageTeamList(true)}
+					aria-label='add'
+					className={classes.pointer}
+				>
+					<span className={checked ? classes.highlightText : null}>
+						Members Here
+					</span>
+				</TableCell>
+				<TableCell align='right'>
+					<input type='button' id='edit-project' style={{ display: 'none' }} />
+					<label htmlFor='edit-project' onClick={!checked ? onEdit : null}>
+						<IconButton
+							color={checked ? 'default' : 'primary'}
+							aria-label='Edit Project'
+							component='span'
+						>
+							<Edit />
+						</IconButton>
+					</label>
+				</TableCell>
+				<TableCell align='right'>
+					<input
+						type='button'
+						id='delete-project'
+						style={{ display: 'none' }}
+					/>
+					<label htmlFor='delete-project' onClick={handleChange}>
+						<IconButton
+							color={checked ? 'inherit' : 'primary'}
+							aria-label='Delete Profile'
+							component='span'
+						>
+							{checked ? <Cancel /> : <DeleteForever />}
+						</IconButton>
+					</label>
+				</TableCell>
+			</TableRow>
+			<Slide direction='left' in={checked} mountOnEnter unmountOnExit>
+				<TableRow elevation={4} className={classes.rowToSlide}>
+					<TableCell colSpan='5'>
+						<span>Are you sure you want to delete? &nbsp; </span>
+						<Button
+							className={classes.deleteButton}
+							onClick={onDelete}
+							color='secondary'
+						>
+							Delete
+						</Button>
+						<Button color='primary' onClick={handleChange}>
+							Cancel
+						</Button>
+					</TableCell>
+				</TableRow>
+			</Slide>
+		</Fragment>
 	);
 };
 

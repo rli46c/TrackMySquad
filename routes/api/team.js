@@ -21,7 +21,7 @@ router.get('/', auth, async (req, res) => {
 		// Select userType field only from userType Reference
 		const teamMember = await Users.find({ userType: { $ne: adminType._id } })
 			.populate('userType', 'userType')
-			.select('id firstName lastName userType');
+			.select('id firstName lastName userType userEmail');
 		//const projectname = await Projects.findOne({teamMembers: {memberID : teamMember._id}});
 		//const project = await Projects.find();
 		//const teanm = project[0].teamMembers;
