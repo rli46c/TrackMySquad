@@ -4,6 +4,7 @@ const auth = require('../../middleware/auth');
 const SuperUser = require('../../models/SuperUser');
 const Users = require('../../models/Users');
 const Projects = require('../../models/Projects');
+const Companies = require('../../models/Companies');
 const UserTypes = require('../../models/normalizations/UserTypes');
 const urlencode = require('urlencode');
 const nodemailer = require('nodemailer');
@@ -157,6 +158,18 @@ router.delete('/deleteMember/:userID/:teamMemberID', auth, async (req, res) => {
 		console.error(err);
 		res.status(500).send('Server Error');
 	}
+});
+
+router.get('/getTeamlist/:dialog/:proid/:userid', auth, async (req, res) => {
+	console.log(req.params.dialog, req.params.proid, req.params.userid);
+
+	try {
+		const companyList = await Companies.find({
+			companyOwner: req.params.userid
+		}).select('id');
+		// console.log('companyList', companyList);
+		return true;
+	} catch (err) {}
 });
 
 module.exports = router;

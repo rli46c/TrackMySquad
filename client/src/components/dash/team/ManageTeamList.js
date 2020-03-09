@@ -53,14 +53,7 @@ export const Projectteamlist = ({
 		getAllProjects();
 	}, [getAllProjects]);
 	const classes = useStyles();
-	const tmembers = [];
-	projects.forEach(projectData => {
-		tmembers.push(projectData.teamMembers);
-	});
-	// tmembers.map((member, id) => console.log('member', member));
-	console.log('teamusers', teamusers);
-	// console.log('projects', projects);
-	const memberteam = tmembers[0];
+
 	return (
 		<Dialog
 			keepMounted

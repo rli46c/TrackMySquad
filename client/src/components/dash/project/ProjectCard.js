@@ -22,7 +22,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const ProjectCard = ({
-	projectData: { _id, projectName, projectTypeID, companyID },
+	projectData: { _id: projectId, projectName, projectTypeID, companyID },
+	auth: {
+		user: { _id: userId }
+	},
 	deleteProject,
 	getAllProjects,
 	setManageTeamList,
@@ -34,7 +37,7 @@ export const ProjectCard = ({
 
 	const onEdit = () => {
 		setProjectToEdit({
-			_id,
+			projectId,
 			projectName,
 			projectTypeID,
 			companyID
@@ -42,7 +45,7 @@ export const ProjectCard = ({
 	};
 
 	const onDelete = () => {
-		deleteProject(_id);
+		deleteProject(projectId);
 	};
 
 	const classes = useStyles();
@@ -56,7 +59,7 @@ export const ProjectCard = ({
 			</TableCell>
 			<TableCell>{companyID.companyName}</TableCell>
 			<TableCell
-				onClick={() => setManageTeamList(true)}
+				onClick={() => setManageTeamList(true, projectId, userId)}
 				aria-label='add'
 				className={classes.pointer}
 			>
@@ -96,7 +99,9 @@ ProjectCard.propTypes = {
 	setProjectToEdit: PropTypes.func.isRequired
 };
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+	auth: state.auth
+});
 
 const mapDispatchToProps = {
 	getAllProjects,
