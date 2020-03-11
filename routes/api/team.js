@@ -12,37 +12,6 @@ const cryptoJS = require('crypto-js');
 const config = require('config');
 const router = express.Router();
 
-// @route    GET api/team/
-// @desc     Get all memebers except Admin
-// @access   Private
-router.get('/', auth, async (req, res) => {
-	try {
-		const adminType = await UserTypes.findOne({ userType: 'Admin' });
-
-		// Select userType field only from userType Reference
-		const teamMember = await Users.find({ userType: { $ne: adminType._id } })
-			.populate('userType', 'userType')
-			.select('id firstName lastName userType userEmail');
-		//const projectname = await Projects.findOne({teamMembers: {memberID : teamMember._id}});
-		//const project = await Projects.find();
-		//const teanm = project[0].teamMembers;
-		//console.log('project',project);
-		elemntid = [];
-		teamMember.forEach(element => {
-			elemntid.push(element._id);
-		});
-		const project = await Projects.find({
-			teamMembers: { $elemMatch: { memberID: { $in: elemntid } } }
-		});
-
-		//console.log('projectname',projectname);
-		res.status(200).json({ teamMember, project });
-	} catch (err) {
-		console.error(err);
-		res.status(500).send('Server Error');
-	}
-});
-
 // @route    GET api/team/getAllUserTypes
 // @desc     Get all user types
 // @access   Private
@@ -175,6 +144,61 @@ router.get('/getTeamlist/:dialog/:proid/:userid', auth, async (req, res) => {
 		});
 		console.log('projectList', projectList);
 		return res.status(200).json(projectList);
+	} catch (err) {
+		console.error(err);
+		res.status(500).send('Server Error');
+	}
+});
+
+// @route    GET api/team/
+// @desc     Get all memebers except Admin
+// @access   Private
+router.get('/:currentUser', auth, async (req, res) => {
+	try {
+		const companiesList = await Companies.find({
+			companyOwner: req.params.currentUser
+		}).select('id');
+
+		let compIdList = new Array();
+		companiesList.map(company => compIdList.push(company.id));
+
+		const teamMemberObjArray = await Projects.find({
+			companyID: {
+				$in: compIdList
+			}
+		}).select('teamMembers');
+
+		let membersIdSet = new Set();
+		teamMemberObjArray.map(teamObj =>
+			teamObj.teamMembers.map(memObj => membersIdSet.add(memObj.memberID))
+		);
+		const unqMemIdArray = Array.from(membersIdSet);
+
+		const adminType = await UserTypes.findOne({ userType: 'Admin' });
+
+		// Select userType field only from userType Reference
+		const teamMember = await Users.find({
+			$and: [
+				{ userType: { $ne: adminType._id } },
+				{ _id: { $in: unqMemIdArray } }
+			]
+		})
+			.populate('userType', 'userType')
+			.select('id firstName lastName userType userEmail');
+		//const projectname = await Projects.findOne({teamMembers: {memberID : teamMember._id}});
+		//const project = await Projects.find();
+		//const teanm = project[0].teamMembers;
+		//console.log('project',project);
+		elemntid = [];
+		teamMember.forEach(element => {
+			elemntid.push(element._id);
+		});
+		const project = await Projects.find({
+			teamMembers: { $elemMatch: { memberID: { $in: elemntid } } }
+		});
+
+		//console.log('projectname',projectname);
+		res.status(200).json({ teamMember, project });
 	} catch (err) {
 		console.error(err);
 		res.status(500).send('Server Error');

@@ -45,7 +45,6 @@ router.post('/addProject', auth, async (req, res) => {
 			],
 			(err, addedProject) => {
 				if (err) throw err;
-				console.log(addedProject);
 				res.status(200).json(addedProject);
 			}
 		);
@@ -55,9 +54,17 @@ router.post('/addProject', auth, async (req, res) => {
 	}
 });
 
-router.get('/getProjectNames', auth, async (req, res) => {
+router.get('/getProjectNames/:currentUser', auth, async (req, res) => {
 	try {
-		const projectNames = await Projects.find({}).select('projectName');
+		const currentUsersCompanySet = new Set();
+		const compList = await Companies.find({
+			companyOwner: req.params.currentUser
+		}).select('id');
+		compList.map(company => currentUsersCompanySet.add(company._id));
+		const currentUsersCompanyArray = Array.from(currentUsersCompanySet);
+		const projectNames = await Projects.find({
+			companyID: { $in: currentUsersCompanyArray }
+		}).select('projectName');
 		res.status(200).json(projectNames);
 	} catch (err) {
 		console.error(err.message);

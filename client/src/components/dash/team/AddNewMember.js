@@ -54,6 +54,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export const AddNewMember = ({
+	auth: {
+		user: { _id: currentUser }
+	},
 	team: { userTypes, addMemberDialogOpen },
 	project: { projectNames },
 	getAllUserTypes,
@@ -73,8 +76,8 @@ export const AddNewMember = ({
 	const [projectName, setProjectName] = useState('');
 
 	useEffect(() => {
-		getProjectNames();
-	}, [getProjectNames]);
+		getProjectNames(currentUser);
+	}, [currentUser, getProjectNames]);
 
 	useEffect(() => {
 		getAllUserTypes();
@@ -250,6 +253,7 @@ export const AddNewMember = ({
 };
 
 AddNewMember.propTypes = {
+	auth: PropTypes.object.isRequired,
 	team: PropTypes.object.isRequired,
 	project: PropTypes.object.isRequired,
 	setAddMemberDialog: PropTypes.func.isRequired,
@@ -259,6 +263,7 @@ AddNewMember.propTypes = {
 };
 
 const mapStateToProps = state => ({
+	auth: state.auth,
 	team: state.team,
 	project: state.project
 });

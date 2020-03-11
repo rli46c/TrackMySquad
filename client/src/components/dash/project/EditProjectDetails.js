@@ -50,6 +50,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export const EditProjectDetails = ({
+	auth: {
+		user: { _id: currentUser }
+	},
 	project: { projectToEdit, projectTypes, editProjectDialogOpen },
 	company: { companyNames },
 	getCompanyNames,
@@ -65,8 +68,8 @@ export const EditProjectDetails = ({
 	const [companyName, setCompanyName] = useState('');
 
 	useEffect(() => {
-		getCompanyNames();
-	}, [getCompanyNames]);
+		getCompanyNames(currentUser);
+	}, [currentUser, getCompanyNames]);
 
 	useEffect(() => {
 		getAllProjectTypes();
@@ -217,6 +220,7 @@ export const EditProjectDetails = ({
 };
 
 EditProjectDetails.propTypes = {
+	auth: PropTypes.object.isRequired,
 	project: PropTypes.object.isRequired,
 	getAllProjectTypes: PropTypes.func.isRequired,
 	setEditProjectDialog: PropTypes.func.isRequired,
@@ -224,6 +228,7 @@ EditProjectDetails.propTypes = {
 };
 
 const mapStateToProps = state => ({
+	auth: state.auth,
 	project: state.project,
 	company: state.company
 });

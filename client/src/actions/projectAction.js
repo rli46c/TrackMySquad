@@ -29,18 +29,22 @@ export const getAllProjects = currentUser => async dispatch => {
 	}
 };
 
-export const getProjectNames = () => async dispatch => {
-	try {
-		const res = await axios.get('/api/project/getProjectNames');
-		dispatch({
-			type: GET_PROJECT_NAMES,
-			payload: res.data
-		});
-	} catch (err) {
-		dispatch({
-			type: PROJECT_ERRORS,
-			payload: err.response
-		});
+export const getProjectNames = currentUser => async dispatch => {
+	if (typeof currentUser !== 'undefined') {
+		try {
+			const res = await axios.get(
+				`/api/project/getProjectNames/${currentUser}`
+			);
+			dispatch({
+				type: GET_PROJECT_NAMES,
+				payload: res.data
+			});
+		} catch (err) {
+			dispatch({
+				type: PROJECT_ERRORS,
+				payload: err.response
+			});
+		}
 	}
 };
 

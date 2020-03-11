@@ -12,14 +12,16 @@ import {
 	SET_MANAGE_TEAMLIST
 } from './types';
 
-export const getAllMembers = () => async dispatch => {
+export const getAllMembers = currentUser => async dispatch => {
 	try {
-		const res = await axios.get('/api/team');
+		if (typeof currentUser !== 'undefined') {
+			const res = await axios.get(`/api/team/${currentUser}`);
 
-		dispatch({
-			type: GET_ALL_MEMBERS,
-			payload: res.data
-		});
+			dispatch({
+				type: GET_ALL_MEMBERS,
+				payload: res.data
+			});
+		}
 	} catch (err) {
 		dispatch({
 			type: TEAM_ERRORS,

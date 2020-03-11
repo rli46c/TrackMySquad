@@ -21,9 +21,11 @@ router.get('/getAllCompanyTypes', auth, async (req, res) => {
 // @route    GET api/company/getAllCompanyTypes
 // @desc     Get all company types
 // @access   Private
-router.get('/getCompanyNames', auth, async (req, res) => {
+router.get('/getCompanyNames/:currentUser', auth, async (req, res) => {
 	try {
-		const companyNames = await Companies.find({}).select('companyName');
+		const companyNames = await Companies.find({
+			companyOwner: req.params.currentUser
+		}).select('companyName');
 		res.status(200).json(companyNames);
 	} catch (err) {
 		res.status(500).send('Server Error');

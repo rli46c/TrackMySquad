@@ -30,19 +30,23 @@ export const getAllCompanies = currentUser => async dispatch => {
 	}
 };
 
-export const getCompanyNames = () => async dispatch => {
-	try {
-		const res = await axios.get('/api/company/getCompanyNames');
+export const getCompanyNames = currentUser => async dispatch => {
+	if (typeof currentUser !== 'undefined') {
+		try {
+			const res = await axios.get(
+				`/api/company/getCompanyNames/${currentUser}`
+			);
 
-		dispatch({
-			type: GET_COMPANY_NAMES,
-			payload: res.data
-		});
-	} catch (err) {
-		dispatch({
-			type: COMPANY_ERRORS,
-			payload: err.response
-		});
+			dispatch({
+				type: GET_COMPANY_NAMES,
+				payload: res.data
+			});
+		} catch (err) {
+			dispatch({
+				type: COMPANY_ERRORS,
+				payload: err.response
+			});
+		}
 	}
 };
 

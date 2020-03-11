@@ -30,6 +30,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const MembersList = ({
+	auth: {
+		user: { _id: currentUser }
+	},
 	team: {
 		teamMembers,
 		projectNamelist,
@@ -41,8 +44,8 @@ export const MembersList = ({
 	setAddMemberDialog
 }) => {
 	useEffect(() => {
-		getAllMembers();
-	}, [getAllMembers]);
+		getAllMembers(currentUser);
+	}, [currentUser, getAllMembers]);
 
 	const classes = useStyles();
 
@@ -95,12 +98,14 @@ export const MembersList = ({
 };
 
 MembersList.propTypes = {
+	auth: PropTypes.object.isRequired,
 	getAllMembers: PropTypes.func.isRequired,
 	setAddMemberDialog: PropTypes.func.isRequired,
 	team: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
+	auth: state.auth,
 	team: state.team
 });
 
