@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
@@ -6,22 +6,11 @@ import {
 	AppBar,
 	Button,
 	Dialog,
-	Divider,
-	DialogActions,
-	DialogContent,
-	DialogTitle,
 	FormGroup,
-	FormControl,
 	Grid,
-	InputLabel,
 	IconButton,
-	ListItemText,
-	ListItem,
-	List,
-	NativeSelect,
 	Paper,
 	Slide,
-	TextField,
 	Toolbar,
 	Typography
 } from '@material-ui/core';
@@ -29,15 +18,11 @@ import { Close } from '@material-ui/icons';
 
 import {
 	getAllMembers,
-	getAllUserTypes,
 	showManageTeamDialog,
 	addMember
 } from '../../../actions/teamAction';
-import { getProjectNames } from '../../../actions/projectAction';
 import AlreadyMemberCard from './ManageTeam/AlreadyMemberCard';
 import ReaminingMemberCard from './ManageTeam/RemainingMemberCard';
-import ProjectNamesCard from '../project/ProjectNamesCard';
-import UserTypesCard from './UserTypesCard';
 
 const useStyles = makeStyles(theme => ({
 	appBar: {
@@ -84,83 +69,17 @@ export const AddNewMember = ({
 	auth: {
 		user: { _id: currentUser }
 	},
-	team: { teamMembers, userTypes, manageMembersDialogOpen },
-	project: { currentProject, projectNames },
+	team: { teamMembers, manageMembersDialogOpen },
+	project: { currentProject },
 	getAllMembers,
-	getAllUserTypes,
-	getProjectNames,
 	showManageTeamDialog,
 	addMember
 }) => {
-	const [fullWidth] = useState(true);
-	const [maxWidth] = useState('sm');
-
-	const [userType, setUserType] = useState('');
-	const [firstName, setFirstName] = useState('');
-	const [lastName, setLastName] = useState('');
-	const [userName, setUserName] = useState('');
-	const [userPass, setUserPass] = useState('');
-	const [userEmail, setUserEmail] = useState('');
-	const [projectName, setProjectName] = useState('');
-
 	useEffect(() => {
 		if (teamMembers.length === 0) {
 			getAllMembers(currentUser);
 		}
-	}, [currentUser, getAllMembers]);
-
-	console.log('currentProject: ', currentProject);
-	console.log('teamMembers: ', teamMembers);
-
-	useEffect(() => {
-		getProjectNames(currentUser);
-	}, [currentUser, getProjectNames]);
-
-	useEffect(() => {
-		getAllUserTypes();
-	}, [getAllUserTypes]);
-
-	const onSelectUserType = e => {
-		setUserType({
-			_id: e.target.value,
-			userType: e.target.options[e.target.selectedIndex].text
-		});
-	};
-
-	const onSelectProjectName = e => {
-		setProjectName({
-			_id: e.target.value,
-			projectName: e.target.options[e.target.selectedIndex].text
-		});
-	};
-
-	const onReset = e => {
-		e.preventDefault();
-		setUserEmail('');
-		setFirstName('');
-		setLastName('');
-		setUserName('');
-		setUserPass('');
-		setUserType('');
-		setProjectName('');
-	};
-
-	const onSubmit = e => {
-		e.preventDefault();
-
-		const memberData = {
-			userEmail,
-			firstName,
-			lastName,
-			userName,
-			userPass,
-			userType,
-			projectName
-		};
-		addMember(memberData);
-		onReset(e);
-		showManageTeamDialog(false);
-	};
+	}, [teamMembers.length, currentUser, getAllMembers]);
 
 	const classes = useStyles();
 
@@ -280,8 +199,6 @@ AddNewMember.propTypes = {
 	project: PropTypes.object.isRequired,
 	showManageTeamDialog: PropTypes.func.isRequired,
 	addMember: PropTypes.func.isRequired,
-	getAllUserTypes: PropTypes.func.isRequired,
-	getProjectNames: PropTypes.func.isRequired,
 	getAllMembers: PropTypes.func.isRequired
 };
 
@@ -294,8 +211,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
 	showManageTeamDialog,
 	addMember,
-	getProjectNames,
-	getAllUserTypes,
 	getAllMembers
 };
 

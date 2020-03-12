@@ -41,7 +41,7 @@ export const MemberCard = ({
 }) => {
 	const [checked, setChecked] = useState(false);
 
-	const curntMembersProjDtl = new Array();
+	const curntMembersProjDtl = [];
 	projects.map(proj =>
 		proj.teamMembers.map(tmMem =>
 			tmMem.memberID._id === _id

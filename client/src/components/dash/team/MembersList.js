@@ -54,7 +54,7 @@ export const MembersList = ({
 		if (projects.length === 0) {
 			getAllProjects(currentUser);
 		}
-	}, [currentUser, getAllProjects]);
+	}, [projects.length, currentUser, getAllProjects]);
 
 	const classes = useStyles();
 
