@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
 
 export const Projectteamlist = ({
 	project: { teamusers, projects },
-	team: { addMemberlistDialogOpen },
+	team: { manageMembersDialogOpen },
 	getAllProjects,
 	setManageTeamList
 }) => {
@@ -59,7 +59,7 @@ export const Projectteamlist = ({
 			keepMounted
 			disableBackdropClick
 			onClose={() => setManageTeamList(false)}
-			open={addMemberlistDialogOpen}
+			open={manageMembersDialogOpen}
 			TransitionComponent={Transition}
 			fullWidth={fullWidth}
 			maxWidth={maxWidth}

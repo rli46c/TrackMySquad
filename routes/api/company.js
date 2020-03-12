@@ -18,20 +18,6 @@ router.get('/getAllCompanyTypes', auth, async (req, res) => {
 	}
 });
 
-// @route    GET api/company/getAllCompanyTypes
-// @desc     Get all company types
-// @access   Private
-router.get('/getCompanyNames/:currentUser', auth, async (req, res) => {
-	try {
-		const companyNames = await Companies.find({
-			companyOwner: req.params.currentUser
-		}).select('companyName');
-		res.status(200).json(companyNames);
-	} catch (err) {
-		res.status(500).send('Server Error');
-	}
-});
-
 // @route    POST api/company/addCompanyProfile
 // @desc     Add a new Company Profile
 // @access   Private
@@ -92,6 +78,20 @@ router.put('/updateCompanyProfile/:id', auth, async (req, res) => {
 		}
 	} catch (err) {
 		console.error(err.message);
+		res.status(500).send('Server Error');
+	}
+});
+
+// @route    GET api/company/getAllCompanyTypes
+// @desc     Get all company types
+// @access   Private
+router.get('/getCompanyNames/:currentUser', auth, async (req, res) => {
+	try {
+		const companyNames = await Companies.find({
+			companyOwner: req.params.currentUser
+		}).select('companyName');
+		res.status(200).json(companyNames);
+	} catch (err) {
 		res.status(500).send('Server Error');
 	}
 });

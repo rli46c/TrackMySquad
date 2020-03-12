@@ -19,7 +19,7 @@ import {
 } from '../../../actions/projectAction';
 import ProjectCard from './ProjectCard';
 import AddNewProject from './AddNewProject';
-import ManageTeamList from '../team/ManageTeamList';
+import ManageTeamMembers from '../team/ManageTeamMembers';
 import EditProjectDetails from './EditProjectDetails';
 const useStyles = makeStyles(theme => ({
 	seeMore: {
@@ -36,14 +36,8 @@ export const ProjectsList = ({
 	auth: {
 		user: { _id: currentUser }
 	},
-	project: {
-		projects,
-		teamusers,
-		projectToEdit,
-		addProjectDialogOpen,
-		projectErrors
-	},
-	team: { addMemberlistDialogOpen },
+	project: { projects, projectToEdit, addProjectDialogOpen, projectErrors },
+	team: { manageMembersDialogOpen },
 	getAllProjects,
 	setAddProjectDialog
 }) => {
@@ -90,8 +84,7 @@ export const ProjectsList = ({
 			</Fab>
 			{addProjectDialogOpen && <AddNewProject />}
 			{Object.entries(projectToEdit).length !== 0 && <EditProjectDetails />}
-
-			{addMemberlistDialogOpen && <ManageTeamList />}
+			{manageMembersDialogOpen && <ManageTeamMembers />}
 		</Fragment>
 	);
 };

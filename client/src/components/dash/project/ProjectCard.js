@@ -10,12 +10,13 @@ import {
 	Slide
 } from '@material-ui/core';
 import { Edit, DeleteForever, Cancel } from '@material-ui/icons';
-import { setManageTeamList } from '../../../actions/teamAction';
+import { showManageTeamDialog } from '../../../actions/teamAction';
 
 import {
 	deleteProject,
 	getAllProjects,
-	setProjectToEdit
+	setProjectToEdit,
+	setCurrentProject
 } from '../../../actions/projectAction';
 
 const useStyles = makeStyles(theme => ({
@@ -38,32 +39,41 @@ const useStyles = makeStyles(theme => ({
 	highlightText: {
 		color: '#fff',
 		fontWeight: 'bold'
+	},
+	linkText: {
+		color: '#0000ff',
+		textDecoration: 'underline'
 	}
 }));
 
 export const ProjectCard = ({
-	projectData: { _id: projectId, projectName, projectTypeID, companyID },
-	auth: {
-		user: { _id: userId }
-	},
+	projectData,
 	deleteProject,
 	getAllProjects,
-	setManageTeamList,
-	setProjectToEdit
+	showManageTeamDialog,
+	setProjectToEdit,
+	setCurrentProject
 }) => {
 	const [checked, setChecked] = useState(false);
 
-	const handleChange = () => {
-		setChecked(prev => !prev);
-	};
+	const { _id: projId, projectName, projectTypeID, companyID } = projectData;
 
 	useEffect(() => {
 		getAllProjects();
 	}, [getAllProjects]);
 
+	const handleChange = () => {
+		setChecked(prev => !prev);
+	};
+
+	const manageMembers = () => {
+		setCurrentProject(projectData);
+		showManageTeamDialog(true);
+	};
+
 	const onEdit = () => {
 		setProjectToEdit({
-			projectId,
+			projId,
 			projectName,
 			projectTypeID,
 			companyID
@@ -72,7 +82,7 @@ export const ProjectCard = ({
 
 	const onDelete = () => {
 		handleChange();
-		deleteProject(projectId);
+		deleteProject();
 	};
 
 	const classes = useStyles();
@@ -95,12 +105,12 @@ export const ProjectCard = ({
 					{companyID.companyName}
 				</TableCell>
 				<TableCell
-					onClick={() => setManageTeamList(true, projectId, userId)}
+					onClick={manageMembers}
 					aria-label='add'
 					className={classes.pointer}
 				>
 					<span className={checked ? classes.highlightText : null}>
-						Members Here
+						<span className={classes.linkText}>[ Manage Members... ]</span>
 					</span>
 				</TableCell>
 				<TableCell align='right'>
@@ -156,7 +166,8 @@ export const ProjectCard = ({
 ProjectCard.propTypes = {
 	projectData: PropTypes.object.isRequired,
 	deleteProject: PropTypes.func.isRequired,
-	setProjectToEdit: PropTypes.func.isRequired
+	setProjectToEdit: PropTypes.func.isRequired,
+	setCurrentProject: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -167,7 +178,8 @@ const mapDispatchToProps = {
 	getAllProjects,
 	deleteProject,
 	setProjectToEdit,
-	setManageTeamList
+	setCurrentProject,
+	showManageTeamDialog
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProjectCard);

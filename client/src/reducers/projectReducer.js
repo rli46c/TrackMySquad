@@ -7,6 +7,7 @@ import {
 	SET_ADD_PROJECT_DIALOG,
 	SET_EDIT_PROJECT_DIALOG,
 	SET_PROJECT_TO_EDIT,
+	SET_CURRENT_PROJECT,
 	PROJECT_ERRORS,
 	GET_PROJECT_NAMES
 } from '../actions/types';
@@ -17,6 +18,7 @@ const initailState = {
 	projectNames: [],
 	projectTypes: [],
 	projectToEdit: {},
+	currentProject: {},
 	addProjectDialogOpen: false,
 	editProjectDialogOpen: false,
 	projectErrors: []
@@ -29,8 +31,7 @@ export default (state = initailState, action) => {
 		case GET_ALL_PROJECTS:
 			return {
 				...state,
-				projects: payload.projectsList,
-				teamusers: payload.teamUser
+				projects: payload
 			};
 
 		case GET_ALL_PROJECT_TYPES:
@@ -68,6 +69,12 @@ export default (state = initailState, action) => {
 			return {
 				...state,
 				editProjectDialogOpen: false
+			};
+
+		case SET_CURRENT_PROJECT:
+			return {
+				...state,
+				currentProject: payload
 			};
 
 		case UPDATE_PROJECT:

@@ -14,6 +14,7 @@ import {
 import { Add } from '@material-ui/icons';
 
 import { getAllMembers, setAddMemberDialog } from '../../../actions/teamAction';
+import { getAllProjects } from '../../../actions/projectAction';
 import MemberCard from './MemberCard';
 import AddNewMember from './AddNewMember';
 import EditMemberDetails from './EditMemberDetails';
@@ -40,12 +41,20 @@ export const MembersList = ({
 		memberToEdit,
 		teamErrors
 	},
+	project: { projects },
 	getAllMembers,
+	getAllProjects,
 	setAddMemberDialog
 }) => {
 	useEffect(() => {
 		getAllMembers(currentUser);
 	}, [currentUser, getAllMembers]);
+
+	useEffect(() => {
+		if (projects.length === 0) {
+			getAllProjects(currentUser);
+		}
+	}, [currentUser, getAllProjects]);
 
 	const classes = useStyles();
 
@@ -70,7 +79,7 @@ export const MembersList = ({
 							<MemberCard
 								key={id}
 								memberData={member}
-								projectNames={{ projNams: projectNamelist }}
+								allProjectsData={{ projects }}
 							/>
 						))}
 				</TableBody>
@@ -99,18 +108,22 @@ export const MembersList = ({
 
 MembersList.propTypes = {
 	auth: PropTypes.object.isRequired,
+	team: PropTypes.object.isRequired,
+	project: PropTypes.object.isRequired,
 	getAllMembers: PropTypes.func.isRequired,
-	setAddMemberDialog: PropTypes.func.isRequired,
-	team: PropTypes.object.isRequired
+	getAllProjects: PropTypes.func.isRequired,
+	setAddMemberDialog: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
 	auth: state.auth,
-	team: state.team
+	team: state.team,
+	project: state.project
 });
 
 const mapDispatchToProps = {
 	getAllMembers,
+	getAllProjects,
 	setAddMemberDialog
 };
 

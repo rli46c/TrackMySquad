@@ -123,6 +123,7 @@ export const EditProjectDetails = ({
 	};
 
 	const classes = useStyles();
+
 	return (
 		<Dialog
 			keepMounted

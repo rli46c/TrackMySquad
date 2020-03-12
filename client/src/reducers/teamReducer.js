@@ -8,7 +8,7 @@ import {
 	SET_ADD_MEMBER_DIALOG,
 	SET_EDIT_MEMBER_DIALOG,
 	TEAM_ERRORS,
-	SET_MANAGE_TEAMLIST
+	SET_MANAGE_TEAM_DIALOG
 } from '../actions/types';
 
 const initailState = {
@@ -19,7 +19,7 @@ const initailState = {
 	addMemberDialogOpen: false,
 	editMemberDialogOpen: false,
 	teamErrors: [],
-	addMemberlistDialogOpen: false
+	manageMembersDialogOpen: false
 };
 
 export default (state = initailState, action) => {
@@ -29,8 +29,7 @@ export default (state = initailState, action) => {
 		case GET_ALL_MEMBERS:
 			return {
 				...state,
-				teamMembers: payload.teamMember,
-				projectNamelist: payload.project
+				teamMembers: payload
 			};
 
 		case GET_ALL_USER_TYPES:
@@ -93,12 +92,10 @@ export default (state = initailState, action) => {
 					member._id === payload._id ? payload : member
 				)
 			};
-		case SET_MANAGE_TEAMLIST:
-			console.log('payload', payload);
-
+		case SET_MANAGE_TEAM_DIALOG:
 			return {
 				...state,
-				addMemberlistDialogOpen: payload
+				manageMembersDialogOpen: payload
 			};
 		case TEAM_ERRORS:
 			return {

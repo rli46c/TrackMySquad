@@ -1,16 +1,18 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const urlencode = require('urlencode');
+const nodemailer = require('nodemailer');
+const cryptoJS = require('crypto-js');
+const config = require('config');
+const bcrypt = require('bcryptjs');
+const router = express.Router();
+
 const auth = require('../../middleware/auth');
 const SuperUser = require('../../models/SuperUser');
 const Users = require('../../models/Users');
 const Projects = require('../../models/Projects');
 const Companies = require('../../models/Companies');
 const UserTypes = require('../../models/normalizations/UserTypes');
-const urlencode = require('urlencode');
-const nodemailer = require('nodemailer');
-const cryptoJS = require('crypto-js');
-const config = require('config');
-const router = express.Router();
 
 // @route    GET api/team/getAllUserTypes
 // @desc     Get all user types
@@ -31,7 +33,6 @@ router.get('/getAllUserTypes', auth, async (req, res) => {
 router.post('/addMemberProfile', auth, async (req, res) => {
 	try {
 		const user = new Users(req.body);
-
 		let userAdded = await user.save();
 
 		const addedUser = await Users.findById(userAdded.id)
@@ -129,27 +130,6 @@ router.delete('/deleteMember/:userID/:teamMemberID', auth, async (req, res) => {
 	}
 });
 
-router.get('/getTeamlist/:dialog/:proid/:userid', auth, async (req, res) => {
-	console.log(req.params.dialog, req.params.proid, req.params.userid);
-
-	try {
-		const companyList = await Companies.find({
-			companyOwner: req.params.userid
-		}).select('id');
-		const comid = [];
-		companyList.map(comapny => comid.push(comapny._id));
-
-		const projectList = await Projects.find({
-			$and: [{ companyID: { $in: comid } }, { _id: req.params.proid }]
-		});
-		console.log('projectList', projectList);
-		return res.status(200).json(projectList);
-	} catch (err) {
-		console.error(err);
-		res.status(500).send('Server Error');
-	}
-});
-
 // @route    GET api/team/
 // @desc     Get all memebers except Admin
 // @access   Private
@@ -185,20 +165,7 @@ router.get('/:currentUser', auth, async (req, res) => {
 		})
 			.populate('userType', 'userType')
 			.select('id firstName lastName userType userEmail');
-		//const projectname = await Projects.findOne({teamMembers: {memberID : teamMember._id}});
-		//const project = await Projects.find();
-		//const teanm = project[0].teamMembers;
-		//console.log('project',project);
-		elemntid = [];
-		teamMember.forEach(element => {
-			elemntid.push(element._id);
-		});
-		const project = await Projects.find({
-			teamMembers: { $elemMatch: { memberID: { $in: elemntid } } }
-		});
-
-		//console.log('projectname',projectname);
-		res.status(200).json({ teamMember, project });
+		res.status(200).json(teamMember);
 	} catch (err) {
 		console.error(err);
 		res.status(500).send('Server Error');

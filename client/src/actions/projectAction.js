@@ -8,6 +8,7 @@ import {
 	SET_ADD_PROJECT_DIALOG,
 	SET_EDIT_PROJECT_DIALOG,
 	SET_PROJECT_TO_EDIT,
+	SET_CURRENT_PROJECT,
 	PROJECT_ERRORS,
 	GET_PROJECT_NAMES
 } from './types';
@@ -133,6 +134,13 @@ export const setEditProjectDialog = dialogOpen => dispatch => {
 export const setProjectToEdit = projectData => dispatch => {
 	dispatch({
 		type: SET_PROJECT_TO_EDIT,
+		payload: projectData
+	});
+};
+
+export const setCurrentProject = projectData => dispatch => {
+	dispatch({
+		type: SET_CURRENT_PROJECT,
 		payload: projectData
 	});
 };

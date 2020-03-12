@@ -9,3 +9,32 @@ eyJ1c2VyIjp7ImlkIjoiNWU2M2ZhYWFlOGM3ZGMyOGIzYzkxOGYxIn0sImlhdCI6MTU4Mzc1N_"jcyMC
 4r91K9un4KwbDNM-BlD0UCBxuYobJnpM7N5pxghMduw
 L15DuEFKYSq-AgbyyNXuN1qa8WHD4p5KbYNtgNIlfxg
 7aFtBQK8TMxdpwzTyxTG8fhPvgM7zkufPOQUx-vnIzM
+
+
+
+
+#### Mongoose Aggregate >>>
+
+db.department.aggregate([
+  {
+    $match: { depNo: 101 }
+  },
+  {
+    $lookup: {
+      from: 'employee',
+      localField: 'depNo',
+      foreignField: 'depNo',
+      as: 'empDetails'
+    }
+  },
+  {
+  $project: {
+      depNO: 1,
+      departmentName: 1,
+      empDetails: {
+        empName: 1,
+        empSeatNo: 1
+      }
+    }
+  }
+]);

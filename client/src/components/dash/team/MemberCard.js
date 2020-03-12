@@ -35,11 +35,23 @@ const useStyles = makeStyles(theme => ({
 
 export const MemberCard = ({
 	memberData: { _id, firstName, lastName, userType, userEmail },
-	projectNames: { projNams },
+	allProjectsData: { projects },
 	deleteMember,
 	setMemberToEdit
 }) => {
 	const [checked, setChecked] = useState(false);
+
+	const curntMembersProjDtl = new Array();
+	projects.map(proj =>
+		proj.teamMembers.map(tmMem =>
+			tmMem.memberID._id === _id
+				? curntMembersProjDtl.push({
+						_id: proj._id,
+						projectName: proj.projectName
+				  })
+				: null
+		)
+	);
 
 	const handleChange = () => {
 		setChecked(prev => !prev);
@@ -56,15 +68,7 @@ export const MemberCard = ({
 
 	const onDelete = () => {
 		handleChange();
-		let teamMemberID = null;
-		projNams.forEach(projectData => {
-			projectData.teamMembers.forEach(memberData => {
-				if (memberData.memberID === _id) {
-					teamMemberID = memberData._id;
-				}
-			});
-		});
-		deleteMember({ userID: _id, teamMemberID });
+		deleteMember({ userID: _id, teamMemberID: curntMembersProjDtl[0]._id });
 	};
 
 	const classes = useStyles();
@@ -86,11 +90,7 @@ export const MemberCard = ({
 					{userType.userType}
 				</TableCell>
 				<TableCell className={checked ? classes.highlightText : null}>
-					{projNams.map(namelist =>
-						namelist.teamMembers.map(member =>
-							_id === member.memberID ? namelist.projectName : ''
-						)
-					)}
+					{curntMembersProjDtl.map(proj => `${proj.projectName}, `)}
 				</TableCell>
 				<TableCell
 					className={checked ? classes.highlightText : classes.tableCell}
@@ -156,7 +156,7 @@ export const MemberCard = ({
 
 MemberCard.propTypes = {
 	memberData: PropTypes.object.isRequired,
-	projectNames: PropTypes.object.isRequired,
+	allProjectsData: PropTypes.object.isRequired,
 	deleteMember: PropTypes.func.isRequired,
 	setMemberToEdit: PropTypes.func.isRequired
 };

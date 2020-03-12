@@ -27,7 +27,11 @@ console.log(error.response.headers);
 }
 });
 
+#### Remove file from GIT Repo
+
 git rm --cached name_of_file
+
+#### Create user in Local MongoDB
 
 use my_db_name
 db.createUser({ user: "exampleUser",
@@ -36,3 +40,29 @@ roles: [{ role: "readAnyDatabase", db: "admin" },
 "readWrite"] })
 db.auth("exampleUser","changeThisInfo");
 exit
+
+#### Mongoose Aggregate
+
+db.department.aggregate([
+{
+$match: { depNo: 101 }
+},
+{
+$lookup: {
+from: 'employee',
+localField: 'depNo',
+foreignField: 'depNo',
+as: 'empDetails'
+}
+},
+{
+$project: {
+depNO: 1,
+departmentName: 1,
+empDetails: {
+empName: 1,
+empSeatNo: 1
+}
+}
+}
+]);

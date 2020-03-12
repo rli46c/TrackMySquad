@@ -126,6 +126,7 @@ export const AddNewMember = ({
 	};
 
 	const classes = useStyles();
+
 	return (
 		<Dialog
 			keepMounted

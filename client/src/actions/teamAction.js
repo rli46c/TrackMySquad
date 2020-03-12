@@ -9,7 +9,7 @@ import {
 	SET_ADD_MEMBER_DIALOG,
 	SET_EDIT_MEMBER_DIALOG,
 	SET_MEMBER_TO_EDIT,
-	SET_MANAGE_TEAMLIST
+	SET_MANAGE_TEAM_DIALOG
 } from './types';
 
 export const getAllMembers = currentUser => async dispatch => {
@@ -133,12 +133,9 @@ export const setMemberToEdit = memberData => dispatch => {
 	});
 };
 
-export const setManageTeamList = (dialog, proid, userid) => async dispatch => {
-	const res = await axios.get(
-		`/api/team/getTeamlist/${dialog}/${proid}/${userid}`
-	);
+export const showManageTeamDialog = dialogOpen => async dispatch => {
 	dispatch({
-		type: SET_MANAGE_TEAMLIST,
-		payload: res.data
+		type: SET_MANAGE_TEAM_DIALOG,
+		payload: dialogOpen
 	});
 };

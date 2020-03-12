@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const auth = require('../../middleware/auth');
 
 const Companies = require('../../models/Companies');
@@ -48,24 +49,6 @@ router.post('/addProject', auth, async (req, res) => {
 				res.status(200).json(addedProject);
 			}
 		);
-	} catch (err) {
-		console.error(err.message);
-		res.status(500).send('Server Error');
-	}
-});
-
-router.get('/getProjectNames/:currentUser', auth, async (req, res) => {
-	try {
-		const currentUsersCompanySet = new Set();
-		const compList = await Companies.find({
-			companyOwner: req.params.currentUser
-		}).select('id');
-		compList.map(company => currentUsersCompanySet.add(company._id));
-		const currentUsersCompanyArray = Array.from(currentUsersCompanySet);
-		const projectNames = await Projects.find({
-			companyID: { $in: currentUsersCompanyArray }
-		}).select('projectName');
-		res.status(200).json(projectNames);
 	} catch (err) {
 		console.error(err.message);
 		res.status(500).send('Server Error');
@@ -122,11 +105,66 @@ router.delete('/deleteProject/:id', auth, async (req, res) => {
 	}
 });
 
+// @route    GET api/getProjectNames/:currentUser
+// @desc     Get all project Names for DropDown Select
+// @access   Private
+router.get('/getProjectNames/:currentUser', auth, async (req, res) => {
+	try {
+		// Method 1 Begins: Fetch using Aggregate >>>>
+		const projectsList = await Companies.aggregate([
+			{
+				$match: {
+					companyOwner: mongoose.Types.ObjectId(req.params.currentUser)
+				}
+			},
+			{
+				$lookup: {
+					from: 'tms_projects',
+					localField: '_id',
+					foreignField: 'companyID',
+					as: 'projectDetails'
+				}
+			},
+			{
+				$project: {
+					projectDetails: {
+						_id: 1,
+						projectName: 1
+					}
+				}
+			}
+		]);
+
+		let projectNames = new Array();
+		projectsList.map(compProj =>
+			compProj.projectDetails.map(project => projectNames.push(project))
+		);
+		// Method 1 Ends <<<<
+
+		// // Method 2 Begins >>>>
+		// const currentUsersCompanySet = new Set();
+		// const compList = await Companies.find({
+		// 	companyOwner: req.params.currentUser
+		// }).select('id');
+		// compList.map(company => currentUsersCompanySet.add(company._id));
+		// const currentUsersCompanyArray = Array.from(currentUsersCompanySet);
+		// const projectNames = await Projects.find({
+		// 	companyID: { $in: currentUsersCompanyArray }
+		// }).select('projectName');
+		// // Method 2 Ends <<<<
+		res.status(200).json(projectNames);
+	} catch (err) {
+		console.error(err.message);
+		res.status(500).send('Server Error');
+	}
+});
+
 // @route    GET api/project/
 // @desc     Get all projects
 // @access   Private
 router.get('/:currentUser', auth, async (req, res) => {
 	try {
+		// Without Aggregate Begins >>>>
 		const companiesList = await Companies.find({
 			companyOwner: req.params.currentUser
 		}).select('id');
@@ -134,23 +172,78 @@ router.get('/:currentUser', auth, async (req, res) => {
 		let compIdList = new Array();
 		companiesList.map(company => compIdList.push(company.id));
 
-		const projectsList = await Projects.find({
+		let projectsList = await Projects.find({
 			companyID: {
 				$in: compIdList
 			}
 		})
 			.populate('companyID', 'companyName')
-			.populate('projectTypeID', 'projectType');
+			.populate('projectTypeID', 'projectType')
+			.populate([
+				{
+					path: 'teamMembers.memberID',
+					model: Users,
+					select: 'firstName lastName userEmail'
+				},
+				{ path: 'teamMembers.roleInProject', model: UserTypes, select: '-__v' }
+				// {
+				// 	path: 'teamMembers.memberID',
+				// 	populate: { path: 'userType', model: UserTypes }
+				// }
+			]);
+		// Without Aggregate Ends <<<<
 
-		// Select userType field only from userType Reference
-		const adminType = await UserTypes.findOne({ userType: 'Admin' });
-		const teamUser = await Users.find({ userType: { $ne: adminType._id } })
-			.populate('userType', 'userType')
-			.select('-userPass');
-		// projectsList.users = teamUser;
-		// const projectsList = await Projects.find({});
+		// // Fetch using Aggregate function Begins >>>>
+		// // Didn't work: Data fetched but very difficult to map/collate
+		// let compProjList = await Companies.aggregate([
+		// 	{
+		// 		$match: {
+		// 			companyOwner: mongoose.Types.ObjectId(req.params.currentUser)
+		// 		}
+		// 	},
+		// 	{
+		// 		$lookup: {
+		// 			from: 'tms_projects',
+		// 			localField: '_id',
+		// 			foreignField: 'companyID',
+		// 			as: 'projectDetails'
+		// 		}
+		// 	},
+		// 	{
+		// 		$project: {
+		// 			companyName: 1,
+		// 			projectDetails: {
+		// 				_id: 1,
+		// 				projectName: 1,
+		// 				projectTypeID: 1
+		// 			}
+		// 		}
+		// 	}
+		// ]);
 
-		res.status(200).json({ projectsList, teamUser });
+		// await Projects.populate(
+		// 	compProjList,
+		// 	[
+		// 		{
+		// 			// path: 'projectDetails',
+		// 			// populate: {
+		// 			// 	path: 'projectTypeID',
+		// 			// 	model: ProjectTypes
+		// 			// }
+		// 			path: 'projectDetails.projectTypeID',
+		// 			model: ProjectTypes,
+		// 			select: 'projectType'
+		// 		}
+		// 	],
+		// 	(err, resultArray) => {
+		// 		if (err) throw err;
+		// 		projectsList = resultArray;
+		// 		// return res.status(200).json({ projectsList });
+		// 	}
+		// );
+		// // Fetch using Aggregate function Ends <<<<
+
+		res.status(200).json(projectsList);
 	} catch (err) {
 		console.error(err);
 		res.status(500).send('Server Error');
