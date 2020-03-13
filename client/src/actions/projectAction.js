@@ -9,8 +9,13 @@ import {
 	SET_EDIT_PROJECT_DIALOG,
 	SET_PROJECT_TO_EDIT,
 	SET_CURRENT_PROJECT,
+	ADD_MEM_TO_CURR_PRJ,
+	REM_MEM_FRM_CURR_PRJ,
 	PROJECT_ERRORS,
-	GET_PROJECT_NAMES
+	GET_PROJECT_NAMES,
+	SET_MANAGE_TEAM_DIALOG,
+	SET_MNG_TEAM_MEM_DIALOG,
+	SET_CRNT_PRJ_CRNT_MEM_DATA
 } from './types';
 
 export const getAllProjects = currentUser => async dispatch => {
@@ -138,9 +143,44 @@ export const setProjectToEdit = projectData => dispatch => {
 	});
 };
 
+export const showManageTeamDialog = dialogOpen => async dispatch => {
+	dispatch({
+		type: SET_MANAGE_TEAM_DIALOG,
+		payload: dialogOpen
+	});
+};
+
 export const setCurrentProject = projectData => dispatch => {
 	dispatch({
 		type: SET_CURRENT_PROJECT,
 		payload: projectData
+	});
+};
+
+export const addMemToCurrPrj = memberData => dispatch => {
+	dispatch({
+		type: ADD_MEM_TO_CURR_PRJ,
+		payload: memberData
+	});
+};
+
+export const remMemFrmCurrPrj = memberId => dispatch => {
+	dispatch({
+		type: REM_MEM_FRM_CURR_PRJ,
+		payload: memberId
+	});
+};
+
+export const setMngTeamMemDialog = dialogOpen => dispatch => {
+	dispatch({
+		type: SET_MNG_TEAM_MEM_DIALOG,
+		payload: dialogOpen
+	});
+};
+
+export const setCrntPrjCrntMemData = memberData => dispatch => {
+	dispatch({
+		type: SET_CRNT_PRJ_CRNT_MEM_DATA,
+		payload: memberData
 	});
 };

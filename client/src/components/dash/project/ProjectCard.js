@@ -10,13 +10,13 @@ import {
 	Slide
 } from '@material-ui/core';
 import { Edit, DeleteForever, Cancel } from '@material-ui/icons';
-import { showManageTeamDialog } from '../../../actions/teamAction';
 
 import {
 	deleteProject,
 	getAllProjects,
 	setProjectToEdit,
-	setCurrentProject
+	setCurrentProject,
+	showManageTeamDialog
 } from '../../../actions/projectAction';
 
 const useStyles = makeStyles(theme => ({
@@ -86,7 +86,6 @@ export const ProjectCard = ({
 	};
 
 	const classes = useStyles();
-	// console.log('userrr', teamusers);
 
 	return (
 		<Fragment>

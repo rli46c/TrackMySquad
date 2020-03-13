@@ -7,8 +7,7 @@ import {
 	UPDATE_TEAM_MEMBER,
 	SET_ADD_MEMBER_DIALOG,
 	SET_EDIT_MEMBER_DIALOG,
-	TEAM_ERRORS,
-	SET_MANAGE_TEAM_DIALOG
+	TEAM_ERRORS
 } from '../actions/types';
 
 const initailState = {
@@ -18,8 +17,7 @@ const initailState = {
 	memberToEdit: {},
 	addMemberDialogOpen: false,
 	editMemberDialogOpen: false,
-	teamErrors: [],
-	manageMembersDialogOpen: false
+	teamErrors: []
 };
 
 export default (state = initailState, action) => {
@@ -91,11 +89,6 @@ export default (state = initailState, action) => {
 				teamMembers: state.teamMembers.map(member =>
 					member._id === payload._id ? payload : member
 				)
-			};
-		case SET_MANAGE_TEAM_DIALOG:
-			return {
-				...state,
-				manageMembersDialogOpen: payload
 			};
 		case TEAM_ERRORS:
 			return {

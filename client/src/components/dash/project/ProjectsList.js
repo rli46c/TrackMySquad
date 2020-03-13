@@ -1,6 +1,7 @@
 import React, { useEffect, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import {
 	makeStyles,
 	Table,
@@ -36,8 +37,14 @@ export const ProjectsList = ({
 	auth: {
 		user: { _id: currentUser }
 	},
-	project: { projects, projectToEdit, addProjectDialogOpen, projectErrors },
-	team: { manageMembersDialogOpen },
+	project: {
+		projects,
+		projectToEdit,
+		addProjectDialogOpen,
+		manageMembersDialogOpen,
+		projectErrors
+	},
+	team: { addMemberDialogOpen },
 	getAllProjects,
 	setAddProjectDialog
 }) => {
@@ -46,6 +53,10 @@ export const ProjectsList = ({
 	}, [currentUser, getAllProjects]);
 
 	const classes = useStyles();
+
+	if (addMemberDialogOpen) {
+		return <Redirect to='/team' />;
+	}
 
 	return (
 		<Fragment>

@@ -1,26 +1,40 @@
-import React, { useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Draggable from 'react-draggable';
 import {
 	makeStyles,
 	AppBar,
 	Button,
 	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
 	FormGroup,
+	FormControl,
 	Grid,
 	IconButton,
+	InputLabel,
+	NativeSelect,
 	Paper,
 	Slide,
 	Toolbar,
 	Typography
 } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import { Close, GroupAdd, Save } from '@material-ui/icons';
 
 import {
 	getAllMembers,
-	showManageTeamDialog,
-	addMember
+	setAddMemberDialog,
+	getAllUserTypes
 } from '../../../actions/teamAction';
+import {
+	addMemToCurrPrj,
+	showManageTeamDialog,
+	setMngTeamMemDialog
+} from '../../../actions/projectAction';
+import UserTypesCard from '../team/UserTypesCard';
 import AlreadyMemberCard from './ManageTeam/AlreadyMemberCard';
 import ReaminingMemberCard from './ManageTeam/RemainingMemberCard';
 
@@ -36,160 +50,236 @@ const useStyles = makeStyles(theme => ({
 		padding: theme.spacing(2),
 		textAlign: 'center',
 		color: theme.palette.text.secondary
+	},
+	formControl: {
+		margin: theme.spacing(1),
+		minWidth: 120
 	}
-	// root: {
-	// 	'& > *': {
-	// 		margin: theme.spacing(1)
-	// 		//   width: '100%',
-	// 	},
-	// 	flexGrow: 1,
-	// 	marginRight: theme.spacing(2)
-	// },
-	// dialogTitle: {
-	// 	textAlign: 'right'
-	// },
-	// spanTitle: {},
-	// spanGap: {
-	// 	padding: '0px 25%'
-	// },
-	// times: {
-	// 	color: '#555'
-	// },
-	// formControl: {
-	// 	margin: theme.spacing(1),
-	// 	minWidth: 120
-	// },
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
 	return <Slide direction='up' ref={ref} {...props} />;
 });
 
+const PaperComponent = props => {
+	return (
+		<Draggable
+			handle='#draggable-dialog-title'
+			cancel={'[class*="MuiDialogContent-root"]'}
+		>
+			<Paper {...props} />
+		</Draggable>
+	);
+};
+
 export const AddNewMember = ({
 	auth: {
 		user: { _id: currentUser }
 	},
-	team: { teamMembers, manageMembersDialogOpen },
-	project: { currentProject },
+	team: { teamMembers, userTypes },
+	project: {
+		manageMembersDialogOpen,
+		currentProject,
+		currentProjectTeamMembers,
+		crntPrjTmMemIDs,
+		mngPrjSnglMemDlgOpen,
+		crntPrjCrntMemData
+	},
 	getAllMembers,
+	getAllUserTypes,
 	showManageTeamDialog,
-	addMember
+	setAddMemberDialog,
+	addMemToCurrPrj,
+	setMngTeamMemDialog
 }) => {
+	const [userType, setUserType] = useState('');
+
 	useEffect(() => {
 		if (teamMembers.length === 0) {
 			getAllMembers(currentUser);
 		}
 	}, [teamMembers.length, currentUser, getAllMembers]);
 
+	useEffect(() => {
+		currentProject.teamMembers.map(member => addMemToCurrPrj(member));
+	}, [addMemToCurrPrj, currentProject.teamMembers]);
+
+	useEffect(() => {
+		if (userTypes.length === 0) {
+			getAllUserTypes();
+		}
+	}, [userTypes.length, getAllUserTypes]);
+
+	useEffect(() => {
+		typeof crntPrjCrntMemData !== 'undefined' &&
+			setUserType(crntPrjCrntMemData.roleInProject);
+	}, [crntPrjCrntMemData]);
+
+	const onAddNew = e => {
+		e.preventDefault();
+		if (
+			window.confirm(
+				'Any changes made will not be saved.\nDo you want to continue?'
+			)
+		) {
+			setAddMemberDialog(true);
+			showManageTeamDialog(false);
+		}
+	};
+
+	const onClose = e => {
+		e.preventDefault();
+		window.confirm('No changes will be saved.\nAre you sure?') &&
+			showManageTeamDialog(false);
+	};
+
+	const onSubmit = e => {
+		e.preventDefault();
+		const arrayData = [
+			{ id: '123' },
+			{ id: '456' },
+			{ id: '789' },
+			{ id: '000' }
+		];
+		console.log(arrayData.findIndex(x => x.id === '789'));
+
+		showManageTeamDialog(false);
+	};
+
+	const onSelectUserType = e => {
+		setUserType({
+			_id: e.target.value,
+			userType: e.target.options[e.target.selectedIndex].text
+		});
+	};
+
+	const onRemFrmProj = () => {};
+
+	const onChngMemRole = () => {};
+
 	const classes = useStyles();
+	console.log('currentProjectTeamMembers', currentProjectTeamMembers);
+	console.log('userType', userType);
 
 	return (
-		<div>
-			<Dialog
-				fullScreen
-				open={manageMembersDialogOpen}
-				onClose={() => showManageTeamDialog(false)}
-				TransitionComponent={Transition}
-			>
-				<AppBar className={classes.appBar}>
-					<Toolbar>
-						<IconButton
-							edge='start'
-							color='inherit'
-							onClick={() => showManageTeamDialog(false)}
-							aria-label='close'
+		<Fragment>
+			<div>
+				<Dialog
+					fullScreen
+					open={manageMembersDialogOpen}
+					onClose={onClose}
+					TransitionComponent={Transition}
+				>
+					<AppBar className={classes.appBar}>
+						<Toolbar>
+							<IconButton
+								edge='start'
+								color='inherit'
+								onClick={onClose}
+								aria-label='close'
+							>
+								<Close />
+							</IconButton>
+							<Typography variant='h6' className={classes.title}>
+								Manage Project Members
+							</Typography>
+							<Button color='inherit' onClick={onAddNew}>
+								<GroupAdd /> &nbsp; add new
+							</Button>
+							<Button autoFocus color='inherit' onClick={onSubmit}>
+								<Save />
+								&nbsp;save
+							</Button>
+						</Toolbar>
+					</AppBar>
+					<div className={classes.root}>
+						<Grid container spacing={3}>
+							<Grid item xs={12} md={4}>
+								<Paper className={classes.paper}>
+									<h3>Already Members</h3>
+									<FormGroup>
+										{/* {currentProject.teamMembers.length > 0 &&
+											currentProject.teamMembers.map((member, id) => (
+												<AlreadyMemberCard key={id} memberData={member} />
+											))} */}
+										{currentProjectTeamMembers.length > 0 &&
+											currentProjectTeamMembers.map((member, id) => (
+												<AlreadyMemberCard key={id} memberData={member} />
+											))}
+									</FormGroup>
+								</Paper>
+							</Grid>
+							<Grid item xs>
+								<Paper className={classes.paper}>
+									<h3>Other Members</h3>
+									<FormGroup row>
+										{teamMembers.length > 0 &&
+											crntPrjTmMemIDs.length > 0 &&
+											teamMembers.map(
+												(member, id) =>
+													crntPrjTmMemIDs.indexOf(member._id) === -1 && (
+														<ReaminingMemberCard key={id} memberData={member} />
+													)
+											)}
+									</FormGroup>
+								</Paper>
+							</Grid>
+						</Grid>
+					</div>
+				</Dialog>
+			</div>
+			<div>
+				<Dialog
+					open={mngPrjSnglMemDlgOpen}
+					onClose={() => setMngTeamMemDialog(false)}
+					PaperComponent={PaperComponent}
+					aria-labelledby='draggable-dialog-title'
+				>
+					<DialogTitle style={{ cursor: 'move' }} id='draggable-dialog-title'>
+						Manage Member
+					</DialogTitle>
+					<DialogContent>
+						<DialogContentText>
+							To subscribe to this website, please enter your email address
+							here. We will send updates occasionally. __{' '}
+							{JSON.stringify(crntPrjCrntMemData)}
+						</DialogContentText>
+						<FormControl
+							variant='standard'
+							className={classes.formControl}
+							fullWidth
 						>
-							<Close />
-						</IconButton>
-						<Typography variant='h6' className={classes.title}>
-							Manage Project Members
-						</Typography>
+							<InputLabel htmlFor='user-type'>User Role</InputLabel>
+							<NativeSelect
+								value={userType && userType._id}
+								onChange={onSelectUserType}
+								id='user-type'
+							>
+								<option value='' />
+								{userTypes.map((type, id) => (
+									<UserTypesCard key={id} usrType={type} />
+								))}
+							</NativeSelect>
+						</FormControl>
+					</DialogContent>
+					<DialogActions>
 						<Button
 							autoFocus
-							color='inherit'
-							onClick={() => showManageTeamDialog(false)}
+							onClick={() => setMngTeamMemDialog(false)}
+							color='primary'
 						>
-							save
+							Cancel
 						</Button>
-					</Toolbar>
-				</AppBar>
-				<div className={classes.root}>
-					<Grid container spacing={3}>
-						<Grid item xs={12} md={4}>
-							<Paper className={classes.paper}>
-								<h3>Already Members</h3>
-								<FormGroup column>
-									{currentProject.teamMembers.length > 0 &&
-										currentProject.teamMembers.map((member, id) => (
-											<AlreadyMemberCard key={id} memberData={member} />
-										))}
-								</FormGroup>
-							</Paper>
-						</Grid>
-						<Grid item xs>
-							<Paper className={classes.paper}>
-								<h3>Other Members</h3>
-								<FormGroup row>
-									{teamMembers.length > 0 &&
-										teamMembers.map((member, id) => (
-											<ReaminingMemberCard key={id} memberData={member} />
-										))}
-								</FormGroup>
-							</Paper>
-						</Grid>
-					</Grid>
-				</div>
-				{/* <List>
-					<ListItem button>
-						<ListItemText primary='Phone ringtone' secondary='Titania' />
-					</ListItem>
-					<Divider />
-					<ListItem button>
-						<ListItemText
-							primary='Default notification ringtone'
-							secondary='Tethys'
-						/>
-					</ListItem>
-				</List> */}
-			</Dialog>
-		</div>
-
-		// <Dialog
-		// 	keepMounted
-		// 	disableBackdropClick
-		// 	onClose={() => showManageTeamDialog(false)}
-		// 	open={manageMembersDialogOpen}
-		// 	TransitionComponent={Transition}
-		// 	fullWidth={fullWidth}
-		// 	maxWidth={maxWidth}
-		// 	aria-labelledby='add-member-profile'
-		// 	aria-describedby='add-member-modal'
-		// >
-		// 	<DialogTitle className={classes.dialogTitle} id='add-member-profile'>
-		// 		<span className={classes.spanTitle}>Add New Member Profile</span>
-		// 		<span className={classes.spanGap}>&nbsp;</span>
-		// 		<Close
-		// 			className={classes.times}
-		// 			onClick={() => showManageTeamDialog(false)}
-		// 		/>
-		// 	</DialogTitle>
-		// 	<DialogContent>
-
-		// 	</DialogContent>
-		// 	<DialogActions>
-		// 		<Button onClick={onReset} color='primary' tabIndex='-1'>
-		// 			Reset
-		// 		</Button>
-		// 		<Button
-		// 			onClick={onSubmit}
-		// 			color='secondary'
-		// 			variant='contained'
-		// 			tabIndex='0'
-		// 		>
-		// 			Add Member
-		// 		</Button>
-		// 	</DialogActions>
-		// </Dialog>
+						<Button onClick={onRemFrmProj} color='primary'>
+							Delete Member
+						</Button>
+						<Button onClick={onChngMemRole} color='primary'>
+							Change Role
+						</Button>
+					</DialogActions>
+				</Dialog>
+			</div>
+		</Fragment>
 	);
 };
 
@@ -198,8 +288,11 @@ AddNewMember.propTypes = {
 	team: PropTypes.object.isRequired,
 	project: PropTypes.object.isRequired,
 	showManageTeamDialog: PropTypes.func.isRequired,
-	addMember: PropTypes.func.isRequired,
-	getAllMembers: PropTypes.func.isRequired
+	setAddMemberDialog: PropTypes.func.isRequired,
+	getAllMembers: PropTypes.func.isRequired,
+	getAllUserTypes: PropTypes.func.isRequired,
+	addMemToCurrPrj: PropTypes.func.isRequired,
+	setMngTeamMemDialog: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -210,8 +303,11 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
 	showManageTeamDialog,
-	addMember,
-	getAllMembers
+	setAddMemberDialog,
+	getAllMembers,
+	getAllUserTypes,
+	addMemToCurrPrj,
+	setMngTeamMemDialog
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddNewMember);

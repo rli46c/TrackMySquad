@@ -8,8 +8,7 @@ import {
 	TEAM_ERRORS,
 	SET_ADD_MEMBER_DIALOG,
 	SET_EDIT_MEMBER_DIALOG,
-	SET_MEMBER_TO_EDIT,
-	SET_MANAGE_TEAM_DIALOG
+	SET_MEMBER_TO_EDIT
 } from './types';
 
 export const getAllMembers = currentUser => async dispatch => {
@@ -130,12 +129,5 @@ export const setMemberToEdit = memberData => dispatch => {
 	dispatch({
 		type: SET_MEMBER_TO_EDIT,
 		payload: memberData
-	});
-};
-
-export const showManageTeamDialog = dialogOpen => async dispatch => {
-	dispatch({
-		type: SET_MANAGE_TEAM_DIALOG,
-		payload: dialogOpen
 	});
 };

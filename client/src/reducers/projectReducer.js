@@ -8,19 +8,28 @@ import {
 	SET_EDIT_PROJECT_DIALOG,
 	SET_PROJECT_TO_EDIT,
 	SET_CURRENT_PROJECT,
+	ADD_MEM_TO_CURR_PRJ,
+	REM_MEM_FRM_CURR_PRJ,
+	SET_MANAGE_TEAM_DIALOG,
+	SET_MNG_TEAM_MEM_DIALOG,
 	PROJECT_ERRORS,
-	GET_PROJECT_NAMES
+	GET_PROJECT_NAMES,
+	SET_CRNT_PRJ_CRNT_MEM_DATA
 } from '../actions/types';
 
 const initailState = {
 	projects: [],
-	teamusers: [],
 	projectNames: [],
 	projectTypes: [],
 	projectToEdit: {},
 	currentProject: {},
+	currentProjectTeamMembers: [],
+	crntPrjTmMemIDs: [],
+	crntPrjCrntMemData: {},
 	addProjectDialogOpen: false,
 	editProjectDialogOpen: false,
+	mngPrjSnglMemDlgOpen: false,
+	manageMembersDialogOpen: false,
 	projectErrors: []
 };
 
@@ -75,6 +84,48 @@ export default (state = initailState, action) => {
 			return {
 				...state,
 				currentProject: payload
+			};
+
+		case ADD_MEM_TO_CURR_PRJ:
+			return {
+				...state,
+				currentProjectTeamMembers: state.currentProjectTeamMembers.filter(
+					member => member._id !== payload._id
+				),
+				currentProjectTeamMembers: [
+					...state.currentProjectTeamMembers,
+					payload
+				],
+				crntPrjTmMemIDs: [...state.crntPrjTmMemIDs, payload.memberID._id]
+			};
+
+		// All Members Dialog
+		case SET_MANAGE_TEAM_DIALOG:
+			if (payload) {
+				return {
+					...state,
+					currentProjectTeamMembers: [],
+					crntPrjTmMemIDs: [],
+					manageMembersDialogOpen: payload
+				};
+			} else {
+				return {
+					...state,
+					manageMembersDialogOpen: payload
+				};
+			}
+
+		// Single Member Dialog
+		case SET_MNG_TEAM_MEM_DIALOG:
+			return {
+				...state,
+				mngPrjSnglMemDlgOpen: payload
+			};
+
+		case SET_CRNT_PRJ_CRNT_MEM_DATA:
+			return {
+				...state,
+				crntPrjCrntMemData: payload
 			};
 
 		case UPDATE_PROJECT:
