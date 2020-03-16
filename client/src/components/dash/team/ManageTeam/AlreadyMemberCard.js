@@ -13,10 +13,10 @@ export const AlreadyMemberCard = ({
 	setMngTeamMemDialog,
 	setCrntPrjCrntMemData
 }) => {
-	const [checked, setChecked] = useState(true);
+	const [checked] = useState(true);
 	const handleChange = () => {
 		// setChecked(val => !val);
-		setCrntPrjCrntMemData(memberData);
+		setCrntPrjCrntMemData({ memberData, card: 'already' });
 		setMngTeamMemDialog(true);
 	};
 

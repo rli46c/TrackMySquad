@@ -87,11 +87,11 @@ export default (state = initailState, action) => {
 			};
 
 		case ADD_MEM_TO_CURR_PRJ:
+			state.currentProjectTeamMembers = state.currentProjectTeamMembers.filter(
+				member => member._id !== payload._id
+			);
 			return {
 				...state,
-				currentProjectTeamMembers: state.currentProjectTeamMembers.filter(
-					member => member._id !== payload._id
-				),
 				currentProjectTeamMembers: [
 					...state.currentProjectTeamMembers,
 					payload
@@ -99,28 +99,47 @@ export default (state = initailState, action) => {
 				crntPrjTmMemIDs: [...state.crntPrjTmMemIDs, payload.memberID._id]
 			};
 
+		case REM_MEM_FRM_CURR_PRJ:
+			return {
+				...state,
+				currentProjectTeamMembers: state.currentProjectTeamMembers.filter(
+					member => member.memberID._id !== payload
+				),
+				crntPrjTmMemIDs: state.crntPrjTmMemIDs.filter(
+					member => member !== payload
+				)
+			};
+
 		// All Members Dialog
 		case SET_MANAGE_TEAM_DIALOG:
 			if (payload) {
+				return {
+					...state,
+					manageMembersDialogOpen: payload
+				};
+			} else {
 				return {
 					...state,
 					currentProjectTeamMembers: [],
 					crntPrjTmMemIDs: [],
 					manageMembersDialogOpen: payload
 				};
-			} else {
-				return {
-					...state,
-					manageMembersDialogOpen: payload
-				};
 			}
 
 		// Single Member Dialog
 		case SET_MNG_TEAM_MEM_DIALOG:
-			return {
-				...state,
-				mngPrjSnglMemDlgOpen: payload
-			};
+			if (payload) {
+				return {
+					...state,
+					mngPrjSnglMemDlgOpen: payload
+				};
+			} else {
+				return {
+					...state,
+					crntPrjCrntMemData: {},
+					mngPrjSnglMemDlgOpen: payload
+				};
+			}
 
 		case SET_CRNT_PRJ_CRNT_MEM_DATA:
 			return {

@@ -30,9 +30,10 @@ import {
 	getAllUserTypes
 } from '../../../actions/teamAction';
 import {
-	addMemToCurrPrj,
 	showManageTeamDialog,
-	setMngTeamMemDialog
+	setMngTeamMemDialog,
+	addMemToCurrPrj,
+	remMemFrmCurrPrj
 } from '../../../actions/projectAction';
 import UserTypesCard from '../team/UserTypesCard';
 import AlreadyMemberCard from './ManageTeam/AlreadyMemberCard';
@@ -89,10 +90,12 @@ export const AddNewMember = ({
 	getAllUserTypes,
 	showManageTeamDialog,
 	setAddMemberDialog,
+	setMngTeamMemDialog,
 	addMemToCurrPrj,
-	setMngTeamMemDialog
+	remMemFrmCurrPrj
 }) => {
 	const [userType, setUserType] = useState('');
+	const [memData, setMemData] = useState('');
 
 	useEffect(() => {
 		if (teamMembers.length === 0) {
@@ -111,9 +114,11 @@ export const AddNewMember = ({
 	}, [userTypes.length, getAllUserTypes]);
 
 	useEffect(() => {
-		typeof crntPrjCrntMemData !== 'undefined' &&
-			setUserType(crntPrjCrntMemData.roleInProject);
-	}, [crntPrjCrntMemData]);
+		if (typeof crntPrjCrntMemData.memberData !== 'undefined') {
+			setUserType(crntPrjCrntMemData.memberData.roleInProject);
+			setMemData(crntPrjCrntMemData.memberData.memberID);
+		}
+	}, [crntPrjCrntMemData.memberData]);
 
 	const onAddNew = e => {
 		e.preventDefault();
@@ -153,13 +158,22 @@ export const AddNewMember = ({
 		});
 	};
 
-	const onRemFrmProj = () => {};
+	const onAddMemToPrj = () => {
+		userType && (crntPrjCrntMemData.memberData.roleInProject = userType);
+		addMemToCurrPrj(crntPrjCrntMemData.memberData);
+		setMngTeamMemDialog(false);
+	};
 
-	const onChngMemRole = () => {};
+	const onRemFrmProj = () => {
+		remMemFrmCurrPrj(crntPrjCrntMemData.memberData.memberID._id);
+		setMngTeamMemDialog(false);
+	};
+
+	// const onAddMemToPrj = () => {};
 
 	const classes = useStyles();
-	console.log('currentProjectTeamMembers', currentProjectTeamMembers);
-	console.log('userType', userType);
+	// console.log('currentProjectTeamMembers', currentProjectTeamMembers);
+	// console.log('memberData', crntPrjCrntMemData.memberData);
 
 	return (
 		<Fragment>
@@ -213,14 +227,21 @@ export const AddNewMember = ({
 								<Paper className={classes.paper}>
 									<h3>Other Members</h3>
 									<FormGroup row>
-										{teamMembers.length > 0 &&
-											crntPrjTmMemIDs.length > 0 &&
-											teamMembers.map(
-												(member, id) =>
-													crntPrjTmMemIDs.indexOf(member._id) === -1 && (
-														<ReaminingMemberCard key={id} memberData={member} />
-													)
-											)}
+										{teamMembers.length > 0 && crntPrjTmMemIDs.length > 0
+											? teamMembers.map(
+													(member, id) =>
+														crntPrjTmMemIDs.indexOf(member._id) === -1 && (
+															<ReaminingMemberCard
+																key={id}
+																memberData={member}
+															/>
+														)
+											  )
+											: crntPrjTmMemIDs.length === 0 && teamMembers.length > 0
+											? teamMembers.map((mbr, mId) => (
+													<ReaminingMemberCard key={mId} memberData={mbr} />
+											  ))
+											: null}
 									</FormGroup>
 								</Paper>
 							</Grid>
@@ -240,9 +261,8 @@ export const AddNewMember = ({
 					</DialogTitle>
 					<DialogContent>
 						<DialogContentText>
-							To subscribe to this website, please enter your email address
-							here. We will send updates occasionally. __{' '}
-							{JSON.stringify(crntPrjCrntMemData)}
+							{typeof memData !== 'undefined' &&
+								`${memData.firstName} ${memData.lastName}`}
 						</DialogContentText>
 						<FormControl
 							variant='standard'
@@ -270,12 +290,20 @@ export const AddNewMember = ({
 						>
 							Cancel
 						</Button>
-						<Button onClick={onRemFrmProj} color='primary'>
-							Delete Member
-						</Button>
-						<Button onClick={onChngMemRole} color='primary'>
-							Change Role
-						</Button>
+						{crntPrjCrntMemData.card === 'already' ? (
+							<Fragment>
+								<Button onClick={onRemFrmProj} color='primary'>
+									Delete Member
+								</Button>
+								<Button onClick={onAddMemToPrj} color='primary'>
+									Change Role
+								</Button>
+							</Fragment>
+						) : (
+							<Button onClick={onAddMemToPrj} color='primary'>
+								Add Member
+							</Button>
+						)}
 					</DialogActions>
 				</Dialog>
 			</div>
@@ -291,8 +319,9 @@ AddNewMember.propTypes = {
 	setAddMemberDialog: PropTypes.func.isRequired,
 	getAllMembers: PropTypes.func.isRequired,
 	getAllUserTypes: PropTypes.func.isRequired,
+	setMngTeamMemDialog: PropTypes.func.isRequired,
 	addMemToCurrPrj: PropTypes.func.isRequired,
-	setMngTeamMemDialog: PropTypes.func.isRequired
+	remMemFrmCurrPrj: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -306,8 +335,9 @@ const mapDispatchToProps = {
 	setAddMemberDialog,
 	getAllMembers,
 	getAllUserTypes,
+	setMngTeamMemDialog,
 	addMemToCurrPrj,
-	setMngTeamMemDialog
+	remMemFrmCurrPrj
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddNewMember);
