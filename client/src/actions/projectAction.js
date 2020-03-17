@@ -15,7 +15,10 @@ import {
 	GET_PROJECT_NAMES,
 	SET_MANAGE_TEAM_DIALOG,
 	SET_MNG_TEAM_MEM_DIALOG,
-	SET_CRNT_PRJ_CRNT_MEM_DATA
+	SET_CRNT_PRJ_CRNT_MEM_DATA,
+	SET_PROJECT_LIST_DIALOG,
+	SET_CRNT_PRJ_FROM_TEAMLIST,
+	ADD_CRNT_MEM_PRJ_LIST
 } from './types';
 
 export const getAllProjects = currentUser => async dispatch => {
@@ -182,5 +185,29 @@ export const setCrntPrjCrntMemData = memberData => dispatch => {
 	dispatch({
 		type: SET_CRNT_PRJ_CRNT_MEM_DATA,
 		payload: memberData
+	});
+};
+
+export const showProjectDialog = projectDialog => dispatch => {
+	dispatch({
+		type: SET_PROJECT_LIST_DIALOG,
+		payload: projectDialog
+	});
+};
+
+export const setProjectList = projectList => dispatch => {
+	// console.log('projectList', projectList);
+	dispatch({
+		type: SET_CRNT_PRJ_FROM_TEAMLIST,
+		payload: projectList
+	});
+};
+
+export const addCrntprjlist = prjdata => dispatch => {
+	console.log('prjdata', prjdata);
+
+	dispatch({
+		type: ADD_CRNT_MEM_PRJ_LIST,
+		payload: prjdata
 	});
 };

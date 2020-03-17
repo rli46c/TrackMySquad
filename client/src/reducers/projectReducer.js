@@ -14,7 +14,10 @@ import {
 	SET_MNG_TEAM_MEM_DIALOG,
 	PROJECT_ERRORS,
 	GET_PROJECT_NAMES,
-	SET_CRNT_PRJ_CRNT_MEM_DATA
+	SET_CRNT_PRJ_CRNT_MEM_DATA,
+	SET_PROJECT_LIST_DIALOG,
+	SET_CRNT_PRJ_FROM_TEAMLIST,
+	ADD_CRNT_MEM_PRJ_LIST
 } from '../actions/types';
 
 const initailState = {
@@ -25,12 +28,15 @@ const initailState = {
 	currentProject: {},
 	currentProjectTeamMembers: [],
 	crntPrjTmMemIDs: [],
+	crntMemsPrjList: [],
 	crntPrjCrntMemData: {},
 	addProjectDialogOpen: false,
 	editProjectDialogOpen: false,
 	mngPrjSnglMemDlgOpen: false,
 	manageMembersDialogOpen: false,
-	projectErrors: []
+	projectErrors: [],
+	projectdata: [],
+	manageProjectDialogOpen: false
 };
 
 export default (state = initailState, action) => {
@@ -163,6 +169,21 @@ export default (state = initailState, action) => {
 			return {
 				...state,
 				projectErrors: payload
+			};
+		case SET_PROJECT_LIST_DIALOG:
+			return {
+				...state,
+				manageProjectDialogOpen: payload
+			};
+		case SET_CRNT_PRJ_FROM_TEAMLIST:
+			return {
+				...state,
+				projectdata: payload
+			};
+		case ADD_CRNT_MEM_PRJ_LIST:
+			return {
+				...state,
+				crntMemsPrjList: payload
 			};
 		default:
 			return state;

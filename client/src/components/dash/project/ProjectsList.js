@@ -57,6 +57,7 @@ export const ProjectsList = ({
 	if (addMemberDialogOpen) {
 		return <Redirect to='/team' />;
 	}
+	console.log('manageMembersDialogOpen', manageMembersDialogOpen);
 
 	return (
 		<Fragment>
