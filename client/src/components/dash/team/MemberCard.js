@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
@@ -12,11 +12,19 @@ import {
 import { Edit, DeleteForever, Cancel } from '@material-ui/icons';
 
 import { deleteMember, setMemberToEdit } from '../../../actions/teamAction';
+import {
+	showProjectDialog,
+	setProjectList,
+	addCrntprjlist
+} from '../../../actions/projectAction';
 
 const useStyles = makeStyles(theme => ({
 	tableCell: {
 		whiteSpace: 'normal',
 		wordWrap: 'break-word'
+	},
+	pointer: {
+		cursor: 'pointer'
 	},
 	rowToSlide: {
 		zIndex: 1,
@@ -30,6 +38,10 @@ const useStyles = makeStyles(theme => ({
 	highlightText: {
 		color: '#fff',
 		fontWeight: 'bold'
+	},
+	linkText: {
+		color: '#0000ff',
+		textDecoration: 'underline'
 	}
 }));
 
@@ -37,24 +49,38 @@ export const MemberCard = ({
 	memberData: { _id, firstName, lastName, userType, userEmail },
 	allProjectsData: { projects },
 	deleteMember,
-	setMemberToEdit
+	setMemberToEdit,
+	showProjectDialog,
+	setProjectList,
+	addCrntprjlist
 }) => {
 	const [checked, setChecked] = useState(false);
-
 	const curntMembersProjDtl = [];
-	projects.map(proj =>
-		proj.teamMembers.map(tmMem =>
-			tmMem.memberID._id === _id
-				? curntMembersProjDtl.push({
-						_id: proj._id,
-						projectName: proj.projectName
-				  })
-				: null
-		)
-	);
+	useEffect(() => {
+		projects.map(proj =>
+			proj.teamMembers.map(tmMem =>
+				tmMem.memberID._id === _id ? addCrntprjlist(proj) : null
+			)
+		);
+	}, [addCrntprjlist, projects]);
+
+	// projects.map(proj =>
+	// 	proj.teamMembers.map(tmMem =>
+	// 		tmMem.memberID._id === _id
+	// 			? curntMembersProjDtl.push({
+	// 					_id: proj._id,
+	// 					projectName: proj.projectName
+	// 			  })
+	// 			: null
+	// 	)
+	// );
 
 	const handleChange = () => {
 		setChecked(prev => !prev);
+	};
+	const manageProjects = () => {
+		setProjectList(curntMembersProjDtl);
+		showProjectDialog(true);
 	};
 	const onEdit = () => {
 		setMemberToEdit({
@@ -89,8 +115,13 @@ export const MemberCard = ({
 				<TableCell className={checked ? classes.highlightText : null}>
 					{userType.userType}
 				</TableCell>
-				<TableCell className={checked ? classes.highlightText : null}>
+				{/* <TableCell className={checked ? classes.highlightText : null}>
 					{curntMembersProjDtl.map(proj => `${proj.projectName}, `)}
+				</TableCell> */}
+				<TableCell onClick={manageProjects} className={classes.pointer}>
+					<span className={checked ? classes.highlightText : null}>
+						<span className={classes.linkText}>[ Manage Projects..]</span>
+					</span>
 				</TableCell>
 				<TableCell
 					className={checked ? classes.highlightText : classes.tableCell}
@@ -158,14 +189,19 @@ MemberCard.propTypes = {
 	memberData: PropTypes.object.isRequired,
 	allProjectsData: PropTypes.object.isRequired,
 	deleteMember: PropTypes.func.isRequired,
-	setMemberToEdit: PropTypes.func.isRequired
+	setMemberToEdit: PropTypes.func.isRequired,
+	setProjectList: PropTypes.func.isRequired,
+	addCrntprjlist: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({});
 
 const mapDispatchToProps = {
 	deleteMember,
-	setMemberToEdit
+	setMemberToEdit,
+	showProjectDialog,
+	setProjectList,
+	addCrntprjlist
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MemberCard);

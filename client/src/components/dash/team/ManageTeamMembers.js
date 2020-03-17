@@ -23,7 +23,6 @@ import {
 	Typography
 } from '@material-ui/core';
 import { Close, GroupAdd, Save } from '@material-ui/icons';
-
 import {
 	getAllMembers,
 	setAddMemberDialog,
@@ -35,8 +34,8 @@ import {
 	setMngTeamMemDialog
 } from '../../../actions/projectAction';
 import UserTypesCard from '../team/UserTypesCard';
-import AlreadyMemberCard from './ManageTeam/AlreadyMemberCard';
-import ReaminingMemberCard from './ManageTeam/RemainingMemberCard';
+import AlreadyMemberCard from '../project/ManageTeam/AlreadyMemberCard';
+import ReaminingMemberCard from '../project/ManageTeam/RemainingMemberCard';
 
 const useStyles = makeStyles(theme => ({
 	appBar: {
@@ -158,8 +157,6 @@ export const AddNewMember = ({
 	const onChngMemRole = () => {};
 
 	const classes = useStyles();
-	console.log('currentProjectTeamMembers', currentProjectTeamMembers);
-	console.log('userType', userType);
 
 	return (
 		<Fragment>
