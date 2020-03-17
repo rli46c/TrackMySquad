@@ -1,0 +1,28 @@
+{
+  "files": {
+    "main.css": "/static/css/main.08929a35.chunk.css",
+    "main.js": "/static/js/main.71fcb5fd.chunk.js",
+    "runtime-main.js": "/static/js/runtime-main.844668cf.js",
+    "static/js/2.147d0781.chunk.js": "/static/js/2.147d0781.chunk.js",
+    "index.html": "/index.html",
+    "precache-manifest.ec6528827b688c20d5c277cec662a898.js": "/precache-manifest.ec6528827b688c20d5c277cec662a898.js",
+    "service-worker.js": "/service-worker.js",
+    "static/js/2.147d0781.chunk.js.LICENSE.txt": "/static/js/2.147d0781.chunk.js.LICENSE.txt",
+    "static/media/bannertime.jpg": "/static/media/bannertime.f9faaf59.jpg",
+    "static/media/clipart-maleuser.png": "/static/media/clipart-maleuser.af12abc0.png",
+    "static/media/companylogo.png": "/static/media/companylogo.8023d85d.png",
+    "static/media/reports.png": "/static/media/reports.702917cc.png",
+    "static/media/sm-app.png": "/static/media/sm-app.c5be2df9.png",
+    "static/media/sm-shot.png": "/static/media/sm-shot.427d030c.png",
+    "static/media/sm-time.png": "/static/media/sm-time.0234036f.png",
+    "static/media/timescreen.png": "/static/media/timescreen.7aaa99fc.png",
+    "static/media/timetracker.png": "/static/media/timetracker.f59a893d.png",
+    "static/media/tracktime.png": "/static/media/tracktime.a383c63b.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.844668cf.js",
+    "static/js/2.147d0781.chunk.js",
+    "static/css/main.08929a35.chunk.css",
+    "static/js/main.71fcb5fd.chunk.js"
+  ]
+}
