@@ -115,18 +115,22 @@ router.get('/createAdmin', async (req, res) => {
 router.post(
 	'/register',
 	[
-		check('firstName', 'First Name is Required')
+		check('userFullName', 'Admin Name is Required')
 			.not()
-			.isEmpty(),
-		check('lastName', 'Last Name is Required')
-			.not()
-			.isEmpty(),
+			.isEmpty()
+			.trim(),
 		check('userCompany', 'Company Name is Required')
 			.not()
-			.isEmpty(),
+			.isEmpty()
+			.trim(),
 		check('userEmail', 'Email is Required')
 			.not()
-			.isEmpty(),
+			.isEmpty()
+			.trim(),
+		check('companyContact', 'Phone number is Required')
+			.not()
+			.isEmpty()
+			.trim(),
 		check('userPass', 'Password should be atleast 6 characters').isLength({
 			min: 6
 		})
@@ -137,14 +141,18 @@ router.post(
 			return res.status(422).json({ errors: errors.array() });
 		}
 
-		const {
-			firstName,
-			lastName,
+		let {
+			userFullName,
 			userCompany,
 			userEmail,
-			userPass,
-			userType
+			companyContact,
+			userPass
 		} = req.body;
+
+		const firstName = userFullName.slice(0, userFullName.search(' ')).trim();
+		const lastName = userFullName
+			.slice(userFullName.search(' ') + 1, userFullName.length)
+			.trim();
 
 		try {
 			let user = await Users.findOne({ userEmail });
@@ -155,19 +163,12 @@ router.post(
 					.json({ errors: [{ msg: 'User Already Exists' }] });
 			}
 
-			const compTyp = await CompanyTypes.findOne({
-				companyType: 'Dummy'
-			}).select('id');
-
 			user = new Users({
 				firstName,
 				lastName,
-				userCompany,
 				userName: userEmail,
-				companyType: compTyp,
 				userEmail,
-				userPass,
-				userType
+				userPass
 			});
 
 			const salt = await bcrypt.genSalt(10);
@@ -180,24 +181,35 @@ router.post(
 			user.save(async (err, savedUser) => {
 				if (err) throw err;
 
-				const { id, firstName, lastName, userEmail, userCompany } = savedUser;
+				const compTyp = await CompanyTypes.findOne({
+					companyType: 'Dummy'
+				}).select('id');
 
 				// Make new company with provided company name
-
 				const company = new Companies({
-					companyOwner: id,
+					companyOwner: savedUser._id,
 					companyName: userCompany,
-					companyType: compTyp
+					companyType: compTyp,
+					companyContact
 				});
 
 				await company.save();
+
+				const updatedUser = await Users.findByIdAndUpdate(savedUser._id, {
+					$push: { userCompanies: company._id }
+				});
+
+				const { id, firstName, lastName, userEmail } = updatedUser;
 
 				const superUserSettings = await SuperUser.findOne().select('sendMail');
 
 				if (superUserSettings.sendMail) {
 					// Encrypt
 					var ciphertext = cryptoJS.AES.encrypt(
-						JSON.stringify({ user: savedUser.id, email: savedUser.userEmail }),
+						JSON.stringify({
+							user: updatedUser.id,
+							email: updatedUser.userEmail
+						}),
 						config.get('cryptoJSkeySecret')
 					).toString();
 					ciphertext = urlencode(ciphertext);
@@ -248,7 +260,8 @@ router.post(
 		check('un', 'Username is required.')
 			.exists()
 			.not()
-			.isEmpty(),
+			.isEmpty()
+			.trim(),
 		check('up', 'Password should be atleast 6 characters.')
 			.exists()
 			.isLength({ min: 6 })
@@ -378,9 +391,9 @@ router.post(
 // @access   Private
 router.get('/', auth, async (req, res) => {
 	try {
-		const user = await Users.findById(req.user.id).select(
-			'_id firstName lastName userCompany'
-		);
+		const user = await Users.findById(req.user.id)
+			.select('_id firstName lastName userCompanies')
+			.populate('userCompanies', 'companyName');
 		return res.status(200).json(user);
 	} catch (err) {
 		console.error(err);

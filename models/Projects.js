@@ -15,18 +15,21 @@ const memberSchema = mongoose.Schema({
 	}
 });
 
-const projectSchema = mongoose.Schema({
-	companyID: {
-		type: mongoose.Types.ObjectId,
-		ref: 'tms_company',
-		required: true
+const projectSchema = mongoose.Schema(
+	{
+		companyID: {
+			type: mongoose.Types.ObjectId,
+			ref: 'tms_company',
+			required: true
+		},
+		projectName: String,
+		projectTypeID: {
+			type: mongoose.Types.ObjectId,
+			ref: 'zzz_project_types'
+		},
+		teamMembers: [memberSchema]
 	},
-	projectName: String,
-	projectTypeID: {
-		type: mongoose.Types.ObjectId,
-		ref: 'zzz_project_types'
-	},
-	teamMembers: [memberSchema]
-});
+	{ timestamps: true }
+);
 
 module.exports = Projects = mongoose.model('tms_projects', projectSchema);

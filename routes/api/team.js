@@ -33,6 +33,8 @@ router.get('/getAllUserTypes', auth, async (req, res) => {
 router.post('/addMemberProfile', auth, async (req, res) => {
 	try {
 		const user = new Users(req.body);
+		const salt = await bcrypt.genSalt(10);
+		user.userPass = await bcrypt.hash(user.userPass, salt);
 		let userAdded = await user.save();
 
 		const addedUser = await Users.findById(userAdded.id)

@@ -57,10 +57,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const Register = ({ isRegistered, registerUser, showAlert }) => {
-	const [firstName, setFirstName] = useState('');
-	const [lastName, setLastName] = useState('');
+	const [userFullName, setUserFullName] = useState('');
 	const [userCompany, setUserCompany] = useState('');
 	const [userEmail, setUserEmail] = useState('');
+	const [companyContact, setCompanyContact] = useState('');
 	const [userPass, setUserPass] = useState('');
 	const [confPass, setConfPass] = useState('');
 
@@ -69,16 +69,16 @@ export const Register = ({ isRegistered, registerUser, showAlert }) => {
 
 		if (userPass === confPass) {
 			const userData = {
-				firstName,
-				lastName,
+				userFullName,
 				userCompany,
 				userEmail,
+				companyContact,
 				userPass
 			};
 
 			registerUser(userData);
 
-			// setFirstName('');
+			// setUserFullName('');
 			// setLastName('');
 			// setUserCompany('');
 			// setUserEmail('');
@@ -115,26 +115,15 @@ export const Register = ({ isRegistered, registerUser, showAlert }) => {
 							onSubmit={onSubmit}
 						>
 							<TextField
-								value={firstName}
-								onChange={e => setFirstName(e.target.value)}
+								value={userFullName}
+								onChange={e => setUserFullName(e.target.value)}
 								variant='outlined'
 								margin='normal'
 								required
 								fullWidth
-								label='First Name'
+								label='Admin Name'
 								autoFocus
 								autoComplete='fname'
-							/>
-
-							<TextField
-								value={lastName}
-								onChange={e => setLastName(e.target.value)}
-								variant='outlined'
-								margin='normal'
-								required
-								fullWidth
-								label='Last Name'
-								autoComplete='lname'
 							/>
 							<TextField
 								value={userCompany}
@@ -155,6 +144,15 @@ export const Register = ({ isRegistered, registerUser, showAlert }) => {
 								fullWidth
 								label='Email Address'
 								autoComplete='email'
+							/>
+							<TextField
+								value={companyContact}
+								onChange={e => setCompanyContact(e.target.value)}
+								variant='outlined'
+								margin='normal'
+								fullWidth
+								label='Company Contact'
+								autoComplete='phone'
 							/>
 							<TextField
 								value={userPass}
