@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -96,6 +96,13 @@ export const NavCombo = ({
 	layout: { currentModule }
 }) => {
 	const [open, setOpen] = useState(true);
+	const [currentUser, setCurrentUser] = useState({});
+
+	useEffect(() => {
+		if (user) {
+			setCurrentUser(user);
+		}
+	}, [user, setCurrentUser]);
 
 	const handleDrawerOpen = () => {
 		setOpen(true);
@@ -137,7 +144,8 @@ export const NavCombo = ({
 					<IconButton color='inherit'>
 						<Badge badgeContent={null} color='secondary'>
 							{/* <Notifications /> */}
-							{user && user.userCompany}
+							{currentUser.hasOwnProperty('userMeta') &&
+								currentUser.userMeta.recentCompany.companyName}
 						</Badge>
 					</IconButton>
 					<IconButton color='inherit'>
@@ -163,7 +171,8 @@ export const NavCombo = ({
 					<Link to='/profile' className={classes.profile}>
 						<span>
 							<PersonPin />
-							{user && ` ${user.firstName} ${user.lastName}`}
+							{currentUser.hasOwnProperty('firstName') &&
+								` ${currentUser.firstName} ${currentUser.lastName}`}
 						</span>
 					</Link>
 					<IconButton onClick={handleDrawerClose}>

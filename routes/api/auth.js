@@ -10,6 +10,7 @@ const urlencode = require('urlencode');
 const { check, validationResult } = require('express-validator');
 const SuperUser = require('../../models/SuperUser');
 const Users = require('../../models/Users');
+const UserMeta = require('../../models/UsersMeta');
 const StatusTypes = require('../../models/normalizations/StatusTypes');
 const UserTypes = require('../../models/normalizations/UserTypes');
 const Companies = require('../../models/Companies');
@@ -73,20 +74,37 @@ router.get('/createAdmin', async (req, res) => {
 						{ projectType: 'Mobile App' }
 					]);
 
-					const user = new Users({
-						firstName: 'Vinayak',
-						lastName: 'Sharma',
+					const superUser = new Users({
+						firstName: 'Super',
+						lastName: 'User',
 						userName: 'admin123',
 						userPass: hash,
 						userType: savedUserTypes[0]._id,
-						userCompany: 'Super User',
-						companyType: await CompanyTypes.findOne({
-							companyType: 'Dummy'
-						}).select('id'),
-						userEmail: 'vinayak252@gmail.com',
+						userEmail: 'trackmysquad@gmail.com',
 						verifiedEmail: true
 					});
-					const createdUser = await user.save();
+					const crtdTmpUsr = await superUser.save();
+
+					const superCompany = new Companies({
+						companyOwner: crtdTmpUsr._id,
+						companyName: 'Super Company',
+						companyType: savedCompanyTypes[5]._id,
+						companyContact: '+91 98765-43210'
+					});
+					const savedSuperCompany = await superCompany.save();
+
+					const supUsrRcntComp = new UserMeta({
+						recentCompany: savedSuperCompany._id
+					});
+					const savedRecents = await supUsrRcntComp.save();
+
+					const createdUser = await Users.findByIdAndUpdate(crtdTmpUsr._id, {
+						$set: {
+							userMeta: savedRecents._id,
+							$push: { userCompanies: savedSuperCompany._id }
+						}
+					});
+
 					return res.status(200).json({
 						savedUserTypes,
 						savedCompanyTypes,
@@ -168,7 +186,8 @@ router.post(
 				lastName,
 				userName: userEmail,
 				userEmail,
-				userPass
+				userPass,
+				verifiedEmail: false
 			});
 
 			const salt = await bcrypt.genSalt(10);
@@ -192,11 +211,19 @@ router.post(
 					companyType: compTyp,
 					companyContact
 				});
+				const savedCompany = await company.save();
 
-				await company.save();
+				const userMeta = new UserMeta({
+					userId: savedUser._id,
+					recentCompany: savedCompany._id
+				});
+				const savedMeta = await userMeta.save();
 
 				const updatedUser = await Users.findByIdAndUpdate(savedUser._id, {
-					$push: { userCompanies: company._id }
+					$set: {
+						userMeta: savedMeta._id,
+						$push: { userCompanies: company._id }
+					}
 				});
 
 				const { id, firstName, lastName, userEmail } = updatedUser;
@@ -273,13 +300,21 @@ router.post(
 		}
 
 		const { un, up } = req.body;
-
+		let welcomeMsg = false;
 		try {
 			let currentUser = await Users.findOne({
 				$or: [{ userName: un }, { userEmail: un }]
 			});
 
 			if (!currentUser) {
+				return res
+					.status(400)
+					.json({ errors: [{ msg: 'Invalid Credentials' }] });
+			}
+
+			const isMatch = await bcrypt.compare(up, currentUser.userPass);
+
+			if (!isMatch) {
 				return res
 					.status(400)
 					.json({ errors: [{ msg: 'Invalid Credentials' }] });
@@ -337,6 +372,7 @@ router.post(
 								.status(400)
 								.json({ errors: [{ msg: 'Verify your email first.' }] });
 						}
+						welcomeMsg = true;
 					} else {
 						return res
 							.status(400)
@@ -347,14 +383,6 @@ router.post(
 						.status(400)
 						.json({ errors: [{ msg: 'Verify your email first.' }] });
 				}
-			}
-
-			const isMatch = await bcrypt.compare(up, currentUser.userPass);
-
-			if (!isMatch) {
-				return res
-					.status(400)
-					.json({ errors: [{ msg: 'Invalid Credentials' }] });
 			}
 
 			const payload = {
@@ -374,7 +402,9 @@ router.post(
 							.status(500)
 							.json({ errors: [{ msg: 'User Authentication Failed' }] });
 					}
-					return res.status(200).json({ token, isAuthenticated: true });
+					return res
+						.status(200)
+						.json({ token, isAuthenticated: true, welcomeMsg });
 				}
 			);
 		} catch (err) {
@@ -392,8 +422,16 @@ router.post(
 router.get('/', auth, async (req, res) => {
 	try {
 		const user = await Users.findById(req.user.id)
-			.select('_id firstName lastName userCompanies')
-			.populate('userCompanies', 'companyName');
+			.select('_id firstName lastName userMeta')
+			.populate({
+				path: 'userMeta',
+				populate: {
+					path: 'recentCompany',
+					model: Companies,
+					select: 'companyName'
+				}
+			});
+
 		return res.status(200).json(user);
 	} catch (err) {
 		console.error(err);

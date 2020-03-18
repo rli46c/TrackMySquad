@@ -79,6 +79,13 @@ export const loginUser = userdata => async dispatch => {
 			payload: res.data
 		});
 
+		if (res.data.welcomeMsg) {
+			dispatch({
+				type: SET_ALERT,
+				payload: [{ id: uuid(), status: 200, msg: 'Token Verified' }]
+			});
+		}
+
 		dispatch({
 			type: SET_CURRENT_MODULE,
 			payload: { moduleRoute: 'dash', moduleName: 'Dashboard' }

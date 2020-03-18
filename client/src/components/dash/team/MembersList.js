@@ -58,7 +58,6 @@ export const MembersList = ({
 	}, [projects.length, currentUser, getAllProjects]);
 
 	const classes = useStyles();
-	console.log('manageProjectDialogOpen', manageProjectDialogOpen);
 
 	return (
 		<Fragment>

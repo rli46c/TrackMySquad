@@ -29,6 +29,10 @@ const usersSchema = mongoose.Schema(
 		verifiedEmail: {
 			type: Boolean,
 			default: false
+		},
+		userMeta: {
+			type: mongoose.Types.ObjectId,
+			ref: 'tms_users_metas'
 		}
 	},
 	{ timestamps: true }
