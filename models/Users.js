@@ -26,9 +26,13 @@ const usersSchema = mongoose.Schema(
 			required: true,
 			unique: true
 		},
-		verifiedEmail: {
+		acceptTnC: {
 			type: Boolean,
 			default: false
+		},
+		userStatus: {
+			type: mongoose.Types.ObjectId,
+			ref: 'zzz_status_types'
 		},
 		userMeta: {
 			type: mongoose.Types.ObjectId,

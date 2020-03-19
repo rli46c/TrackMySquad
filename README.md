@@ -66,3 +66,17 @@ empSeatNo: 1
 }
 }
 ]);
+
+#### Client IP Address
+
+var ip = (req.headers['x-forwarded-for'] || '')
+.split(',')
+.pop()
+|| req.connection.remoteAddress
+|| req.socket.remoteAddress
+|| req.connection.socket.remoteAddress
+
+var ip = req.headers['x-forwarded-for']
+|| req.connection.remoteAddress
+|| req.socket.remoteAddress
+|| (req.connection.socket ? req.connection.socket.remoteAddress : null);

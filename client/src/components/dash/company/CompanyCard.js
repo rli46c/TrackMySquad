@@ -63,13 +63,13 @@ export const CompanyCard = ({
 		<Fragment>
 			<TableRow style={checked ? { backgroundColor: '#ff0000' } : null}>
 				<TableCell className={checked ? classes.highlightText : null}>
-					{companyName}
+					{companyName && companyName}
 				</TableCell>
 				<TableCell className={checked ? classes.highlightText : null}>
-					{companyType.companyType}
+					{companyType.hasOwnProperty('companyType') && companyType.companyType}
 				</TableCell>
 				<TableCell className={checked ? classes.highlightText : null}>
-					{companyAddress}
+					{companyAddress.hasOwnProperty('city') && companyAddress.city}
 				</TableCell>
 				<TableCell align='right'>
 					<input

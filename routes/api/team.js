@@ -167,6 +167,8 @@ router.get('/:currentUser', auth, async (req, res) => {
 		})
 			.populate('userType', 'userType')
 			.select('id firstName lastName userType userEmail');
+		console.log(teamMember);
+
 		res.status(200).json(teamMember);
 	} catch (err) {
 		console.error(err);

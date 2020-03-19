@@ -61,9 +61,15 @@ export const AddNewCompany = ({
 	const [fullWidth] = useState(true);
 	const [maxWidth] = useState('sm');
 
-	const [name, setName] = useState('');
+	const [companyName, setCompanyName] = useState('');
 	const [companyType, setCompanyType] = useState('');
-	const [adrs, setAdrs] = useState('');
+	const [companyContact, setCompanyContact] = useState('');
+	const [address1, setAddress1] = useState('');
+	const [address2, setAddress2] = useState('');
+	const [companyStreet, setCompanyStreet] = useState('');
+	const [companyCity, setCompanyCity] = useState('');
+	const [companyCountry, setCompanyCountry] = useState('');
+	const [companyZip, setCompanyZip] = useState('');
 
 	useEffect(() => {
 		getAllCompanyTypes();
@@ -71,15 +77,32 @@ export const AddNewCompany = ({
 
 	const onReset = e => {
 		e.preventDefault();
-		setName('');
+		setCompanyName('');
 		setCompanyType('');
-		setAdrs('');
+		setCompanyContact('');
+		setAddress1('');
+		setAddress2('');
+		setCompanyStreet('');
+		setCompanyCity('');
+		setCompanyCountry('');
+		setCompanyZip('');
 	};
 
 	const onSubmit = e => {
 		e.preventDefault();
 
-		const companyData = { user, name, companyType, adrs };
+		const companyData = {
+			user,
+			companyName,
+			companyType,
+			companyContact,
+			address1,
+			address2,
+			companyStreet,
+			companyCity,
+			companyCountry,
+			companyZip
+		};
 		addCompany(companyData);
 		onReset(e);
 		setAddCompanyDialog(false);
@@ -129,28 +152,75 @@ export const AddNewCompany = ({
 							onChange={e => setCompanyType(e.target.value)}
 							id='company-type'
 						>
-							<option value='' />
+							<option value='' tabIndex='1' />
 							{companyTypes.map((type, id) => (
 								<CompanyTypesCard key={id} compType={type} />
 							))}
 						</NativeSelect>
 					</FormControl>
-					{/* <TextField value={ type } onChange={ (e)=>setType(e.target.value) } label="Type" variant="outlined" fullWidth tabIndex="2" /> */}
 					<TextField
-						value={name}
-						onChange={e => setName(e.target.value)}
+						value={companyName}
+						onChange={e => setCompanyName(e.target.value)}
 						label='Name'
 						variant='outlined'
 						fullWidth
-						tabIndex='1'
+						tabIndex='2'
 					/>
 					<TextField
-						value={adrs}
-						onChange={e => setAdrs(e.target.value)}
-						label='Address'
+						value={companyContact}
+						onChange={e => setCompanyContact(e.target.value)}
+						label='Phone'
 						variant='outlined'
 						fullWidth
 						tabIndex='3'
+					/>
+					<TextField
+						value={address1}
+						onChange={e => setAddress1(e.target.value)}
+						label='Address 1'
+						variant='outlined'
+						fullWidth
+						tabIndex='4'
+					/>
+					<TextField
+						value={address2}
+						onChange={e => setAddress2(e.target.value)}
+						label='Address 2'
+						variant='outlined'
+						fullWidth
+						tabIndex='5'
+					/>
+					<TextField
+						value={companyStreet}
+						onChange={e => setCompanyStreet(e.target.value)}
+						label='Street'
+						variant='outlined'
+						fullWidth
+						tabIndex='6'
+					/>
+					<TextField
+						value={companyCity}
+						onChange={e => setCompanyCity(e.target.value)}
+						label='Ciry'
+						variant='outlined'
+						fullWidth
+						tabIndex='7'
+					/>
+					<TextField
+						value={companyCountry}
+						onChange={e => setCompanyCountry(e.target.value)}
+						label='Country'
+						variant='outlined'
+						fullWidth
+						tabIndex='8'
+					/>
+					<TextField
+						value={companyZip}
+						onChange={e => setCompanyZip(e.target.value)}
+						label='Zip Code'
+						variant='outlined'
+						fullWidth
+						tabIndex='9'
 					/>
 				</form>
 			</DialogContent>

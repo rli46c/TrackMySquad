@@ -63,29 +63,37 @@ export const Register = ({ isRegistered, registerUser, showAlert }) => {
 	const [companyContact, setCompanyContact] = useState('');
 	const [userPass, setUserPass] = useState('');
 	const [confPass, setConfPass] = useState('');
+	const [acceptTnC, setAcceptTnC] = useState(false);
 
 	const onSubmit = e => {
 		e.preventDefault();
 
-		if (userPass === confPass) {
+		if (userPass === confPass && acceptTnC) {
 			const userData = {
 				userFullName,
 				userCompany,
 				userEmail,
 				companyContact,
-				userPass
+				userPass,
+				acceptTnC
 			};
 
 			registerUser(userData);
 
-			// setUserFullName('');
-			// setLastName('');
-			// setUserCompany('');
-			// setUserEmail('');
-			// setUserPass('');
-			// setConfPass('');
+			setUserFullName('');
+			setUserCompany('');
+			setUserEmail('');
+			setUserPass('');
+			setConfPass('');
+			setAcceptTnC(false);
 		} else {
-			showAlert([{ id: uuid(), status: 400, msg: 'Passwords must match.' }]);
+			if (userPass !== confPass) {
+				showAlert([{ id: uuid(), status: 400, msg: 'Passwords must match.' }]);
+			} else {
+				showAlert([
+					{ id: uuid(), status: 400, msg: 'Accept terms and conditions.' }
+				]);
+			}
 		}
 	};
 
@@ -140,6 +148,7 @@ export const Register = ({ isRegistered, registerUser, showAlert }) => {
 								onChange={e => setUserEmail(e.target.value)}
 								variant='outlined'
 								margin='normal'
+								type='email'
 								required
 								fullWidth
 								label='Email Address'
@@ -176,11 +185,26 @@ export const Register = ({ isRegistered, registerUser, showAlert }) => {
 								type='password'
 								autoComplete='current-password'
 							/>
-
-							<FormControlLabel
-								control={<Checkbox value='allowExtraEmails' color='primary' />}
+							{/* <FormControlLabel
+								control={
+									<Checkbox
+										value={acceptTnC}
+										color='primary'
+										onChange={() => setAcceptTnC(val => !val)}
+									/>
+								}
 								label='I want to receive inspiration, marketing promotions and updates via email.'
+							/> */}
+							<span>Check</span>
+							<Checkbox
+								value={acceptTnC}
+								color='primary'
+								onChange={() => setAcceptTnC(val => !val)}
 							/>
+							<span>
+								to agree TrackMySquad's{' '}
+								<Link to='/termsConditions'>Terms of Use</Link>.
+							</span>
 							<Button
 								type='submit'
 								fullWidth
@@ -190,7 +214,6 @@ export const Register = ({ isRegistered, registerUser, showAlert }) => {
 							>
 								Sign Up
 							</Button>
-
 							<Grid container justify='flex-end'>
 								<Grid item>
 									<Link to='/login' variant='body2'>

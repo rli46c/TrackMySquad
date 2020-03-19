@@ -11,11 +11,12 @@ const { check, validationResult } = require('express-validator');
 const SuperUser = require('../../models/SuperUser');
 const Users = require('../../models/Users');
 const UserMeta = require('../../models/UsersMeta');
-const StatusTypes = require('../../models/normalizations/StatusTypes');
-const UserTypes = require('../../models/normalizations/UserTypes');
 const Companies = require('../../models/Companies');
+const Address = require('../../models/Addresses');
 const CompanyTypes = require('../../models/normalizations/CompanyTypes');
 const ProjectTypes = require('../../models/normalizations/ProjectTypes');
+const StatusTypes = require('../../models/normalizations/StatusTypes');
+const UserTypes = require('../../models/normalizations/UserTypes');
 
 // @route    GET api/company
 // @desc     Create admin account
@@ -41,11 +42,11 @@ router.get('/createAdmin', async (req, res) => {
 					constsuperUserSettings = await superUserSettings.save();
 
 					const savedStatusTypes = await StatusTypes.insertMany([
-						{ statusType: 'Active' },
-						{ statusType: 'Inactive' },
-						{ statusType: 'Blocked' },
-						{ statusType: 'Removed' },
-						{ statusType: 'Restricted' }
+						{ statusType: 'active' },
+						{ statusType: 'inactive' },
+						{ statusType: 'unverified' },
+						{ statusType: 'removed' },
+						{ statusType: 'restricted' }
 					]);
 
 					const savedUserTypes = await UserTypes.insertMany([
@@ -71,7 +72,8 @@ router.get('/createAdmin', async (req, res) => {
 						{ projectType: 'Web App' },
 						{ projectType: 'Content Management System' },
 						{ projectType: 'Software' },
-						{ projectType: 'Mobile App' }
+						{ projectType: 'Mobile App' },
+						{ projectType: 'Other' }
 					]);
 
 					const superUser = new Users({
@@ -81,7 +83,7 @@ router.get('/createAdmin', async (req, res) => {
 						userPass: hash,
 						userType: savedUserTypes[0]._id,
 						userEmail: 'trackmysquad@gmail.com',
-						verifiedEmail: true
+						userStatus: savedStatusTypes[0]._id
 					});
 					const crtdTmpUsr = await superUser.save();
 
@@ -99,10 +101,8 @@ router.get('/createAdmin', async (req, res) => {
 					const savedRecents = await supUsrRcntComp.save();
 
 					const createdUser = await Users.findByIdAndUpdate(crtdTmpUsr._id, {
-						$set: {
-							userMeta: savedRecents._id,
-							$push: { userCompanies: savedSuperCompany._id }
-						}
+						$set: { userMeta: savedRecents._id },
+						$push: { userCompanies: savedSuperCompany._id }
 					});
 
 					return res.status(200).json({
@@ -141,16 +141,16 @@ router.post(
 			.not()
 			.isEmpty()
 			.trim(),
-		check('userEmail', 'Email is Required')
-			.not()
-			.isEmpty()
-			.trim(),
+		check('userEmail', 'Email is Required').isEmail(),
 		check('companyContact', 'Phone number is Required')
 			.not()
 			.isEmpty()
 			.trim(),
 		check('userPass', 'Password should be atleast 6 characters').isLength({
 			min: 6
+		}),
+		check('acceptTnC', 'Mandatory to accept Terms & Conditions').exists({
+			checkFalsy: true
 		})
 	],
 	async (req, res) => {
@@ -159,13 +159,30 @@ router.post(
 			return res.status(422).json({ errors: errors.array() });
 		}
 
-		let {
+		const {
 			userFullName,
 			userCompany,
 			userEmail,
 			companyContact,
-			userPass
+			userPass,
+			acceptTnC
 		} = req.body;
+
+		let user = null;
+		try {
+			user = await Users.findOne({ userEmail });
+
+			if (user) {
+				return res
+					.status(400)
+					.json({ errors: [{ msg: 'User Already Exists' }] });
+			}
+		} catch (err) {
+			console.error(err);
+			return res.status(500).json({
+				errors: [{ msg: 'Something went wrong while Registering User' }]
+			});
+		}
 
 		const firstName = userFullName.slice(0, userFullName.search(' ')).trim();
 		const lastName = userFullName
@@ -173,21 +190,16 @@ router.post(
 			.trim();
 
 		try {
-			let user = await Users.findOne({ userEmail });
-
-			if (user) {
-				return res
-					.status(400)
-					.json({ errors: [{ msg: 'User Already Exists' }] });
-			}
-
 			user = new Users({
 				firstName,
 				lastName,
 				userName: userEmail,
 				userEmail,
 				userPass,
-				verifiedEmail: false
+				userStatus: await StatusTypes.findOne({
+					statusType: 'unverified'
+				}).select('id'),
+				acceptTnC
 			});
 
 			const salt = await bcrypt.genSalt(10);
@@ -200,6 +212,11 @@ router.post(
 			user.save(async (err, savedUser) => {
 				if (err) throw err;
 
+				const registrantIP = new Address({
+					ip: req.headers['x-forwarded-for']
+				});
+				const addedAddress = await registrantIP.save();
+
 				const compTyp = await CompanyTypes.findOne({
 					companyType: 'Dummy'
 				}).select('id');
@@ -209,7 +226,8 @@ router.post(
 					companyOwner: savedUser._id,
 					companyName: userCompany,
 					companyType: compTyp,
-					companyContact
+					companyContact,
+					companyAddress: addedAddress._id
 				});
 				const savedCompany = await company.save();
 
@@ -219,11 +237,11 @@ router.post(
 				});
 				const savedMeta = await userMeta.save();
 
+				console.log(savedCompany);
+
 				const updatedUser = await Users.findByIdAndUpdate(savedUser._id, {
-					$set: {
-						userMeta: savedMeta._id,
-						$push: { userCompanies: company._id }
-					}
+					$set: { userMeta: savedMeta._id },
+					$push: { userCompanies: savedCompany._id }
 				});
 
 				const { id, firstName, lastName, userEmail } = updatedUser;
@@ -320,7 +338,11 @@ router.post(
 					.json({ errors: [{ msg: 'Invalid Credentials' }] });
 			}
 
-			if (currentUser.verifiedEmail !== true) {
+			const isUnverified = await StatusTypes.findOne({
+				statusType: 'unverified'
+			}).select('id');
+
+			if (currentUser.userStatus.toString() === isUnverified._id.toString()) {
 				let decryptedData = null;
 
 				// Decrypt and Verify Key Parameter
@@ -362,9 +384,13 @@ router.post(
 
 					// To check whether user is not using someone else's Key
 					if (user === currentUser.id) {
+						const activeUsrsId = await StatusTypes.findOne({
+							statusType: 'active'
+						}).select('id');
+
 						const verifiedUser = await Users.findOneAndUpdate(
 							{ $and: [{ _id: user }, { userEmail: email }] },
-							{ verifiedEmail: true }
+							{ userStatus: activeUsrsId._id }
 						);
 
 						if (!verifiedUser) {
@@ -374,14 +400,14 @@ router.post(
 						}
 						welcomeMsg = true;
 					} else {
-						return res
-							.status(400)
-							.json({ errors: [{ msg: 'Invalid Credentials' }] });
+						return res.status(400).json({
+							errors: [{ msg: 'Use valid credentials & verification link' }]
+						});
 					}
 				} else {
-					return res
-						.status(400)
-						.json({ errors: [{ msg: 'Verify your email first.' }] });
+					return res.status(400).json({
+						errors: [{ msg: 'Invalid credentials or verification link.' }]
+					});
 				}
 			}
 

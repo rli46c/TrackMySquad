@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const auth = require('../../middleware/auth');
 const Companies = require('../../models/Companies');
+const Addresses = require('../../models/Addresses');
 const CompanyTypes = require('../../models/normalizations/CompanyTypes');
 
 const router = express.Router();
@@ -22,14 +23,43 @@ router.get('/getAllCompanyTypes', auth, async (req, res) => {
 // @desc     Add a new Company Profile
 // @access   Private
 router.post('/addCompanyProfile', auth, async (req, res) => {
-	const { user, name, companyType, adrs } = req.body;
+	const {
+		user,
+		companyName,
+		companyType,
+		companyContact,
+		address1,
+		address2,
+		companyStreet,
+		companyCity,
+		companyCountry,
+		companyZip
+	} = req.body;
+
+	let addedAddress = null;
+	try {
+		const addressToAdd = new Addresses({
+			address1,
+			address2,
+			street: companyStreet,
+			city: companyCity,
+			country: companyCountry,
+			zip: companyZip
+		});
+
+		addedAddress = await addressToAdd.save();
+	} catch (err) {
+		console.error(err);
+		return res.status(500).send('Unable to save Company Address');
+	}
 
 	try {
 		const company = new Companies({
 			companyOwner: mongoose.Types.ObjectId(user._id),
-			companyName: name,
-			companyType: companyType,
-			companyAddress: adrs
+			companyName,
+			companyType,
+			companyContact,
+			companyAddress: addedAddress._id
 		});
 
 		const addedCompany = await company.save();
@@ -104,7 +134,9 @@ router.get('/:currentUser', auth, async (req, res) => {
 		// Populate with companyType only
 		const companiesList = await Companies.find({
 			companyOwner: req.params.currentUser
-		}).populate('companyType', 'companyType');
+		})
+			.populate('companyType', 'companyType')
+			.populate('companyAddress', 'city');
 		res.status(200).json(companiesList);
 	} catch (err) {
 		res.status(500).send('Server Error');
